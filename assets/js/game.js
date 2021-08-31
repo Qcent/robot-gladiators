@@ -25,7 +25,12 @@ var startGame = function() {
 
             // if not at end of enemys and player is still alive
             if (i < enemyNames.length - 1 && playerHealth > 0) {
-                shop();
+                //ask if they'd like to go shopping
+                var storeConfirm = window.confirm("The fight is over, visit the repair bay?");
+                if (storeConfirm) {
+                    shop();
+                }
+
             }
         } else {
             endGame();
@@ -52,7 +57,59 @@ var endGame = function() {
 };
 
 var shop = function() {
-    console.log("entered the shop");
+    //ask player what they would like to do
+    var shopOptionPrompt = window.prompt(
+        "Would you like to REFILL your Health , UPGRADE your Attack, or LEAVE?\n" +
+        "Please Enter one: 'REFIL', 'UPGRADE', or 'LEAVE' to make a choice."
+    );
+
+    //use switch to carry out actions
+    switch (shopOptionPrompt.toUpperCase()) {
+        case "REFILL":
+        case "FILL":
+        case "HEALTH":
+            if (playerMoney >= 7) {
+                window.alert("Refilling " + playerName + "'s Health by 20 for $7.");
+
+                playerHealth += 20;
+                playerMoney -= 7;
+
+                shop();
+            } else {
+                window.alert("Sorry " + playerName + " is too poor for that. Try something else");
+                shop();
+            }
+            break;
+
+        case "UPGRADE":
+        case "ATTACK":
+        case "POWER":
+            if (playerMoney >= 7) {
+                window.alert("Upgrading " + playerName + "'s Attack by 6 for $7.");
+
+                playerAttack += 6;
+                playerMoney -= 7;
+
+                shop();
+            } else {
+                window.alert("Sorry " + playerName + " is too poor for that. Try something else");
+                shop();
+            }
+
+            break;
+
+        case "LEAVE":
+        case "QUIT":
+        case "EXIT":
+        case "FIGHT":
+            window.alert("Leaving the store.");
+            break;
+
+        default:
+            window.alert("You did not type a valid option. Try something else");
+            shop();
+            break;
+    }
 };
 
 var fight = function(enemyName) {
@@ -86,8 +143,14 @@ var fight = function(enemyName) {
 
             //check enemys health
             if (enemyHealth <= 0) {
+
+
+                //reward player
+                var reward = Math.floor((Math.random() * 10) + 1);
+                playerMoney += reward;
                 console.log(enemyName + " has died!");
-                window.alert(enemyName + " is defeated!!");
+                window.alert(enemyName + " is defeated!!\n You found $" + reward + " among their wreakage!");
+
 
                 break;
             } else {
