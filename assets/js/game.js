@@ -38,7 +38,7 @@ var startGame = function() {
 
 var endGame = function() {
     if (playerInfo.health > 0) {
-        window.alert("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived, \nand WON!! the game! 🎉🤖🎉 \n\n    You finished a score of:\n        💰 $" + playerInfo.money + " 💰");
+        window.alert("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived, \nand WON!! the game! 🎉🤖🎉 \n\n    You finished the tournament with a grand prize of:\n        💰 $" + (playerInfo.money * playerInfo.health) + " 💰");
     } else {
         window.alert("You have lost your robot in battle! \n" +
             playerInfo.name + " has gone to the big scrap yard in the sky. \n" +
