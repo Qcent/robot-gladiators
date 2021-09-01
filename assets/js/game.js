@@ -38,7 +38,7 @@ var startGame = function() {
 
 var endGame = function() {
     if (playerInfo.health > 0) {
-        window.alert("🎉🤖🎉 Great job!, you have survived, \nand WON!! the game! 🎉🤖🎉 \n You finished a score of:\n 💰 $" + playerInfo.money + "💰");
+        window.alert("🎉🤖🎉 Great job!, you have survived, \nand WON!! the game! 🎉🤖🎉 \n\n    You finished a score of:\n        💰 $" + playerInfo.money + " 💰");
     } else {
         window.alert("You have lost your robot in battle! \n" +
             playerInfo.name + " has gone to the big scrap yard in the sky. \n" +
@@ -50,14 +50,15 @@ var endGame = function() {
     if (playAgainConfirm) {
         startGame();
     } else {
-        window.alert("Thank you for playing Robot Gladiators! Y'all come back now, ya hear!");
+        window.alert("Thank you for playing Robot Gladiators!\n Y'all come back now, ya hear!");
     }
 };
 
 var shop = function() {
     //ask player what they would like to do
     var shopOptionPrompt = window.prompt(
-        "You have: $ " + playerInfo.money + "\n\n" +
+        "You have: $ " + playerInfo.money + "\n" +
+        "Health: " + playerInfo.health + "\n\n" +
         "Would you like to REFILL your Health , UPGRADE your Attack, or LEAVE?\n" +
         "Please Enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice."
     );
@@ -154,7 +155,7 @@ var fight = function(enemy) {
             if (enemy.health <= 0) {
 
                 //reward player
-                let reward = randomNumber(5, 12);
+                let reward = randomNumber(4, 10);
                 playerInfo.money += reward;
                 console.log(enemy.name + " has died!");
                 window.alert(enemy.name + " is defeated!!\n You found $" + reward + " among their wreakage!");
@@ -191,18 +192,18 @@ var fight = function(enemy) {
 
 var playerInfo = {
     name: window.prompt("What is your robot's name?"),
-    health: 120,
+    health: 100,
     attack: 10,
-    money: 13,
+    money: 11,
     reset: function() {
-        this.health = 120;
+        this.health = 100;
         this.attack = 10;
-        this.money = 13;
+        this.money = 5;
     }
 }
 var enemyInfo = [{
     name: "Roborto",
-    attack: 10
+    attack: 11
 }, {
     name: "Adolf Bot-ler",
     attack: 11
