@@ -38,7 +38,7 @@ var startGame = function() {
 
 var endGame = function() {
     if (playerInfo.health > 0) {
-        window.alert("🎉🤖🎉 Great job!, you have survived, \nand WON!! the game! 🎉🤖🎉 \n\n    You finished a score of:\n        💰 $" + playerInfo.money + " 💰");
+        window.alert("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived, \nand WON!! the game! 🎉🤖🎉 \n\n    You finished a score of:\n        💰 $" + playerInfo.money + " 💰");
     } else {
         window.alert("You have lost your robot in battle! \n" +
             playerInfo.name + " has gone to the big scrap yard in the sky. \n" +
@@ -68,34 +68,13 @@ var shop = function() {
         case "REFILL":
         case "FILL":
         case "HEALTH":
-            if (playerInfo.money >= 7) {
-                window.alert("Refilling " + playerInfo.name + "'s Health by 20 for $7.");
-
-                playerInfo.health += 20;
-                playerInfo.money -= 7;
-
-                shop();
-            } else {
-                window.alert("Sorry " + playerInfo.name + " is too poor for that. Try something else");
-                shop();
-            }
+            playerInfo.refilllHealth();
             break;
 
         case "UPGRADE":
         case "ATTACK":
         case "POWER":
-            if (playerInfo.money >= 7) {
-                window.alert("Upgrading " + playerInfo.name + "'s Attack by 6 for $7.");
-
-                playerInfo.attack += 6;
-                playerInfo.money -= 7;
-
-                shop();
-            } else {
-                window.alert("Sorry " + playerInfo.name + " is too poor for that. Try something else");
-                shop();
-            }
-
+            playerInfo.upgradeAttack();
             break;
 
         case "LEAVE":
@@ -195,15 +174,51 @@ var playerInfo = {
     health: 100,
     attack: 10,
     money: 11,
+    healthRefillValue: 20,
+    attackUpgradeValue: 6,
+    shopCost: 7,
+
     reset: function() {
         this.health = 100;
         this.attack = 10;
         this.money = 5;
+    },
+    refilllHealth: function() {
+
+        if (this.money >= this.shopCost) {
+            window.alert("Refilling " + this.name + "'s Health by " + this.healthRefillValue + " for $" + this.shopCost + ".");
+
+            this.health += this.healthRefillValue;
+            this.money -= this.shopCost;
+
+            shop();
+        } else {
+            window.alert("Sorry " + this.name + " is too poor for that. Try something else");
+            shop();
+        }
+
+
+    },
+    upgradeAttack: function() {
+
+        if (this.money >= this.shopCost) {
+            window.alert("Upgrading " + this.name + "'s Attack by " + this.attackUpgradeValue + " for $" + this.shopCost + ".");
+
+            this.attack += this.attackUpgradeValue;
+            this.money -= this.shopCost;
+
+            shop();
+        } else {
+            window.alert("Sorry " + this.name + " is too poor for that. Try something else");
+            shop();
+        }
+
     }
 }
+
 var enemyInfo = [{
     name: "Roborto",
-    attack: 11
+    attack: 11,
 }, {
     name: "Adolf Bot-ler",
     attack: 11
