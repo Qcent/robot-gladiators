@@ -171,7 +171,7 @@ var fight = function(enemy) {
 
 var playerInfo = {
     getRobotName: function() {
-        let usrInput = window.prompt("What is your robot's name?");
+        let usrInput = window.prompt("What is your robot's name?", this.name);
         if (usrInput) { return usrInput; } else {
             window.alert("Please enter a Name!");
             this.getRobotName();
