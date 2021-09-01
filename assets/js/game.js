@@ -170,7 +170,14 @@ var fight = function(enemy) {
 }
 
 var playerInfo = {
-    name: window.prompt("What is your robot's name?"),
+    getRobotName: function() {
+        let usrInput = window.prompt("What is your robot's name?");
+        if (usrInput) { return usrInput; } else {
+            window.alert("Please enter a Name!");
+            this.getRobotName();
+        }
+    },
+    name: '',
     health: 100,
     attack: 10,
     money: 11,
@@ -179,6 +186,7 @@ var playerInfo = {
     shopCost: 7,
 
     reset: function() {
+        this.name = this.getRobotName();
         this.health = 100;
         this.attack = 10;
         this.money = 5;
