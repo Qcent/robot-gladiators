@@ -13,7 +13,7 @@ var startGame = function() {
         if (playerInfo.health > 0) {
             var currentEnemy = enemyInfo[i];
 
-            window.alert("Welcome to Robot Gladiators!\n   Round " + (i + 1) + "\n Your opponent: " + currentEnemy.name);
+            window.alert("Welcome to Robot Gladiators!\n   Round " + (i + 1) + "\n Your opponent: " + currentEnemy.name + "🤖 ");
 
             currentEnemy.health = randomNumber(40, 60);
 
