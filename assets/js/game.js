@@ -7,6 +7,13 @@ var enemyNames = ["Roborto", "Adolf Bot-ler", "RoBot-O Alamar", "Android Lloyd W
 var enemyHealth = 50;
 var enemyAttack = 12;
 
+// function to generate a random numeric value
+var randomNumber = function(min, max) {
+    var value = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    return value;
+};
+
 var startGame = function() {
 
     playerHealth = 100;
@@ -19,7 +26,8 @@ var startGame = function() {
 
             window.alert("Welcome to Robot Gladiators!\n   Round " + (i + 1) + "\n Your opponent: " + currentEnemy);
 
-            enemyHealth = 50;
+            enemyHealth = randomNumber(40, 60);
+            enemyAttack = randomNumber(10, 15);
 
             fight(currentEnemy);
 
@@ -60,7 +68,7 @@ var shop = function() {
     //ask player what they would like to do
     var shopOptionPrompt = window.prompt(
         "Would you like to REFILL your Health , UPGRADE your Attack, or LEAVE?\n" +
-        "Please Enter one: 'REFIL', 'UPGRADE', or 'LEAVE' to make a choice."
+        "Please Enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice."
     );
 
     //use switch to carry out actions
@@ -117,25 +125,35 @@ var fight = function(enemyName) {
     while (enemyHealth > 0 && playerHealth > 0) {
 
         var promptFight = window.prompt("You have " + playerHealth + " health. \n" + enemyName + " has " + enemyHealth + " health.\n" +
-            "\nWould you like to FIGHT or SKIP this round? \n" + "Enter 'FIGHT' or 'SKIP' to choose.", "Fight");
+            "\nWould you like to FIGHT or SKIP this round? \n" +
+            "Enter 'FIGHT' or 'SKIP' to choose.", "Fight");
+
         if (promptFight.toUpperCase() === "SKIP") {
 
             var confirmSkip = window.confirm("Are you sure you want to skip the fight?");
 
             //if yes(true), leave fight
-            if (confirmSkip) {
+            if (confirmSkip && playerMoney >= 10) {
                 //subtract money from player for skipping
-                playerMoney -= 10;
+                playerMoney = Math.max(0, playerMoney - 10);
                 console.log(playerName + " has chosen to skip this fight! and now has " + playerMoney + " money left");
+                window.alert(playerName + " has chosen to skip this fight! and now has " + playerMoney + " money left");
 
                 break;
+            }
+            if (playerMoney < 10) {
+                console.log("Not enough money to skip fight");
+                window.alert("Not enough money to skip fight!");
+                fight();
             }
         }
         if (promptFight.toUpperCase() === "FIGHT") {
 
 
             // Subtract the value of `playerAttack` from value of `enemyHealth` vaiable and use the result to update the `enemyHealth`variable.
-            enemyHealth = enemyHealth - playerAttack;
+            // generate random damage value based on player's attack power
+            var damage = randomNumber(playerAttack - 3, playerAttack);
+            enemyHealth = Math.max(0, enemyHealth - damage);
 
             // Log a resulting message to the console so we know that it worked.
             console.log(playerName + " attacked " + enemyName + ". " + enemyName + " now has " + enemyHealth + " health remaining.");
@@ -144,22 +162,22 @@ var fight = function(enemyName) {
             //check enemys health
             if (enemyHealth <= 0) {
 
-
                 //reward player
-                var reward = Math.floor((Math.random() * 10) + 1);
+                var reward = randomNumber(3, 10);
                 playerMoney += reward;
                 console.log(enemyName + " has died!");
                 window.alert(enemyName + " is defeated!!\n You found $" + reward + " among their wreakage!");
-
-
                 break;
+
             } else {
                 console.log(enemyName + " still has " + enemyHealth + " health left.");
-
             }
 
             // Subtract the value of `enemyAttack` from the value of `playerHealth` and use that result to update teh value in the `playerHealth` variable.
-            playerHealth = playerHealth - enemyAttack;
+            // generate random damage value based on enemy's attack power
+            damage = randomNumber(enemyAttack - 3, enemyAttack);
+
+            playerHealth = Math.max(0, playerHealth - damage);
 
             // Log a resulting message to the consoe so we know it worked.
             console.log(enemyName + " has attacked " + playerName + ". " + playerName + " now has " + playerHealth + " health remaining.");
