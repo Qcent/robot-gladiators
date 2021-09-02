@@ -1,5 +1,5 @@
 # Robot Gladiators
-A basic robot fighing simulator coded in JavaScript no CSS and minimal HTML will be used.
+A basic robot fighting simulator coded in JavaScript. No CSS and minimal HTML will be used.
 
 Compete in the greatest Robo-Battle of all week. Enter you bag-o-bolts in the tuornament of a life time as you try to fight you way to the top of the ranks and take teh belt as the local Robot Boxing Champ
 
