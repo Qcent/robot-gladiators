@@ -7,6 +7,50 @@ var randomNumber = function(min, max) {
 
 var currentEnemy;
 
+var enemyInfo = [{
+    name: "Roborto",
+    attack: 11,
+    speed: 4,
+}, {
+    name: "Adolf Bot-ler",
+    attack: 11,
+    speed: 6,
+}, {
+    name: "RoBot-O Alamar",
+    attack: 12,
+    speed: 6,
+}, {
+    name: "Android Lloyd Webber",
+    attack: 14,
+    speed: 8,
+}];
+
+var enemyHealthCheck = function(enemy) {
+    //check enemys health
+    if (enemy.health <= 0) { //if no health
+
+        //reward player
+        let reward = randomNumber(4, 10);
+        playerInfo.money += reward;
+        console.log(enemy.name + " has died!");
+        window.alert(enemy.name + " is defeated!!\n You found $" + reward + " among their wreakage!");
+        return null;
+    } else { // still health left
+        console.log(enemy.name + " still has " + enemy.health + " health left.");
+    }
+    return enemy.health;
+};
+var enemyMakeAttack = function(enemy) {
+    // generate random damage value based on enemy's attack power
+    damage = randomNumber(enemy.attack - 3, enemy.attack);
+    // Subtract the value of `enemy.attack` from the value of `playerInfo.health` and use that result to update teh value in the `playerInfo.health` variable.
+    playerInfo.health = Math.max(0, playerInfo.health - damage);
+
+    // Log a resulting message to the consoe so we know it worked.
+    console.log(enemy.name + " has attacked " + playerInfo.name + " for " + damage + ".");
+    return damage;
+}
+
 var startGame = function() {
 
     playerInfo.reset();
@@ -32,7 +76,7 @@ var startGame = function() {
             }
 
         } else {
-            endGame();
+            break;
         }
     }
     endGame();
@@ -92,7 +136,7 @@ var shop = function() {
         case "3":
         case "SPEED":
         case "FAST":
-        case "QUICK":
+        case "INCREASE":
             playerInfo.increeseSpeed();
             break;
 
@@ -124,6 +168,21 @@ var shop = function() {
     }
 };
 
+var whoDrawsFirst = function(enemy) {
+    //function to determine who attacks first in each round of battle
+
+    //get differentce in opponents speeds
+    let diff = (playerInfo.speed - currentEnemy.speed)
+        // positive number means player is faster
+        // negative means enemy is faster
+
+    //flip a coin; if heads(>.5) chance is 1 if tails(<=.5) chance is -1
+    let chance = ((Math.random() > 0.5) ? 1 : (-1));
+
+    // take the diff and add a ranmdom int from (-2...+2) and return value
+    return diff + (randomNumber(1, 2) * chance);
+};
+
 var fightOrRun = function() {
 
     let prompt = window.prompt("You have " + playerInfo.health + " health. \n" + currentEnemy.name + " has " + currentEnemy.health + " health.\n" +
@@ -134,9 +193,9 @@ var fightOrRun = function() {
         return fightOrRun();
     }
 
-    if (prompt === "SKIP") {
+    if (prompt === "RUN") {
 
-        var confirmSkip = window.confirm("Are you sure you want to skip the fight?");
+        var confirmSkip = window.confirm("Are you sure you want to run from the fight?");
 
         //if yes(true), leave fight
         if (confirmSkip && playerInfo.money >= 10) {
@@ -149,7 +208,7 @@ var fightOrRun = function() {
         }
         if (playerInfo.money < 10) {
             console.log("Not enough money to skip fight");
-            window.alert("Not enough money to skip fight!\nIn You GO! ...");
+            window.alert("Not enough money COWARD!\nBack In You GO! ...");
 
             return true;
         }
@@ -162,6 +221,7 @@ var fightOrRun = function() {
     }
 }
 
+
 var fight = function(enemy) {
 
     while (enemy.health > 0 && playerInfo.health > 0) {
@@ -169,45 +229,42 @@ var fight = function(enemy) {
         //check what player will do
         if (fightOrRun()) { // true if fight is chosen
 
-            // generate random damage value based on player's attack power
-            var damage = randomNumber(playerInfo.attack - 3, playerInfo.attack);
-            // Subtract the value of `playerInfo.attack` from value of `enemy.health` vaiable and use the result to update the `enemy.health`variable.
-            enemy.health = Math.max(0, enemy.health - damage);
+            if (whoDrawsFirst(enemy) > 0) {
+                // positive numbers mean player attacks first
+                let dam1 = playerInfo.makeAttack(enemy);
+                if (!enemyHealthCheck(enemy)) {
+                    //check enemys health after attack and break if dead
+                    break;
+                }
+                // enemy robot now attacks
+                let dam2 = enemyMakeAttack(enemy);
 
-            // Log a resulting message to the console so we know that it worked.
-            console.log(playerInfo.name + " attacked " + enemy.name + " for " + damage + ".");
+                window.alert(playerInfo.name + " attacks first for " + dam1 + " damage!\n" +
+                    enemy.name + " retaliates for " + dam2 + " damage!\n");
 
-            //check enemys health
-            if (enemy.health <= 0) { //if no health
+                if (!playerInfo.healthCheck()) {
+                    //check player health, break if dead
+                    break;
+                }
+            } else { // was a negative number and enemy robot will attack first
+                // enemy robot  attacks
+                let dam1 = enemyMakeAttack(enemy);
+                if (!playerInfo.healthCheck()) {
+                    //check player health, break if dead
+                    window.alert(enemy.name + " attacks first for " + dam1 + " damage!");
+                    break;
+                }
+                // now the player attacks 
+                let dam2 = playerInfo.makeAttack(enemy);
+                window.alert(enemy.name + " attacks first for " + dam1 + " damage!\n" +
+                    playerInfo.name + " retaliates for " + dam2 + " damage!\n");
 
-                //reward player
-                let reward = randomNumber(4, 10);
-                playerInfo.money += reward;
-                console.log(enemy.name + " has died!");
-                window.alert(enemy.name + " is defeated!!\n You found $" + reward + " among their wreakage!");
-
-                break;
-
-            } else { // still health left
-                console.log(enemy.name + " still has " + enemy.health + " health left.");
+                if (!enemyHealthCheck(enemy)) {
+                    //check enemys health after attack and break if dead
+                    break;
+                }
             }
 
-            // generate random damage value based on enemy's attack power
-            damage = randomNumber(enemy.attack - 3, enemy.attack);
-            // Subtract the value of `enemy.attack` from the value of `playerInfo.health` and use that result to update teh value in the `playerInfo.health` variable.
-            playerInfo.health = Math.max(0, playerInfo.health - damage);
-
-            // Log a resulting message to the consoe so we know it worked.
-            console.log(enemy.name + " has attacked " + playerInfo.name + " for " + damage + ".");
-
-
-            //check players health
-            if (playerInfo.health <= 0) { // if no health left
-                console.log(playerInfo.name + " has died!");
-                break;
-            } else { // still alive
-                console.log(playerInfo.name + " still has " + playerInfo.health + " health left.");
-            }
         } // end of if (FIGHT)
     } // repeat while loop
 }
@@ -286,21 +343,30 @@ var playerInfo = {
                 shop();
             }
         }
+    },
+    makeAttack: function(enemy) {
+        // generate random damage value based on player's attack power
+        var damage = randomNumber(this.attack - 3, this.attack);
+        // Subtract the value of `this.attack` from value of `enemy.health` vaiable and use the result to update the `enemy.health`variable.
+        enemy.health = Math.max(0, enemy.health - damage);
+
+        // Log a resulting message to the console so we know that it worked.
+        console.log(this.name + " attacked " + enemy.name + " for " + damage + ".");
+
+        return damage;
+    },
+    healthCheck: function() {
+        //check players health
+        if (this.health <= 0) { // if no health left
+            console.log(this.name + " has died!");
+            return null;
+        } else { // still alive
+            console.log(this.name + " still has " + this.health + " health left.");
+        }
+        return this.health;
     }
 }
 
-var enemyInfo = [{
-    name: "Roborto",
-    attack: 11,
-}, {
-    name: "Adolf Bot-ler",
-    attack: 11
-}, {
-    name: "RoBot-O Alamar",
-    attack: 12
-}, {
-    name: "Android Lloyd Webber",
-    attack: 14
-}];
+
 
 startGame();
