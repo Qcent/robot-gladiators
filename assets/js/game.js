@@ -318,7 +318,7 @@ var playerInfo = {
     attack: 10,
     speed: 6,
     money: 5,
-    healthRefillValue: 50,
+    healthRefillValue: 25,
     attackUpgradeValue: 6,
     speedIncreeseValue: 2,
     healthShopCost: 6,
