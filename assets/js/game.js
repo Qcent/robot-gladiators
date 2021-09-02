@@ -18,7 +18,7 @@ var checkHighScore = function(score) {
             window.localStorage.setItem("high-score", score);
         }
     } else {
-        window.alert("Well you did you best but you still fell short of the Champ... \n" + localChamp.robot + " is still the greatest fighter with $" + localChamp.score + " in winnings.");
+        window.alert("Well you did your best but you still fell short of the Champ... \n" + localChamp.robot + " is still the greatest fighter with $" + localChamp.score + " in winnings.");
     }
 }
 var localChamp = {
