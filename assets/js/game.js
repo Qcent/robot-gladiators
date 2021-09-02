@@ -242,8 +242,7 @@ var fightOrRun = function() {
             window.alert(playerInfo.name + " has chosen to skip this fight! and now has " + playerInfo.money + " money left");
 
             shop();
-        }
-        if (playerInfo.money < 10) {
+        } else if (playerInfo.money < 10) {
             console.log("Not enough money to skip fight");
             window.alert("Not enough money COWARD!\nBack In You GO! ...");
 
