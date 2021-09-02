@@ -6,9 +6,8 @@ var randomNumber = function(min, max) {
 };
 
 var checkHighScore = function(score) {
-    var highScore = window.localStorage.getItem("high-score");
 
-    if (parseInt(highScore) < score) {
+    if (parseInt(localChamp.score) < score) {
         //New High Score
         let scoreName = window.prompt("You set a NEW HIGH SCORE !!!\n\nPlease Enter Your Name:");
         if (!scoreName) { checkHighScore(score); } // if no name is entered re run function
@@ -18,6 +17,8 @@ var checkHighScore = function(score) {
             window.localStorage.setItem("high-score-robot", playerInfo.name);
             window.localStorage.setItem("high-score", score);
         }
+    } else {
+        window.alert("Well you did you best but you still fell short of the Champ... \n" + localChamp.robot + " is still the greatest fighter with $" + localChamp.score + " in winnings.");
     }
 }
 var localChamp = {
@@ -118,9 +119,8 @@ var startGame = function() {
 var endGame = function() {
     if (playerInfo.health > 0) {
         let score = (playerInfo.money * playerInfo.attack * playerInfo.speed * playerInfo.health);
-        window.alert("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived, \nand WON!! the game! 🎉🤖🎉 \n\n" +
-            "    You finished the tournament with a grand prize of: \n💰 $ " +
-            score + "💰");
+        window.alert("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived, \n              and WON!! the game! 🎉🤖🎉 \n\n" +
+            "You finished the tournament with a grand prize of: \n           💰 $" + score + "💰");
 
         checkHighScore(score);
 
@@ -316,9 +316,9 @@ var playerInfo = {
     name: '',
     health: 100,
     attack: 10,
-    speed: 5,
+    speed: 6,
     money: 5,
-    healthRefillValue: 20,
+    healthRefillValue: 50,
     attackUpgradeValue: 6,
     speedIncreeseValue: 2,
     healthShopCost: 6,
@@ -329,8 +329,8 @@ var playerInfo = {
         this.name = this.getRobotName();
         this.health = 100;
         this.attack = 10;
-        this.speed = 5;
-        this.money = 5;
+        this.speed = 6;
+        this.money = 6;
     },
     refilllHealth: function(value) {
 
