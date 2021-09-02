@@ -5,6 +5,33 @@ var randomNumber = function(min, max) {
     return value;
 };
 
+var checkHighScore = function(score) {
+    var highScore = window.localStorage.getItem("high-score");
+
+    if (parseInt(highScore) < score) {
+        //New High Score
+        let scoreName = window.prompt("You set a NEW HIGH SCORE !!!\n\nPlease Enter Your Name:");
+        if (!scoreName) { checkHighScore(score); } // if no name is entered re run function
+        else {
+            // set new highscore
+            window.localStorage.setItem("high-score-name", scoreName);
+            window.localStorage.setItem("high-score-robot", playerInfo.name);
+            window.localStorage.setItem("high-score", score);
+        }
+    }
+}
+var localChamp = {
+    robot: 'Paul the Robot',
+    trainer: 'John',
+    score: '100'
+};
+var getLocalChamp = function() {
+    // if localStorage values are not null set tehm the localChamp values
+    localChamp.trainer = ((window.localStorage.getItem("high-score-name")) ? window.localStorage.getItem("high-score-name") : localChamp.trainer);
+    localChamp.robot = ((window.localStorage.getItem("high-score-robot")) ? window.localStorage.getItem("high-score-robot") : localChamp.robot);
+    localChamp.score = ((window.localStorage.getItem("high-score")) ? window.localStorage.getItem("high-score") : localChamp.score);
+}
+
 var currentEnemy;
 
 var enemyInfo = [{
@@ -50,16 +77,22 @@ var enemyMakeAttack = function(enemy) {
     console.log(enemy.name + " has attacked " + playerInfo.name + " for " + damage + ".");
     return damage;
 }
-
+var displayWelcome = function() {
+    window.alert("Welcome to Robot Gladiators!\n\n " +
+        "     Current Champion: 🤖" + localChamp.robot + "\n      Trainer: 💪" + localChamp.trainer + "\n      Prize Winnings: 💵$" + localChamp.score + "💵 \n\n" +
+        "Will you enter your Bot, and try your luck in the Great Robo Death Match?");
+}
 var startGame = function() {
 
+    getLocalChamp();
+    displayWelcome();
     playerInfo.reset();
 
     for (var i = 0; i < enemyInfo.length; i++) {
         if (playerInfo.health > 0) {
             currentEnemy = enemyInfo[i];
 
-            window.alert("Welcome to Robot Gladiators!\n   Round " + (i + 1) + "\n Your opponent: " + currentEnemy.name + "🤖 ");
+            window.alert("      Round " + (i + 1) + "\n Your opponent: " + currentEnemy.name + "🤖 ");
 
             currentEnemy.health = randomNumber(40, 60);
 
@@ -84,9 +117,13 @@ var startGame = function() {
 
 var endGame = function() {
     if (playerInfo.health > 0) {
+        let score = (playerInfo.money * playerInfo.attack * playerInfo.speed * playerInfo.health);
         window.alert("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived, \nand WON!! the game! 🎉🤖🎉 \n\n" +
             "    You finished the tournament with a grand prize of: \n💰 $ " +
-            (playerInfo.money * playerInfo.attack * playerInfo.speed * playerInfo.health) + "💰");
+            score + "💰");
+
+        checkHighScore(score);
+
     } else {
         window.alert("You have lost your robot in battle! \n" +
             playerInfo.name + " has gone to the big scrap yard in the sky. \n" +
