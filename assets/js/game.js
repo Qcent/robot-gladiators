@@ -40,7 +40,9 @@ var startGame = function() {
 
 var endGame = function() {
     if (playerInfo.health > 0) {
-        window.alert("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived, \nand WON!! the game! 🎉🤖🎉 \n\n    You finished the tournament with a grand prize of:\n        💰 $" + (playerInfo.money * playerInfo.attack * playerInfo.attack * playerInfo.health) + " 💰");
+        window.alert("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived, \nand WON!! the game! 🎉🤖🎉 \n\n" +
+            "    You finished the tournament with a grand prize of: \n💰 $ " +
+            (playerInfo.money * playerInfo.attack * playerInfo.speed * playerInfo.health) + "💰");
     } else {
         window.alert("You have lost your robot in battle! \n" +
             playerInfo.name + " has gone to the big scrap yard in the sky. \n" +
@@ -58,32 +60,61 @@ var endGame = function() {
 
 var shop = function() {
     //ask player what they would like to do
-    var shopOptionPrompt = window.prompt(
-        "You have: $ " + playerInfo.money + "\n" +
-        "Health: " + playerInfo.health + "\n\n" +
-        "Would you like to REFILL your Health , UPGRADE your Attack, or LEAVE?\n" +
-        "Please Enter one: 'REFILL', 'UPGRADE', or 'LEAVE' to make a choice."
+    var shopOptionPrompt = window.prompt("AFTER FIGHT STATUS:\n" +
+        "     Cash: $ " + playerInfo.money +
+        "     Health: " + playerInfo.health +
+        "     Attack: " + playerInfo.attack +
+        "     Speed: " + playerInfo.speed + "\n\n" +
+        "Would you like to:\n" +
+        "  1. REFILL your Health for $" + playerInfo.healthShopCost + "\n" +
+        "  2. UPGRADE your Attack for $" + playerInfo.attackShopCost + "\n" +
+        "  3. INCREASE you Speed for $" + playerInfo.speedShopCost + "\n" +
+        "  4. LEAVE\n" +
+        "Please enter your choice: "
     );
 
     //use switch to carry out actions
     switch (shopOptionPrompt.toUpperCase()) {
+        case "1":
         case "REFILL":
         case "FILL":
         case "HEALTH":
             playerInfo.refilllHealth();
             break;
 
+        case "2":
         case "UPGRADE":
         case "ATTACK":
         case "POWER":
             playerInfo.upgradeAttack();
             break;
 
-        case "LEAVE":
+        case "3":
+        case "SPEED":
+        case "FAST":
+        case "QUICK":
+            playerInfo.increeseSpeed();
+            break;
+
+        case "4":
+        case "Q":
+        case "X":
         case "QUIT":
         case "EXIT":
+        case "LEAVE":
+            window.alert("Leaving the store.");
+            break;
+
         case "FIGHT":
             window.alert("Leaving the store.");
+            playerInfo.upgradeAttack(1);
+            playerInfo.cheater = true;
+            break;
+
+        case "HURRY":
+            window.alert("Leaving the store.");
+            playerInfo.increeseSpeed(1);
+            playerInfo.cheater = true;
             break;
 
         default:
@@ -192,47 +223,69 @@ var playerInfo = {
     name: '',
     health: 100,
     attack: 10,
-    money: 11,
+    speed: 5,
+    money: 5,
     healthRefillValue: 20,
     attackUpgradeValue: 6,
-    shopCost: 7,
+    speedIncreeseValue: 2,
+    healthShopCost: 6,
+    attackShopCost: 7,
+    speedShopCost: 7,
 
     reset: function() {
         this.name = this.getRobotName();
         this.health = 100;
         this.attack = 10;
+        this.speed = 5;
         this.money = 5;
     },
-    refilllHealth: function() {
+    refilllHealth: function(value) {
 
-        if (this.money >= this.shopCost) {
-            window.alert("Refilling " + this.name + "'s Health by " + this.healthRefillValue + " for $" + this.shopCost + ".");
+        if (value) { this.health += value; } else {
+            if (this.money >= this.healthShopCost) {
+                window.alert("Refilling " + this.name + "'s Health by " + this.healthRefillValue + " for $" + this.healthShopCost + ".");
 
-            this.health += this.healthRefillValue;
-            this.money -= this.shopCost;
+                this.health += this.healthRefillValue;
+                this.money -= this.healthShopCost;
 
-            shop();
-        } else {
-            window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-            shop();
+                shop();
+            } else {
+                window.alert("Sorry " + this.name + " is too poor for that. Try something else");
+                shop();
+            }
         }
-
 
     },
-    upgradeAttack: function() {
+    upgradeAttack: function(value) {
+        if (value) { this.attack += value; } else {
+            if (this.money >= this.attackShopCost) {
+                window.alert("Upgrading " + this.name + "'s Attack by " + this.attackUpgradeValue + " for $" + this.attackShopCost + ".");
 
-        if (this.money >= this.shopCost) {
-            window.alert("Upgrading " + this.name + "'s Attack by " + this.attackUpgradeValue + " for $" + this.shopCost + ".");
+                this.attack += this.attackUpgradeValue;
+                this.money -= this.attackShopCost;
 
-            this.attack += this.attackUpgradeValue;
-            this.money -= this.shopCost;
-
-            shop();
-        } else {
-            window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-            shop();
+                shop();
+            } else {
+                window.alert("Sorry " + this.name + " is too poor for that. Try something else");
+                shop();
+            }
         }
 
+    },
+    increeseSpeed: function(value) {
+        if (value) { this.speed += value; } else {
+            if (this.money >= this.speedShopCost) {
+                window.alert("Upgrading " + this.name + "'s Speed by " + this.speedIncreeseValue + " for $" + this.speedShopCost + ".");
+
+                this.speed += this.speedIncreeseValue;
+                this.money -= this.speedShopCost;
+
+                shop();
+            } else {
+                window.alert("Sorry " + this.name + " is too poor for that. Try something else");
+                shop();
+            }
+        }
     }
 }
 
