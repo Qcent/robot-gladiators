@@ -2,7 +2,7 @@
 A basic robot fighting simulator coded in JavaScript. No CSS and minimal HTML will be used.
 
 Compete in the greatest Robo-Battle of all week. \
-Enter your bag-o-bolts in the tournament of a lifetime as you try to fight your way through the ranks, and Upgrade your Bot on yor journey to take home the belt as the local Robot Boxing Champ
+Enter your bag-o-bolts in the tournament of a lifetime as you try to fight your way through the ranks, and Upgrade your Bot on your journey to take home the belt as the local Robot Boxing Champ
 
 ## Coding Objectives
 * Use variables, functions, and custom objects to create a battle simulator with upgrade able robots. 
