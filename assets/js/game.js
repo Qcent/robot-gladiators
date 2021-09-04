@@ -142,14 +142,14 @@ var endGame = function() {
 var shop = function() {
     //ask player what they would like to do
     var shopOptionPrompt = window.prompt("AFTER FIGHT STATUS:\n" +
-        "     Cash: $ " + playerInfo.money +
-        "     Health: " + playerInfo.health +
-        "     Attack: " + playerInfo.attack +
-        "     Speed: " + playerInfo.speed + "\n\n" +
+        "   Cash: $ " + playerInfo.money +
+        "   Health: " + playerInfo.health +
+        "   Attack: " + playerInfo.attack +
+        "   Speed: " + playerInfo.speed + "\n\n" +
         "Would you like to:\n" +
         "  1. REFILL your Health for $" + playerInfo.healthShopCost + "\n" +
         "  2. UPGRADE your Attack for $" + playerInfo.attackShopCost + "\n" +
-        "  3. INCREASE you Speed for $" + playerInfo.speedShopCost + "\n" +
+        "  3. INCREASE your Speed for $" + playerInfo.speedShopCost + "\n" +
         "  4. LEAVE\n" +
         "Please enter your choice: "
     );
