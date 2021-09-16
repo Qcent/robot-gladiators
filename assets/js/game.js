@@ -4,43 +4,43 @@ var beatenOpponents = [];
 var weeksOpponents = [];
 const opponentList = [{
         name: "Data",
-        atk: 8,
+        attack: 8,
         speed: 4,
         health: 20,
     },
     {
         name: "CP30",
-        atk: 6,
+        attack: 6,
         speed: 7,
         health: 18,
     },
     {
         name: "R2D2",
-        atk: 9,
+        attack: 9,
         speed: 5,
         health: 15,
     },
     {
         name: "Roborto",
-        atk: 11,
+        attack: 11,
         speed: 4,
         health: 20,
     },
     {
         name: "Adolf Bot-ler",
-        atk: 11,
+        attack: 11,
         speed: 6,
         health: 20,
     },
     {
         name: "RoBot-O Alamar",
-        atk: 12,
+        attack: 12,
         speed: 6,
         health: 20,
     },
     {
         name: "Android Lloyd Webber",
-        atk: 14,
+        attack: 14,
         speed: 8,
         health: 20,
     }
@@ -58,7 +58,24 @@ const pickOpponents = function(num) {
         }
     }
     return output; // return the list of opponents
-}
+};
+const randomizeEnemyStats = function(enemy) {
+    let maxBoost = 10 * weekOfBattle; // everyweek increase max boost by 10
+    let totalBoost = 0;
+    let boost = 0;
+
+    boost = randomNumber(0, (maxBoost - totalBoost)); //get a random stat boost value upto maxBoost
+    totalBoost += boost; //keep track of boost handed out in total boost
+    enemy.health = enemy.health + boost; //apply boost to stat
+    boost = randomNumber(0, (maxBoost - totalBoost)); //get a random stat boost value upto maxBoost-boost handed out so far
+    totalBoost += boost;
+    enemy.speed = enemy.speed + boost;
+    boost = randomNumber(0, (maxBoost - totalBoost));
+    totalBoost += boost;
+    enemy.attack = enemy.attack + boost;
+
+    return totalBoost;
+};
 
 
 /*********************** */
@@ -120,8 +137,8 @@ var enemyHealthCheck = function(enemy) {
 };
 var enemyMakeAttack = function(enemy) {
     // generate random damage value based on enemy's attack power
-    damage = randomNumber(enemy.atk - 3, enemy.atk);
-    // Subtract the value of `enemy.atk` from the value of `playerInfo.health` and use that result to update teh value in the `playerInfo.health` variable.
+    damage = randomNumber(enemy.attack - 3, enemy.attack);
+    // Subtract the value of `enemy.attack` from the value of `playerInfo.health` and use that result to update teh value in the `playerInfo.health` variable.
     playerInfo.health = Math.max(0, playerInfo.health - damage);
 
     // Log a resulting message to the consoe so we know it worked.
@@ -135,37 +152,40 @@ var displayWelcome = function() {
 }
 var startGame = function() {
 
-        getLocalChamp();
-        displayWelcome();
-        playerInfo.reset();
+    getLocalChamp();
+    displayWelcome();
+    playerInfo.reset();
 
-        while (playerInfo.health > 0) {
-            enemyInfo = [];
-            weekOfBattle++;
-            if (weekOfBattle % 3 === 0) { beatenOpponents = [] } // everythree weeks beaten opponents can return
-            alert("WELCOME TO THE FIGHTING LEAUGE! \nWeek: " + weekOfBattle)
-            weeksOpponents = pickOpponents(3);
-            weeksOpponents.forEach(robot => {
-                enemyInfo.push(opponentList[robot]);
-            });
+    while (playerInfo.health > 0) {
+        enemyInfo = [];
+        weekOfBattle++;
+        if (weekOfBattle % 3 === 0) { beatenOpponents = [] } // every three weeks beaten opponents can return
+        alert("WELCOME TO THE FIGHTING LEAUGE! \nWeek: " + weekOfBattle)
+        weeksOpponents = pickOpponents(3);
+        weeksOpponents.forEach(robot => {
+            enemyInfo.push(opponentList[robot]);
+        });
 
 
-            for (var i = 0; i < enemyInfo.length; i++) {
-                if (playerInfo.health > 0) {
-                    currentEnemy = enemyInfo[i];
+        for (var i = 0; i < enemyInfo.length; i++) {
+            if (playerInfo.health > 0) {
+                currentEnemy = enemyInfo[i];
 
-                    window.alert("      Round " + (i + 1) + "\n Your opponent: " + currentEnemy.name + "🤖 ");
+                window.alert("      Round " + (i + 1) + "\n Your opponent: " + currentEnemy.name + "🤖 ");
 
-                    //currentEnemy.health = randomNumber(40, 60);
+                console.log(currentEnemy)
+                let boostGiven = randomizeEnemyStats(currentEnemy);
+                console.log("Was boosted: " + boostGiven);
+                console.log(currentEnemy);
 
-                    fight(currentEnemy);
+                fight(currentEnemy);
 
-                    if (currentEnemy.health <= 0)) {
+                if (currentEnemy.health <= 0) {
                     //if enemy is dead
                     beatenOpponents[weeksOpponents[i]] = true;
-                    alert(weeksOpponents[i] + " added to beaten list")
                 }
 
+                /*
                 // if not at end of enemys and player is still alive
                 if (i < enemyInfo.length - 1 && playerInfo.health > 0) {
                     //ask if they'd like to go shopping
@@ -174,14 +194,22 @@ var startGame = function() {
                         shop();
                     }
 
-                }
+                }*/
 
             } else {
                 break;
             }
         }
+        if (playerInfo.health > 0) {
+            //ask if they'd like to go shopping
+            var storeConfirm = window.confirm("The week is over, visit the repair bay?");
+            if (storeConfirm) {
+                shop();
+            }
+
+        }
     } //END OF WHILE LOOP
-endGame();
+    endGame();
 };
 
 var endGame = function() {
