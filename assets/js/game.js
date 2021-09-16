@@ -1,3 +1,47 @@
+var weekOfBattle = 0;
+var currentEnemy;
+var beatenOpponents = [];
+var weeksOpponents = [];
+const opponentList = [{
+        name: "robo1",
+        atk: 8,
+        speed: 4,
+        health: 20,
+    },
+    {
+        name: "robo2",
+        atk: 6,
+        speed: 7,
+        health: 18,
+    },
+    {
+        name: "robo3",
+        atk: 9,
+        speed: 5,
+        health: 15,
+    },
+];
+
+const pickOpponents = function(num) {
+    if (num > opponentList.length) { return "You ask for too much!" }
+    let output = [];
+    while (output.length < num) {
+        let opponentId = randomNumber(0, opponentList.length - 1); // get random opponent index
+        if (!beatenOpponents[opponentId]) { //opponent hasnt been beaten yet
+            if (new Set(output.concat([opponentId])).size === output.concat([opponentId]).length) { // opponent isnt already in list
+                output.push(opponentId); // add index to our output list
+            }
+        }
+    }
+    return output; // return the list of opponents
+}
+
+
+/*********************** */
+/*
+        OLD CODE DO NOT CHANGE BELOW
+/* *************************** */
+
 // function to generate a random numeric value
 var randomNumber = function(min, max) {
     var value = Math.floor(Math.random() * (max - min + 1)) + min;
@@ -32,8 +76,6 @@ var getLocalChamp = function() {
     localChamp.robot = ((window.localStorage.getItem("high-score-robot")) ? window.localStorage.getItem("high-score-robot") : localChamp.robot);
     localChamp.score = ((window.localStorage.getItem("high-score")) ? window.localStorage.getItem("high-score") : localChamp.score);
 }
-
-var currentEnemy;
 
 var enemyInfo = [{
     name: "Roborto",
@@ -405,4 +447,5 @@ var playerInfo = {
 
 
 
-startGame();
+//startGame();
+console.log(pickOpponents(3))
