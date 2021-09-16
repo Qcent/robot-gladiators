@@ -469,9 +469,9 @@ var endGame = function() {
 
     } else {
         window.alert("You have lost your robot in battle! \n" +
-            "After " + weekOfBattle + " weeks of battle and " + (parseInt(weekOfBattle * 3) + parseInt(round + 1)) + " rounds," +
+            "After " + weekOfBattle + " weeks of battle and " + (parseInt(weekOfBattle * 3) + parseInt(round + 1)) + " rounds, " +
             playerInfo.name + " has gone to the big scrap yard in the sky. \n" +
-            " 🤖 Game Over! 🤖 ");
+            "        🤖 Game Over! 🤖 ");
     }
 
     var playAgainConfirm = window.confirm("Would you like to play again?");
