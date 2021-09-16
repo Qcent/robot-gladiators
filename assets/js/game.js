@@ -1,50 +1,154 @@
 var weekOfBattle = 0;
-var currentEnemy;
+var currentEnemy = {};
 var beatenOpponents = [];
 var weeksOpponents = [];
+var enemyInfo = [];
 const opponentList = [{
-        name: "Data",
-        attack: 8,
-        speed: 4,
-        health: 20,
-    },
-    {
-        name: "CP30",
-        attack: 6,
-        speed: 7,
-        health: 18,
-    },
-    {
-        name: "R2D2",
-        attack: 9,
-        speed: 5,
-        health: 15,
-    },
-    {
-        name: "Roborto",
-        attack: 11,
-        speed: 4,
-        health: 20,
-    },
-    {
-        name: "Adolf Bot-ler",
-        attack: 11,
-        speed: 6,
-        health: 20,
-    },
-    {
-        name: "RoBot-O Alamar",
-        attack: 12,
-        speed: 6,
-        health: 20,
-    },
-    {
-        name: "Android Lloyd Webber",
-        attack: 14,
-        speed: 8,
-        health: 20,
-    }
-];
+    name: "Lt. Commander Data",
+    attack: 8,
+    speed: 4,
+    health: 20,
+}, {
+    name: "CP30",
+    attack: 6,
+    speed: 7,
+    health: 18,
+}, {
+    name: "R2D2",
+    attack: 9,
+    speed: 5,
+    health: 15,
+}, {
+    name: "Roborto Alamar",
+    attack: 11,
+    speed: 4,
+    health: 20,
+}, {
+    name: "Adolf Bot-ler",
+    attack: 11,
+    speed: 6,
+    health: 20,
+}, {
+    name: "Alpha-6",
+    attack: 12,
+    speed: 6,
+    health: 20,
+}, {
+    name: "Android Lloyd Webber",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Johnny-5",
+    attack: 11,
+    speed: 4,
+    health: 20,
+}, {
+    name: "Darth Vader",
+    attack: 11,
+    speed: 6,
+    health: 20,
+}, {
+    name: "T-1000",
+    attack: 12,
+    speed: 6,
+    health: 20,
+}, {
+    name: "T-800",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "ED-209",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "HAL 9000",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Chappie",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Noisy Boy",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Midas",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Awesome-0",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Wall-E",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Mr. Roboto",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Bishop",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Robbie",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Astro Boy",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Optimus Prime",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Roomba",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Tom Servo",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Crow T. Robot",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "GLaDOS",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Bender",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}, {
+    name: "Flex-o",
+    attack: 14,
+    speed: 8,
+    health: 20,
+}];
 var playerInfo = {
     getRobotName: function() {
         let usrInput = window.prompt("What is your robot's name?", this.name);
@@ -54,14 +158,14 @@ var playerInfo = {
         }
     },
     name: '',
-    maxHealth: 100,
-    health: 100,
+    maxHealth: 80,
+    health: 80,
     attack: 10,
     speed: 6,
     money: 5,
-    healthRefillValue: function() { return Math.floor(this.maxHealth * .25) }, //25% of max health
+    healthRefillValue: function() { return Math.floor(this.maxHealth * .2) }, //20% of max health
     healthUpgrageValue: 20,
-    attackUpgradeValue: 6,
+    attackUpgradeValue: 3,
     speedIncreeseValue: 2,
     healthUpShopCost: 10,
     healthShopCost: 6,
@@ -70,21 +174,27 @@ var playerInfo = {
 
     reset: function() {
         this.name = this.getRobotName();
-        this.maxHealth = 100;
-        this.health = 100;
-        this.attack = 10;
+        this.maxHealth = 80;
+        this.health = 80;
+        this.healthUpShopCost = 10,
+            this.attack = 10;
         this.speed = 6;
         this.money = 6;
     },
     refillHealth: function(value) {
 
-        if (value) { this.health += value; } else {
+        if (value) {
+            this.health += value;
+            if (this.health > this.maxHealth) {
+                this.health = this.maxHealth;
+            }
+        } else {
             if (this.money >= this.healthShopCost) {
                 window.alert("Refilling " + this.name + "'s Health by " + this.healthRefillValue() + " for $" + this.healthShopCost + ".");
 
                 this.health += this.healthRefillValue();
                 this.money -= this.healthShopCost;
-
+                if (this.health > this.maxHealth) { this.health = this.maxHealth; }
                 shop();
             } else {
                 window.alert("Sorry " + this.name + " is too poor for that. Try something else");
@@ -100,8 +210,10 @@ var playerInfo = {
                 window.alert("Increasing " + this.name + "'s Max Health by " + this.healthUpgrageValue + " for $" + this.healthUpShopCost + ".");
 
                 this.maxHealth += this.healthUpgrageValue;
-                //this.health = this.maxHealth;
+                this.refillHealth(this.healthRefillValue());
                 this.money -= this.healthUpShopCost;
+                //charge more the next time:: 20% more each time
+                this.healthUpShopCost += Math.floor((this.healthUpShopCost) * .2);
 
                 shop();
             } else {
@@ -179,6 +291,9 @@ const pickOpponents = function(num) {
     return output; // return the list of opponents
 };
 const randomizeEnemyStats = function(enemy) {
+
+    randomizeBaseStats(enemy);
+
     let maxBoost = 10 * weekOfBattle; // everyweek increase max boost by 10
     let totalBoost = 0;
     let boost = 0;
@@ -195,11 +310,25 @@ const randomizeEnemyStats = function(enemy) {
 
     return totalBoost;
 };
+const randomizeBaseStats = function(enemy) {
+    // 18 stat points to start
+    // health starts at 10 and cost .5 stat points to increase
+    let statPoints = 18;
+    let allotment = randomNumber(1, statPoints);
+    statPoints -= allotment;
+    /*   */
+    enemy.attack = allotment + ((weekOfBattle - 1) * 2);
+    allotment = randomNumber(1, statPoints);
+    statPoints -= allotment;
+    /*  */
+    enemy.speed = allotment + ((weekOfBattle - 1) * 2);
+    enemy.health = 10 + (statPoints * 2) + ((weekOfBattle - 1) * 2);
 
+}
 
 /*********************** */
 /*
-        OLD CODE DO NOT CHANGE BELOW
+        OLD CODE DO NOT CHANGE BELOW UNLESS NEEDED
 /* *************************** */
 
 // function to generate a random numeric value
@@ -236,9 +365,6 @@ var getLocalChamp = function() {
     localChamp.robot = ((window.localStorage.getItem("high-score-robot")) ? window.localStorage.getItem("high-score-robot") : localChamp.robot);
     localChamp.score = ((window.localStorage.getItem("high-score")) ? window.localStorage.getItem("high-score") : localChamp.score);
 }
-
-var enemyInfo = [];
-
 var enemyHealthCheck = function(enemy) {
     //check enemys health
     if (enemy.health <= 0) { //if no health
@@ -274,28 +400,28 @@ var startGame = function() {
     getLocalChamp();
     displayWelcome();
     playerInfo.reset();
+    weekOfBattle = 0;
 
     while (playerInfo.health > 0) {
         enemyInfo = [];
         weekOfBattle++;
-        if (weekOfBattle % 3 === 0) { beatenOpponents = [] } // every three weeks beaten opponents can return
+        if (weekOfBattle - 1 % 3 === 0) { beatenOpponents = [] } // every three weeks beaten opponents can return
         alert("WELCOME TO THE FIGHTING LEAUGE! \nWeek: " + weekOfBattle)
         weeksOpponents = pickOpponents(3);
         weeksOpponents.forEach(robot => {
             enemyInfo.push(opponentList[robot]);
         });
 
-
         for (var i = 0; i < enemyInfo.length; i++) {
             if (playerInfo.health > 0) {
-                currentEnemy = enemyInfo[i];
+                currentEnemy = Object.create(enemyInfo[i]);
 
-                window.alert("      Round " + (i + 1) + "\n Your opponent: " + currentEnemy.name + "🤖 ");
+                window.alert("    Week " + weekOfBattle + " : Round " + (i + 1) + "\n Your opponent: " + currentEnemy.name + "🤖 ");
 
-                console.log(currentEnemy)
                 let boostGiven = randomizeEnemyStats(currentEnemy);
                 console.log("Was boosted: " + boostGiven);
-                console.log(currentEnemy);
+                console.log(currentEnemy.name, currentEnemy);
+                console.log(playerInfo.name + ": attack: " + playerInfo.attack + ", speed: " + playerInfo.speed + ", health: " + playerInfo.health + "/" + playerInfo.maxHealth)
 
                 fight(currentEnemy);
 
@@ -306,12 +432,14 @@ var startGame = function() {
 
                 // if not at end of enemys and player is still alive
                 if (i < enemyInfo.length - 1 && playerInfo.health > 0) {
-                    //ask if they'd like to go shopping
-                    var storeConfirm = window.confirm("The fight is over, visit the repair bay?");
-                    if (storeConfirm) {
-                        shop();
-                    }
-
+                    /*    //ask if they'd like to go shopping
+                        var storeConfirm = window.confirm("The fight is over, visit the repair bay?");
+                        if (storeConfirm) {
+                            shop();
+                        }
+                        */
+                    playerInfo.refillHealth(Math.floor(playerInfo.maxHealth * .18));
+                    alert('You rest between battle and regain ' + Math.floor(playerInfo.maxHealth * .18) + ' health')
                 }
 
             } else {
@@ -476,7 +604,6 @@ var fightOrRun = function() {
     }
 }
 
-
 var fight = function(enemy) {
 
     while (enemy.health > 0 && playerInfo.health > 0) {
@@ -523,9 +650,5 @@ var fight = function(enemy) {
         } // end of if (FIGHT)
     } // repeat while loop
 }
-
-
-
-
 
 startGame();
