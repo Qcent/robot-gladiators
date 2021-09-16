@@ -45,7 +45,126 @@ const opponentList = [{
         health: 20,
     }
 ];
+var playerInfo = {
+    getRobotName: function() {
+        let usrInput = window.prompt("What is your robot's name?", this.name);
+        if (usrInput) { return usrInput; } else {
+            window.alert("Please enter a Name!");
+            this.getRobotName();
+        }
+    },
+    name: '',
+    maxHealth: 100,
+    health: 100,
+    attack: 10,
+    speed: 6,
+    money: 5,
+    healthRefillValue: function() { return Math.floor(this.maxHealth * .25) }, //25% of max health
+    healthUpgrageValue: 20,
+    attackUpgradeValue: 6,
+    speedIncreeseValue: 2,
+    healthUpShopCost: 10,
+    healthShopCost: 6,
+    attackShopCost: 7,
+    speedShopCost: 8,
 
+    reset: function() {
+        this.name = this.getRobotName();
+        this.maxHealth = 100;
+        this.health = 100;
+        this.attack = 10;
+        this.speed = 6;
+        this.money = 6;
+    },
+    refillHealth: function(value) {
+
+        if (value) { this.health += value; } else {
+            if (this.money >= this.healthShopCost) {
+                window.alert("Refilling " + this.name + "'s Health by " + this.healthRefillValue() + " for $" + this.healthShopCost + ".");
+
+                this.health += this.healthRefillValue();
+                this.money -= this.healthShopCost;
+
+                shop();
+            } else {
+                window.alert("Sorry " + this.name + " is too poor for that. Try something else");
+                shop();
+            }
+        }
+
+    },
+    upgradeHealth: function(value) {
+
+        if (value) { this.maxHealth += value; } else {
+            if (this.money >= this.healthShopCost) {
+                window.alert("Increasing " + this.name + "'s Max Health by " + this.healthUpgrageValue + " for $" + this.healthUpShopCost + ".");
+
+                this.maxHealth += this.healthUpgrageValue;
+                //this.health = this.maxHealth;
+                this.money -= this.healthUpShopCost;
+
+                shop();
+            } else {
+                window.alert("Sorry " + this.name + " is too poor for that. Try something else");
+                shop();
+            }
+        }
+
+
+    },
+    upgradeAttack: function(value) {
+        if (value) { this.attack += value; } else {
+            if (this.money >= this.attackShopCost) {
+                window.alert("Upgrading " + this.name + "'s Attack by " + this.attackUpgradeValue + " for $" + this.attackShopCost + ".");
+
+                this.attack += this.attackUpgradeValue;
+                this.money -= this.attackShopCost;
+
+                shop();
+            } else {
+                window.alert("Sorry " + this.name + " is too poor for that. Try something else");
+                shop();
+            }
+        }
+
+    },
+    increeseSpeed: function(value) {
+        if (value) { this.speed += value; } else {
+            if (this.money >= this.speedShopCost) {
+                window.alert("Upgrading " + this.name + "'s Speed by " + this.speedIncreeseValue + " for $" + this.speedShopCost + ".");
+
+                this.speed += this.speedIncreeseValue;
+                this.money -= this.speedShopCost;
+
+                shop();
+            } else {
+                window.alert("Sorry " + this.name + " is too poor for that. Try something else");
+                shop();
+            }
+        }
+    },
+    makeAttack: function(enemy) {
+        // generate random damage value based on player's attack power
+        var damage = randomNumber(this.attack - 3, this.attack);
+        // Subtract the value of `this.attack` from value of `enemy.health` vaiable and use the result to update the `enemy.health`variable.
+        enemy.health = Math.max(0, enemy.health - damage);
+
+        // Log a resulting message to the console so we know that it worked.
+        console.log(this.name + " attacked " + enemy.name + " for " + damage + ".");
+
+        return damage;
+    },
+    healthCheck: function() {
+        //check players health
+        if (this.health <= 0) { // if no health left
+            console.log(this.name + " has died!");
+            return null;
+        } else { // still alive
+            console.log(this.name + " still has " + this.health + " health left.");
+        }
+        return this.health;
+    }
+}
 const pickOpponents = function(num) {
     if (num > opponentList.length) { return "You ask for too much!" }
     let output = [];
@@ -185,7 +304,6 @@ var startGame = function() {
                     beatenOpponents[weeksOpponents[i]] = true;
                 }
 
-                /*
                 // if not at end of enemys and player is still alive
                 if (i < enemyInfo.length - 1 && playerInfo.health > 0) {
                     //ask if they'd like to go shopping
@@ -194,7 +312,7 @@ var startGame = function() {
                         shop();
                     }
 
-                }*/
+                }
 
             } else {
                 break;
@@ -237,43 +355,48 @@ var endGame = function() {
 
 var shop = function() {
     //ask player what they would like to do
-    var shopOptionPrompt = window.prompt("AFTER FIGHT STATUS:\n" +
-        "   Cash: $ " + playerInfo.money +
-        "   Health: " + playerInfo.health +
-        "   Attack: " + playerInfo.attack +
-        "   Speed: " + playerInfo.speed + "\n\n" +
+    var shopOptionPrompt = window.prompt("WEEK END STATUS:\n" +
+        "  Cash: $ " + playerInfo.money +
+        "  Health: " + playerInfo.health + "/" + playerInfo.maxHealth +
+        "  Attack: " + playerInfo.attack +
+        "  Speed: " + playerInfo.speed + "\n\n" +
         "Would you like to:\n" +
-        "  1. REFILL your Health for $" + playerInfo.healthShopCost + "\n" +
-        "  2. UPGRADE your Attack for $" + playerInfo.attackShopCost + "\n" +
-        "  3. INCREASE your Speed for $" + playerInfo.speedShopCost + "\n" +
-        "  4. LEAVE\n" +
-        "Please enter your choice: "
+        "  1. Upgrade Health for $" + playerInfo.healthUpShopCost + "\n" +
+        "  2. Restore Health for $" + playerInfo.healthShopCost + "\n" +
+        "  3. Upgrade Attack for $" + playerInfo.attackShopCost + "\n" +
+        "  4. Upgrade Speed for $" + playerInfo.speedShopCost + "\n" +
+        "  5. LEAVE\n" //+
+        // "Please enter your choice: "
     );
 
     //use switch to carry out actions
     switch (shopOptionPrompt.toUpperCase()) {
         case "1":
-        case "REFILL":
-        case "FILL":
-        case "HEALTH":
-            playerInfo.refilllHealth();
+            playerInfo.upgradeHealth();
             break;
 
         case "2":
+        case "RESTORE":
+        case "FILL":
+        case "HEALTH":
+            playerInfo.refillHealth();
+            break;
+
+        case "3":
         case "UPGRADE":
         case "ATTACK":
         case "POWER":
             playerInfo.upgradeAttack();
             break;
 
-        case "3":
+        case "4":
         case "SPEED":
         case "FAST":
         case "INCREASE":
             playerInfo.increeseSpeed();
             break;
 
-        case "4":
+        case "5":
         case "Q":
         case "X":
         case "QUIT":
@@ -401,103 +524,7 @@ var fight = function(enemy) {
     } // repeat while loop
 }
 
-var playerInfo = {
-    getRobotName: function() {
-        let usrInput = window.prompt("What is your robot's name?", this.name);
-        if (usrInput) { return usrInput; } else {
-            window.alert("Please enter a Name!");
-            this.getRobotName();
-        }
-    },
-    name: '',
-    health: 100,
-    attack: 10,
-    speed: 6,
-    money: 5,
-    healthRefillValue: 25,
-    attackUpgradeValue: 6,
-    speedIncreeseValue: 2,
-    healthShopCost: 6,
-    attackShopCost: 7,
-    speedShopCost: 7,
 
-    reset: function() {
-        this.name = this.getRobotName();
-        this.health = 100;
-        this.attack = 10;
-        this.speed = 6;
-        this.money = 6;
-    },
-    refilllHealth: function(value) {
-
-        if (value) { this.health += value; } else {
-            if (this.money >= this.healthShopCost) {
-                window.alert("Refilling " + this.name + "'s Health by " + this.healthRefillValue + " for $" + this.healthShopCost + ".");
-
-                this.health += this.healthRefillValue;
-                this.money -= this.healthShopCost;
-
-                shop();
-            } else {
-                window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-                shop();
-            }
-        }
-
-    },
-    upgradeAttack: function(value) {
-        if (value) { this.attack += value; } else {
-            if (this.money >= this.attackShopCost) {
-                window.alert("Upgrading " + this.name + "'s Attack by " + this.attackUpgradeValue + " for $" + this.attackShopCost + ".");
-
-                this.attack += this.attackUpgradeValue;
-                this.money -= this.attackShopCost;
-
-                shop();
-            } else {
-                window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-                shop();
-            }
-        }
-
-    },
-    increeseSpeed: function(value) {
-        if (value) { this.speed += value; } else {
-            if (this.money >= this.speedShopCost) {
-                window.alert("Upgrading " + this.name + "'s Speed by " + this.speedIncreeseValue + " for $" + this.speedShopCost + ".");
-
-                this.speed += this.speedIncreeseValue;
-                this.money -= this.speedShopCost;
-
-                shop();
-            } else {
-                window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-                shop();
-            }
-        }
-    },
-    makeAttack: function(enemy) {
-        // generate random damage value based on player's attack power
-        var damage = randomNumber(this.attack - 3, this.attack);
-        // Subtract the value of `this.attack` from value of `enemy.health` vaiable and use the result to update the `enemy.health`variable.
-        enemy.health = Math.max(0, enemy.health - damage);
-
-        // Log a resulting message to the console so we know that it worked.
-        console.log(this.name + " attacked " + enemy.name + " for " + damage + ".");
-
-        return damage;
-    },
-    healthCheck: function() {
-        //check players health
-        if (this.health <= 0) { // if no health left
-            console.log(this.name + " has died!");
-            return null;
-        } else { // still alive
-            console.log(this.name + " still has " + this.health + " health left.");
-        }
-        return this.health;
-    }
-}
 
 
 
