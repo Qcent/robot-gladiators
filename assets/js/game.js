@@ -3,23 +3,47 @@ var currentEnemy;
 var beatenOpponents = [];
 var weeksOpponents = [];
 const opponentList = [{
-        name: "robo1",
+        name: "Data",
         atk: 8,
         speed: 4,
         health: 20,
     },
     {
-        name: "robo2",
+        name: "CP30",
         atk: 6,
         speed: 7,
         health: 18,
     },
     {
-        name: "robo3",
+        name: "R2D2",
         atk: 9,
         speed: 5,
         health: 15,
     },
+    {
+        name: "Roborto",
+        atk: 11,
+        speed: 4,
+        health: 20,
+    },
+    {
+        name: "Adolf Bot-ler",
+        atk: 11,
+        speed: 6,
+        health: 20,
+    },
+    {
+        name: "RoBot-O Alamar",
+        atk: 12,
+        speed: 6,
+        health: 20,
+    },
+    {
+        name: "Android Lloyd Webber",
+        atk: 14,
+        speed: 8,
+        health: 20,
+    }
 ];
 
 const pickOpponents = function(num) {
@@ -77,23 +101,7 @@ var getLocalChamp = function() {
     localChamp.score = ((window.localStorage.getItem("high-score")) ? window.localStorage.getItem("high-score") : localChamp.score);
 }
 
-var enemyInfo = [{
-    name: "Roborto",
-    attack: 11,
-    speed: 4,
-}, {
-    name: "Adolf Bot-ler",
-    attack: 11,
-    speed: 6,
-}, {
-    name: "RoBot-O Alamar",
-    attack: 12,
-    speed: 6,
-}, {
-    name: "Android Lloyd Webber",
-    attack: 14,
-    speed: 8,
-}];
+var enemyInfo = [];
 
 var enemyHealthCheck = function(enemy) {
     //check enemys health
@@ -112,8 +120,8 @@ var enemyHealthCheck = function(enemy) {
 };
 var enemyMakeAttack = function(enemy) {
     // generate random damage value based on enemy's attack power
-    damage = randomNumber(enemy.attack - 3, enemy.attack);
-    // Subtract the value of `enemy.attack` from the value of `playerInfo.health` and use that result to update teh value in the `playerInfo.health` variable.
+    damage = randomNumber(enemy.atk - 3, enemy.atk);
+    // Subtract the value of `enemy.atk` from the value of `playerInfo.health` and use that result to update teh value in the `playerInfo.health` variable.
     playerInfo.health = Math.max(0, playerInfo.health - damage);
 
     // Log a resulting message to the consoe so we know it worked.
@@ -127,35 +135,53 @@ var displayWelcome = function() {
 }
 var startGame = function() {
 
-    getLocalChamp();
-    displayWelcome();
-    playerInfo.reset();
+        getLocalChamp();
+        displayWelcome();
+        playerInfo.reset();
 
-    for (var i = 0; i < enemyInfo.length; i++) {
-        if (playerInfo.health > 0) {
-            currentEnemy = enemyInfo[i];
+        while (playerInfo.health > 0) {
+            enemyInfo = [];
+            weekOfBattle++;
+            if (weekOfBattle % 3 === 0) { beatenOpponents = [] } // everythree weeks beaten opponents can return
+            alert("WELCOME TO THE FIGHTING LEAUGE! \nWeek: " + weekOfBattle)
+            weeksOpponents = pickOpponents(3);
+            weeksOpponents.forEach(robot => {
+                enemyInfo.push(opponentList[robot]);
+            });
 
-            window.alert("      Round " + (i + 1) + "\n Your opponent: " + currentEnemy.name + "🤖 ");
 
-            currentEnemy.health = randomNumber(40, 60);
+            for (var i = 0; i < enemyInfo.length; i++) {
+                if (playerInfo.health > 0) {
+                    currentEnemy = enemyInfo[i];
 
-            fight(currentEnemy);
+                    window.alert("      Round " + (i + 1) + "\n Your opponent: " + currentEnemy.name + "🤖 ");
 
-            // if not at end of enemys and player is still alive
-            if (i < enemyInfo.length - 1 && playerInfo.health > 0) {
-                //ask if they'd like to go shopping
-                var storeConfirm = window.confirm("The fight is over, visit the repair bay?");
-                if (storeConfirm) {
-                    shop();
+                    //currentEnemy.health = randomNumber(40, 60);
+
+                    fight(currentEnemy);
+
+                    if (currentEnemy.health <= 0)) {
+                    //if enemy is dead
+                    beatenOpponents[weeksOpponents[i]] = true;
+                    alert(weeksOpponents[i] + " added to beaten list")
                 }
 
-            }
+                // if not at end of enemys and player is still alive
+                if (i < enemyInfo.length - 1 && playerInfo.health > 0) {
+                    //ask if they'd like to go shopping
+                    var storeConfirm = window.confirm("The fight is over, visit the repair bay?");
+                    if (storeConfirm) {
+                        shop();
+                    }
 
-        } else {
-            break;
+                }
+
+            } else {
+                break;
+            }
         }
-    }
-    endGame();
+    } //END OF WHILE LOOP
+endGame();
 };
 
 var endGame = function() {
@@ -447,5 +473,4 @@ var playerInfo = {
 
 
 
-//startGame();
-console.log(pickOpponents(3))
+startGame();
