@@ -469,7 +469,7 @@ var endGame = function() {
 
     } else {
         window.alert("You have lost your robot in battle! \n" +
-            "After " + weekOfBattle + " weeks of battle and " + (weekOfBattle * 3) + round + 1 + " rounds," +
+            "After " + weekOfBattle + " weeks of battle and " + ((weekOfBattle * 3) + (round + 1)) + " rounds," +
             playerInfo.name + " has gone to the big scrap yard in the sky. \n" +
             " 🤖 Game Over! 🤖 ");
     }
