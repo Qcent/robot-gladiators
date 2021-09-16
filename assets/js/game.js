@@ -1,4 +1,5 @@
 var weekOfBattle = 0;
+var round = 0;
 var currentEnemy = {};
 var beatenOpponents = [];
 var weeksOpponents = [];
@@ -412,11 +413,11 @@ var startGame = function() {
             enemyInfo.push(opponentList[robot]);
         });
 
-        for (var i = 0; i < enemyInfo.length; i++) {
+        for (round = 0; round < enemyInfo.length; round++) {
             if (playerInfo.health > 0) {
-                currentEnemy = Object.create(enemyInfo[i]);
+                currentEnemy = Object.create(enemyInfo[round]);
 
-                window.alert("    Week " + weekOfBattle + " : Round " + (i + 1) + "\n Your opponent: " + currentEnemy.name + "🤖 ");
+                window.alert("    Week " + weekOfBattle + " : Round " + (round + 1) + "\n Your opponent: " + currentEnemy.name + "🤖 ");
 
                 let boostGiven = randomizeEnemyStats(currentEnemy);
                 console.log("Was boosted: " + boostGiven);
@@ -427,11 +428,11 @@ var startGame = function() {
 
                 if (currentEnemy.health <= 0) {
                     //if enemy is dead
-                    beatenOpponents[weeksOpponents[i]] = true;
+                    beatenOpponents[weeksOpponents[round]] = true;
                 }
 
                 // if not at end of enemys and player is still alive
-                if (i < enemyInfo.length - 1 && playerInfo.health > 0) {
+                if (round < enemyInfo.length - 1 && playerInfo.health > 0) {
                     /*    //ask if they'd like to go shopping
                         var storeConfirm = window.confirm("The fight is over, visit the repair bay?");
                         if (storeConfirm) {
@@ -468,6 +469,7 @@ var endGame = function() {
 
     } else {
         window.alert("You have lost your robot in battle! \n" +
+            "After " + weekOfBattle + " weeks of battle and " + (weekOfBattle * 3) + round + 1 + " rounds," +
             playerInfo.name + " has gone to the big scrap yard in the sky. \n" +
             " 🤖 Game Over! 🤖 ");
     }
