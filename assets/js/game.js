@@ -1,5 +1,5 @@
 var weekOfBattle = 0;
-var round = 0;
+var totalrounds = 0;
 var currentEnemy = {};
 var beatenOpponents = [];
 var weeksOpponents = [];
@@ -150,6 +150,18 @@ const opponentList = [{
     speed: 8,
     health: 20,
 }];
+const managerMessage = [
+    "'Nice work, kid!... You're really going places.'\n'Whaat? You think I didnt see you pocket all that money from the ring?'\n'Just keep winning fights and the payouts will get bigger.'",
+    "'Whoooey boy!, you really gave them folks a show this week!'\n'You keep this up and you just might get yourself a plaque on the wall.'",
+    "'Great Show out there, Champ!'\n'Say? Where'd you learn to fight like that anyhow?... ah nevermind, you just come back and win next week, then you'll really get paid.'",
+    "Week 4 out the door",
+    "Week 5, Stayin' Alive!",
+    "Week Six, getchore Kicks",
+    "Week Seven, livin in Robot Heaven",
+    "Week Eight, set'em Straigh",
+    "Week Nine: End Of The Line!",
+    "Week Ten, well you should have won by now, how many robots could there be?"
+]
 var playerInfo = {
     getRobotName: function() {
         let usrInput = window.prompt("What is your robot's name?", this.name);
@@ -164,6 +176,7 @@ var playerInfo = {
     attack: 10,
     speed: 6,
     money: 5,
+    totalEarnings: 0,
     healthRefillValue: function() { return Math.floor(this.maxHealth * .2) }, //20% of max health
     healthUpgrageValue: 20,
     attackUpgradeValue: 3,
@@ -176,11 +189,14 @@ var playerInfo = {
     reset: function() {
         this.name = this.getRobotName();
         this.maxHealth = 80;
-        this.health = 80;
-        this.healthUpShopCost = 10,
-            this.attack = 10;
+        this.health = this.maxHealth;
+        this.healthUpShopCost = 10;
+        this.attackShopCost = 7;
+        this.speedShopCost = 8;
+        this.attack = 10;
         this.speed = 6;
         this.money = 6;
+        this.totalEarnings = 0;
     },
     refillHealth: function(value) {
 
@@ -207,14 +223,14 @@ var playerInfo = {
     upgradeHealth: function(value) {
 
         if (value) { this.maxHealth += value; } else {
-            if (this.money >= this.healthShopCost) {
+            if (this.money >= this.healthUpShopCost) {
                 window.alert("Increasing " + this.name + "'s Max Health by " + this.healthUpgrageValue + " for $" + this.healthUpShopCost + ".");
 
                 this.maxHealth += this.healthUpgrageValue;
                 this.refillHealth(this.healthRefillValue());
                 this.money -= this.healthUpShopCost;
-                //charge more the next time:: 20% more each time
-                this.healthUpShopCost += Math.floor((this.healthUpShopCost) * .2);
+                //charge more the next time:: 30% more each time
+                this.healthUpShopCost += Math.floor((this.healthUpShopCost) * .3);
 
                 shop();
             } else {
@@ -232,6 +248,8 @@ var playerInfo = {
 
                 this.attack += this.attackUpgradeValue;
                 this.money -= this.attackShopCost;
+                //charge more the next time:: 20% more each time
+                this.attackShopCost += Math.floor((this.attackShopCost) * .2);
 
                 shop();
             } else {
@@ -248,6 +266,8 @@ var playerInfo = {
 
                 this.speed += this.speedIncreeseValue;
                 this.money -= this.speedShopCost;
+                //charge more the next time:: 20% more each time
+                this.speedShopCost += Math.floor((this.speedShopCost) * .2);
 
                 shop();
             } else {
@@ -338,7 +358,6 @@ var randomNumber = function(min, max) {
 
     return value;
 };
-
 var checkHighScore = function(score) {
 
     if (parseInt(localChamp.score) < score) {
@@ -371,8 +390,9 @@ var enemyHealthCheck = function(enemy) {
     if (enemy.health <= 0) { //if no health
 
         //reward player
-        let reward = randomNumber(4, 10);
+        let reward = randomNumber(3 + weekOfBattle, 9 + weekOfBattle);
         playerInfo.money += reward;
+        playerInfo.totalEarnings += reward;
         console.log(enemy.name + " has died!");
         window.alert(enemy.name + " is defeated!!\n You found $" + reward + " among their wreakage!");
         return null;
@@ -383,8 +403,8 @@ var enemyHealthCheck = function(enemy) {
 };
 var enemyMakeAttack = function(enemy) {
     // generate random damage value based on enemy's attack power
-    damage = randomNumber(enemy.attack - 3, enemy.attack);
-    // Subtract the value of `enemy.attack` from the value of `playerInfo.health` and use that result to update teh value in the `playerInfo.health` variable.
+    damage = Math.max(1, randomNumber(enemy.attack - 3, enemy.attack));
+    // Subtract the value of `enemy.attack` from the value of `playerInfo.health` and use that result to update the value in the `playerInfo.health` variable.
     playerInfo.health = Math.max(0, playerInfo.health - damage);
 
     // Log a resulting message to the consoe so we know it worked.
@@ -402,22 +422,24 @@ var startGame = function() {
     displayWelcome();
     playerInfo.reset();
     weekOfBattle = 0;
+    totalrounds = 0;
 
-    while (playerInfo.health > 0) {
+    while (playerInfo.health > 0 && totalrounds < opponentList.length) {
         enemyInfo = [];
         weekOfBattle++;
         if (weekOfBattle - 1 % 3 === 0) { beatenOpponents = [] } // every three weeks beaten opponents can return
-        alert("WELCOME TO THE FIGHTING LEAUGE! \nWeek: " + weekOfBattle)
+        alert("                           WELCOME TO THE JUNGLE! \n                                           Week: " + weekOfBattle)
         weeksOpponents = pickOpponents(3);
         weeksOpponents.forEach(robot => {
             enemyInfo.push(opponentList[robot]);
         });
 
-        for (round = 0; round < enemyInfo.length; round++) {
+        for (let i = 0; i < enemyInfo.length; i++) {
             if (playerInfo.health > 0) {
-                currentEnemy = Object.create(enemyInfo[round]);
+                currentEnemy = Object.create(enemyInfo[i]);
 
-                window.alert("    Week " + weekOfBattle + " : Round " + (round + 1) + "\n Your opponent: " + currentEnemy.name + "🤖 ");
+                totalrounds++;
+                window.alert("    Week " + weekOfBattle + " : Round " + (i + 1) + "\n Your opponent: " + currentEnemy.name + "🤖 ");
 
                 let boostGiven = randomizeEnemyStats(currentEnemy);
                 console.log("Was boosted: " + boostGiven);
@@ -428,11 +450,11 @@ var startGame = function() {
 
                 if (currentEnemy.health <= 0) {
                     //if enemy is dead
-                    beatenOpponents[weeksOpponents[round]] = true;
+                    beatenOpponents[weeksOpponents[i]] = true;
                 }
 
                 // if not at end of enemys and player is still alive
-                if (round < enemyInfo.length - 1 && playerInfo.health > 0) {
+                if (i < enemyInfo.length - 1 && playerInfo.health > 0) {
                     /*    //ask if they'd like to go shopping
                         var storeConfirm = window.confirm("The fight is over, visit the repair bay?");
                         if (storeConfirm) {
@@ -442,34 +464,35 @@ var startGame = function() {
                     playerInfo.refillHealth(Math.floor(playerInfo.maxHealth * .18));
                     alert('You rest between battle and regain ' + Math.floor(playerInfo.maxHealth * .18) + ' health')
                 }
-
-            } else {
+            } else { //playert has no health left
                 break;
             }
         }
         if (playerInfo.health > 0) {
-            //ask if they'd like to go shopping
-            var storeConfirm = window.confirm("The week is over, visit the repair bay?");
-            if (storeConfirm) {
-                shop();
-            }
+            let payout = beatenOpponents.filter(Boolean).length * (weekOfBattle + randomNumber(Math.max(1, randomNumber(0, weekOfBattle)), weekOfBattle));
+            playerInfo.money += payout;
+            playerInfo.totalEarnings += payout;
+            window.alert("The week's fighting is over! And you came out on top!\nThe Robot Fighting League manager comes over and gives you your weeks pay: " + payout + " big ones!!\n" +
+                managerMessage[weekOfBattle - 1]);
+            //lets go shopping
+            window.alert("Let's visit the repair bay.");
+            shop();
 
         }
     } //END OF WHILE LOOP
     endGame();
 };
-
 var endGame = function() {
     if (playerInfo.health > 0) {
         let score = (playerInfo.money * playerInfo.attack * playerInfo.speed * playerInfo.health);
-        window.alert("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived, \n              and WON!! the game! 🎉🤖🎉 \n\n" +
+        window.alert("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived " + totalrounds + " \n             and WON!! the game! 🎉🤖🎉 \n\n" +
             "You finished the tournament with a grand prize of: \n           💰 $" + score + "💰");
 
         checkHighScore(score);
 
     } else {
         window.alert("You have lost your robot in battle! \n" +
-            "After " + weekOfBattle + " weeks of battle and " + (parseInt(weekOfBattle * 3) + parseInt(round + 1)) + " rounds, " +
+            "After " + weekOfBattle + " weeks of battle and " + totalrounds + " rounds, " +
             playerInfo.name + " has gone to the big scrap yard in the sky. \n" +
             "        🤖 Game Over! 🤖 ");
     }
@@ -482,7 +505,6 @@ var endGame = function() {
         window.alert("Thank you for playing Robot Gladiators!\n Y'all come back now, ya hear!");
     }
 };
-
 var shop = function() {
     //ask player what they would like to do
     var shopOptionPrompt = window.prompt("WEEK END STATUS:\n" +
@@ -532,17 +554,17 @@ var shop = function() {
         case "QUIT":
         case "EXIT":
         case "LEAVE":
-            window.alert("Leaving the store.");
+            //window.alert("Leaving the store.");
             break;
 
         case "FIGHT":
-            window.alert("Leaving the store.");
+            //window.alert("Leaving the store.");
             playerInfo.upgradeAttack(1);
             playerInfo.cheater = true;
             break;
 
         case "HURRY":
-            window.alert("Leaving the store.");
+            //window.alert("Leaving the store.");
             playerInfo.increeseSpeed(1);
             playerInfo.cheater = true;
             break;
@@ -553,7 +575,6 @@ var shop = function() {
             break;
     }
 };
-
 var whoDrawsFirst = function(enemy) {
     //function to determine who attacks first in each round of battle
 
@@ -568,7 +589,6 @@ var whoDrawsFirst = function(enemy) {
     // take the diff and add a ranmdom int from (-2...+2) and return value
     return diff + (randomNumber(1, 2) * chance);
 };
-
 var fightOrRun = function() {
 
     let prompt = window.prompt("You have " + playerInfo.health + " health. \n" + currentEnemy.name + " has " + currentEnemy.health + " health.\n" +
@@ -584,11 +604,11 @@ var fightOrRun = function() {
         var confirmSkip = window.confirm("Are you sure you want to run from the fight?");
 
         //if yes(true), leave fight
-        if (confirmSkip && playerInfo.money >= 10) {
+        if (confirmSkip && playerInfo.money >= 10 && currentEnemy.speed < playerInfo.speed * 1.5) {
             //subtract money from player for skipping
             playerInfo.money = Math.max(0, playerInfo.money - 10);
-            console.log(playerInfo.name + " has chosen to skip this fight! and now has " + playerInfo.money + " money left");
-            window.alert(playerInfo.name + " has chosen to skip this fight! and now has " + playerInfo.money + " money left");
+            console.log(playerInfo.name + " has chosen to run from this fight! and now has " + playerInfo.money + " money left");
+            window.alert(playerInfo.name + " has chosen to run from this fight! and now has " + playerInfo.money + " money left");
 
             shop();
         } else if (playerInfo.money < 10) {
@@ -596,16 +616,25 @@ var fightOrRun = function() {
             window.alert("Not enough money COWARD!\nBack In You GO! ...");
 
             return true;
+        } else {
+            console.log("Not fast enough to run");
+            window.alert("Its no use!\nYour opponent is too fast to run from...");
+            return true;
         }
     }
     if (prompt === "FIGHT") {
         return true;
+    }
+    if (prompt === "QUIT") {
+        window.open("https://qcent.github.io/dev-portfolio/", "_self")
+    }
+    if (prompt === "RESTART") {
+        window.open("file:///Users/qcent/SCS%20BootCamp/CODE/robot-gladiators/index.html", "_self")
     } else {
         window.alert("You need to choose a valid option, silly goose! \n Please Try Again, Sir!");
         fightOrRun();
     }
 }
-
 var fight = function(enemy) {
 
     while (enemy.health > 0 && playerInfo.health > 0) {
