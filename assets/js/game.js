@@ -4,152 +4,159 @@ var currentEnemy = {};
 var beatenOpponents = [];
 var weeksOpponents = [];
 var enemyInfo = [];
+var localChamp = {
+    robot: 'Paul the Robot',
+    trainer: 'John',
+    score: '100'
+};
 const opponentList = [{
-    name: "Lt. Commander Data",
-    attack: 8,
-    speed: 4,
-    health: 20,
-}, {
-    name: "CP30",
-    attack: 6,
-    speed: 7,
-    health: 18,
-}, {
-    name: "R2D2",
-    attack: 9,
-    speed: 5,
-    health: 15,
-}, {
-    name: "Roborto Alamar",
-    attack: 11,
-    speed: 4,
-    health: 20,
-}, {
-    name: "Adolf Bot-ler",
-    attack: 11,
-    speed: 6,
-    health: 20,
-}, {
-    name: "Alpha-6",
-    attack: 12,
-    speed: 6,
-    health: 20,
-}, {
-    name: "Android Lloyd Webber",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Johnny-5",
-    attack: 11,
-    speed: 4,
-    health: 20,
-}, {
-    name: "Darth Vader",
-    attack: 11,
-    speed: 6,
-    health: 20,
-}, {
-    name: "T-1000",
-    attack: 12,
-    speed: 6,
-    health: 20,
-}, {
-    name: "T-800",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "ED-209",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "HAL 9000",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Chappie",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Noisy Boy",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Midas",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Awesome-0",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Wall-E",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Mr. Roboto",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Bishop",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Robbie",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Astro Boy",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Optimus Prime",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Roomba",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Tom Servo",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Crow T. Robot",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "GLaDOS",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Bender",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}, {
-    name: "Flex-o",
-    attack: 14,
-    speed: 8,
-    health: 20,
-}];
+        name: "Lt. Commander Data",
+        attack: 8,
+        speed: 4,
+        health: 20,
+    }, {
+        name: "CP30",
+        attack: 6,
+        speed: 7,
+        health: 18,
+    },
+    {
+        name: "R2D2",
+        attack: 9,
+        speed: 5,
+        health: 15,
+    }, {
+        name: "Roborto Alamar",
+        attack: 11,
+        speed: 4,
+        health: 20,
+    }, {
+        name: "Adolf Bot-ler",
+        attack: 11,
+        speed: 6,
+        health: 20,
+    }, {
+        name: "Alpha-6",
+        attack: 12,
+        speed: 6,
+        health: 20,
+    }, {
+        name: "Android Lloyd Webber",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Johnny-5",
+        attack: 11,
+        speed: 4,
+        health: 20,
+    }, {
+        name: "Darth Vader",
+        attack: 11,
+        speed: 6,
+        health: 20,
+    }, {
+        name: "T-1000",
+        attack: 12,
+        speed: 6,
+        health: 20,
+    }, {
+        name: "T-800",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "ED-209",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "HAL 9000",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Chappie",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Noisy Boy",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Midas",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Awesome-0",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Wall-E",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Mr. Roboto",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Bishop",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Robbie",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Astro Boy",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Optimus Prime",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Roomba",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Tom Servo",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Crow T. Robot",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "GLaDOS",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Bender",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }, {
+        name: "Flex-o",
+        attack: 14,
+        speed: 8,
+        health: 20,
+    }
+];
 const managerMessage = [
     "'Nice work, kid!... You're really going places.'\n'Whaat? You think I didnt see you pocket all that money from the ring?'\n'Just keep winning fights and the payouts will get bigger.'",
     "'Whoooey boy!, you really gave them folks a show this week!'\n'You keep this up and you just might get yourself a plaque on the wall.'",
@@ -167,7 +174,7 @@ var playerInfo = {
         let usrInput = window.prompt("What is your robot's name?", this.name);
         if (usrInput) { return usrInput; } else {
             window.alert("Please enter a Name!");
-            this.getRobotName();
+            return this.getRobotName();
         }
     },
     name: '',
@@ -296,10 +303,20 @@ var playerInfo = {
             console.log(this.name + " still has " + this.health + " health left.");
         }
         return this.health;
-    }
+    },
+    takeCash: function(amount) {
+        this.money += amount;
+        this.totalEarnings += amount;
+    },
+}
+const calcPayout = function() {
+    /*                           20       +       ceil:23/180*(3*7) = (+3)                *7  = 23*7 = 147
+                                2         +         ceil: 34/80*(1*7) = (+5)            *7 =  7*7 =48                    
+                       opponents beaten +  0||%maxhealth remaining*(weeks*3)  all multiplied by the weeks */
+    return beatenOpponents.filter(Boolean).length + Math.max(0, Math.ceil(((playerInfo.health / playerInfo.maxHealth) * (weekOfBattle * 7)))) * (weekOfBattle);
 }
 const pickOpponents = function(num) {
-    if (num > opponentList.length) { return "You ask for too much!" }
+    if (num > opponentList.length || num > opponentsRemaining()) { num = opponentsRemaining() }
     let output = [];
     while (output.length < num) {
         let opponentId = randomNumber(0, opponentList.length - 1); // get random opponent index
@@ -346,11 +363,13 @@ const randomizeBaseStats = function(enemy) {
     enemy.health = 10 + (statPoints * 2) + ((weekOfBattle - 1) * 2);
 
 }
-
-/*********************** */
-/*
-        OLD CODE DO NOT CHANGE BELOW UNLESS NEEDED
-/* *************************** */
+const opponentsRemaining = function() {
+        return (opponentList.length - beatenOpponents.filter(Boolean).length);
+    }
+    /*********************** */
+    /*
+            OLD CODE DO NOT CHANGE BELOW UNLESS NEEDED
+    /* *************************** */
 
 // function to generate a random numeric value
 var randomNumber = function(min, max) {
@@ -366,24 +385,28 @@ var checkHighScore = function(score) {
         if (!scoreName) { checkHighScore(score); } // if no name is entered re run function
         else {
             // set new highscore
+            /*
             window.localStorage.setItem("high-score-name", scoreName);
             window.localStorage.setItem("high-score-robot", playerInfo.name);
             window.localStorage.setItem("high-score", score);
+            */
+            localStorage.setItem('robotGladiatorChamps', JSON.stringify(localChamp));
         }
     } else {
         window.alert("Well you did your best but you still fell short of the Champ... \n" + localChamp.robot + " is still the greatest fighter with $" + localChamp.score + " in winnings.");
     }
 }
-var localChamp = {
-    robot: 'Paul the Robot',
-    trainer: 'John',
-    score: '100'
-};
+
 var getLocalChamp = function() {
     // if localStorage values are not null set tehm the localChamp values
+
+    localChamp = JSON.parse(localStorage.getItem('robotGladiatorChamps')) || localChamp;
+
+    /*
     localChamp.trainer = ((window.localStorage.getItem("high-score-name")) ? window.localStorage.getItem("high-score-name") : localChamp.trainer);
     localChamp.robot = ((window.localStorage.getItem("high-score-robot")) ? window.localStorage.getItem("high-score-robot") : localChamp.robot);
     localChamp.score = ((window.localStorage.getItem("high-score")) ? window.localStorage.getItem("high-score") : localChamp.score);
+    */
 }
 var enemyHealthCheck = function(enemy) {
     //check enemys health
@@ -391,8 +414,8 @@ var enemyHealthCheck = function(enemy) {
 
         //reward player
         let reward = randomNumber(3 + weekOfBattle, 9 + weekOfBattle);
-        playerInfo.money += reward;
-        playerInfo.totalEarnings += reward;
+        playerInfo.takeCash(reward);
+
         console.log(enemy.name + " has died!");
         window.alert(enemy.name + " is defeated!!\n You found $" + reward + " among their wreakage!");
         return null;
@@ -421,13 +444,20 @@ var startGame = function() {
     getLocalChamp();
     displayWelcome();
     playerInfo.reset();
+    beatenOpponents = [];
     weekOfBattle = 0;
     totalrounds = 0;
 
-    while (playerInfo.health > 0 && totalrounds < opponentList.length) {
+    /* GAME TESTING TO LIMIT OPPONENTS
+    for (let i = 0; i < opponentList.length - 2; i++) {
+        beatenOpponents.splice(i, 1, true);
+    }
+    */
+
+    while (playerInfo.health > 0 && totalrounds < opponentList.length && opponentsRemaining()) { // you are alive and havent been in as many fights as there are opponents
         enemyInfo = [];
         weekOfBattle++;
-        if (weekOfBattle - 1 % 3 === 0) { beatenOpponents = [] } // every three weeks beaten opponents can return
+        // if ((weekOfBattle - 1) % 3 === 0) { beatenOpponents = [] } // every three weeks beaten opponents can return
         alert("                           WELCOME TO THE JUNGLE! \n                                           Week: " + weekOfBattle)
         weeksOpponents = pickOpponents(3);
         weeksOpponents.forEach(robot => {
@@ -468,27 +498,34 @@ var startGame = function() {
                 break;
             }
         }
-        if (playerInfo.health > 0) {
-            let payout = beatenOpponents.filter(Boolean).length * (weekOfBattle + randomNumber(Math.max(1, randomNumber(0, weekOfBattle)), weekOfBattle));
-            playerInfo.money += payout;
-            playerInfo.totalEarnings += payout;
+        if (playerInfo.health > 0 && opponentsRemaining()) {
+            let payout = calcPayout(); // + randomNumber(Math.max(1, randomNumber(0, weekOfBattle)), weekOfBattle));
+            playerInfo.takeCash(payout);
             window.alert("The week's fighting is over! And you came out on top!\nThe Robot Fighting League manager comes over and gives you your weeks pay: " + payout + " big ones!!\n" +
                 managerMessage[weekOfBattle - 1]);
             //lets go shopping
             window.alert("Let's visit the repair bay.");
             shop();
-
+        } else if (!opponentsRemaining()) {
+            // BEAT THE WHOLE GAME /*   
+            let payout = calcPayout();
+            playerInfo.takeCash(payout);
+            window.alert("The Robot Fighting League manager comes over with a Beamin' Smile in his face!\n" +
+                "'Wheeee! Doooggy! That's some uh' the finest robot rasslin' I've ever had the pleasure to be in the presence of'.\n" +
+                "'Boy, you done made me a very rich and a very... I say very , Happy Man!' \n" +
+                "'Take this bonus Champ! and go on a vacation, I ain't got no more bots left for you to break.'\n" +
+                "He hands over: $" + payout);
         }
     } //END OF WHILE LOOP
     endGame();
 };
 var endGame = function() {
     if (playerInfo.health > 0) {
-        let score = (playerInfo.money * playerInfo.attack * playerInfo.speed * playerInfo.health);
-        window.alert("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived " + totalrounds + " \n             and WON!! the game! 🎉🤖🎉 \n\n" +
-            "You finished the tournament with a grand prize of: \n           💰 $" + score + "💰");
+        //let score = (playerInfo.money * playerInfo.attack * playerInfo.speed * playerInfo.health);
+        window.alert("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived " + totalrounds + " rounds\n                      and WON!! the game! 🎉🤖🎉 \n\n" +
+            "You finished the tournament with a grand total winnings of: \n                                    💰 $" + playerInfo.totalEarnings + " 💰");
 
-        checkHighScore(score);
+        checkHighScore(playerInfo.totalEarnings);
 
     } else {
         window.alert("You have lost your robot in battle! \n" +
@@ -513,11 +550,11 @@ var shop = function() {
         "  Attack: " + playerInfo.attack +
         "  Speed: " + playerInfo.speed + "\n\n" +
         "Would you like to:\n" +
-        "  1. Upgrade Health for $" + playerInfo.healthUpShopCost + "\n" +
-        "  2. Restore Health for $" + playerInfo.healthShopCost + "\n" +
+        "  1. Upgrade Health for $" + playerInfo.healthUpShopCost + "          5. Upgrade Armour for $" + "25" + "\n" +
+        "  2. Restore Health for $" + playerInfo.healthShopCost + "          5. LEAVE\n" +
         "  3. Upgrade Attack for $" + playerInfo.attackShopCost + "\n" +
         "  4. Upgrade Speed for $" + playerInfo.speedShopCost + "\n" +
-        "  5. LEAVE\n" //+
+        "  \n" //+
         // "Please enter your choice: "
     );
 
