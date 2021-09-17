@@ -184,14 +184,18 @@ var playerInfo = {
     speed: 6,
     money: 5,
     totalEarnings: 0,
-    healthRefillValue: function() { return Math.floor(this.maxHealth * .2) }, //20% of max health
+    healthRefillValue: function() { //return Math.floor(this.maxHealth * .2)  //20% of max health
+        return this.maxHealth;
+    },
     healthUpgrageValue: 20,
     attackUpgradeValue: 3,
     speedIncreeseValue: 2,
     healthUpShopCost: 10,
-    healthShopCost: 6,
+    healthShopCost: function() { return Math.floor((this.maxHealth - this.health) * .35) },
     attackShopCost: 7,
     speedShopCost: 8,
+    upgradeIncreaseCost: 0.36,
+    overNightRecharge: 0.15,
 
     reset: function() {
         this.name = this.getRobotName();
@@ -205,19 +209,28 @@ var playerInfo = {
         this.money = 6;
         this.totalEarnings = 0;
     },
+    setHealth: function(value) {
+        if (value) {
+            this.health = Math.max(0, Math.min(this.maxHealth, Math.floor(value)));
+            /* if (this.health > this.maxHealth) {
+                 this.health = this.maxHealth;
+             }*/
+        }
+    },
     refillHealth: function(value) {
 
         if (value) {
-            this.health += value;
+            this.health += Math.floor(value);
             if (this.health > this.maxHealth) {
                 this.health = this.maxHealth;
             }
         } else {
-            if (this.money >= this.healthShopCost) {
-                window.alert("Refilling " + this.name + "'s Health by " + this.healthRefillValue() + " for $" + this.healthShopCost + ".");
+            if (this.money >= this.healthShopCost()) {
+                window.alert("Refilling " + this.name + "'s Health by " + (this.maxHealth - this.health) + " for $" + this.healthShopCost() + ".");
 
+                this.money -= this.healthShopCost();
                 this.health += this.healthRefillValue();
-                this.money -= this.healthShopCost;
+
                 if (this.health > this.maxHealth) { this.health = this.maxHealth; }
                 shop();
             } else {
@@ -229,15 +242,16 @@ var playerInfo = {
     },
     upgradeHealth: function(value) {
 
-        if (value) { this.maxHealth += value; } else {
+        if (value) { this.maxHealth += Math.floor(value); } else {
             if (this.money >= this.healthUpShopCost) {
                 window.alert("Increasing " + this.name + "'s Max Health by " + this.healthUpgrageValue + " for $" + this.healthUpShopCost + ".");
-
+                let percentHealth = this.health / this.maxHealth;
+                console.log(percentHealth);
                 this.maxHealth += this.healthUpgrageValue;
-                this.refillHealth(this.healthRefillValue());
+                this.setHealth(this.maxHealth * percentHealth);
                 this.money -= this.healthUpShopCost;
                 //charge more the next time:: 30% more each time
-                this.healthUpShopCost += Math.floor((this.healthUpShopCost) * .3);
+                this.healthUpShopCost += Math.floor((this.healthUpShopCost) * this.upgradeIncreaseCost);
 
                 shop();
             } else {
@@ -249,14 +263,14 @@ var playerInfo = {
 
     },
     upgradeAttack: function(value) {
-        if (value) { this.attack += value; } else {
+        if (value) { this.attack += Math.floor(value); } else {
             if (this.money >= this.attackShopCost) {
                 window.alert("Upgrading " + this.name + "'s Attack by " + this.attackUpgradeValue + " for $" + this.attackShopCost + ".");
 
                 this.attack += this.attackUpgradeValue;
                 this.money -= this.attackShopCost;
                 //charge more the next time:: 20% more each time
-                this.attackShopCost += Math.floor((this.attackShopCost) * .2);
+                this.attackShopCost += Math.floor((this.attackShopCost) * this.upgradeIncreaseCost);
 
                 shop();
             } else {
@@ -267,14 +281,14 @@ var playerInfo = {
 
     },
     increeseSpeed: function(value) {
-        if (value) { this.speed += value; } else {
+        if (value) { this.speed += Math.floor(value); } else {
             if (this.money >= this.speedShopCost) {
                 window.alert("Upgrading " + this.name + "'s Speed by " + this.speedIncreeseValue + " for $" + this.speedShopCost + ".");
 
                 this.speed += this.speedIncreeseValue;
                 this.money -= this.speedShopCost;
                 //charge more the next time:: 20% more each time
-                this.speedShopCost += Math.floor((this.speedShopCost) * .2);
+                this.speedShopCost += Math.floor((this.speedShopCost) * this.upgradeIncreaseCost);
 
                 shop();
             } else {
@@ -285,7 +299,7 @@ var playerInfo = {
     },
     makeAttack: function(enemy) {
         // generate random damage value based on player's attack power
-        var damage = randomNumber(this.attack - 3, this.attack);
+        var damage = Math.ceil(randomNumber(this.attack * 2 / 3, this.attack));
         // Subtract the value of `this.attack` from value of `enemy.health` vaiable and use the result to update the `enemy.health`variable.
         enemy.health = Math.max(0, enemy.health - damage);
 
@@ -336,13 +350,16 @@ const randomizeEnemyStats = function(enemy) {
     let totalBoost = 0;
     let boost = 0;
 
+    /*                                     Max speed is capped at 1.6 times that of players                 */
+    boost = Math.max(randomNumber(0, (maxBoost - totalBoost)), Math.floor(playerInfo.speed * 1.6));
+    totalBoost += boost;
+    enemy.speed = enemy.speed + boost;
+
     boost = randomNumber(0, (maxBoost - totalBoost)); //get a random stat boost value upto maxBoost
     totalBoost += boost; //keep track of boost handed out in total boost
     enemy.health = enemy.health + boost; //apply boost to stat
+
     boost = randomNumber(0, (maxBoost - totalBoost)); //get a random stat boost value upto maxBoost-boost handed out so far
-    totalBoost += boost;
-    enemy.speed = enemy.speed + boost;
-    boost = randomNumber(0, (maxBoost - totalBoost));
     totalBoost += boost;
     enemy.attack = enemy.attack + boost;
 
@@ -426,7 +443,7 @@ var enemyHealthCheck = function(enemy) {
 };
 var enemyMakeAttack = function(enemy) {
     // generate random damage value based on enemy's attack power
-    damage = Math.max(1, randomNumber(enemy.attack - 3, enemy.attack));
+    damage = Math.floor(Math.max(1, randomNumber(enemy.attack * 2 / 3, enemy.attack)));
     // Subtract the value of `enemy.attack` from the value of `playerInfo.health` and use that result to update the value in the `playerInfo.health` variable.
     playerInfo.health = Math.max(0, playerInfo.health - damage);
 
@@ -492,7 +509,7 @@ var startGame = function() {
                         }
                         */
                     playerInfo.refillHealth(Math.floor(playerInfo.maxHealth * .18));
-                    alert('You rest between battle and regain ' + Math.floor(playerInfo.maxHealth * .18) + ' health')
+                    alert('You rest between battle and regain ' + Math.floor(playerInfo.maxHealth * playerInfo.overNightRecharge) + ' health')
                 }
             } else { //playert has no health left
                 break;
@@ -501,7 +518,7 @@ var startGame = function() {
         if (playerInfo.health > 0 && opponentsRemaining()) {
             let payout = calcPayout(); // + randomNumber(Math.max(1, randomNumber(0, weekOfBattle)), weekOfBattle));
             playerInfo.takeCash(payout);
-            window.alert("The week's fighting is over! And you came out on top!\nThe Robot Fighting League manager comes over and gives you your weeks pay: " + payout + " big ones!!\n" +
+            window.alert("The week's fighting is over! And you came out on top!\nThe Robot Fighting League manager comes over and gives you your week's pay: '" + payout + " Big Ones!!'\n" +
                 managerMessage[weekOfBattle - 1]);
             //lets go shopping
             window.alert("Let's visit the repair bay.");
@@ -551,7 +568,7 @@ var shop = function() {
         "  Speed: " + playerInfo.speed + "\n\n" +
         "Would you like to:\n" +
         "  1. Upgrade Health for $" + playerInfo.healthUpShopCost + "          5. Upgrade Armour for $" + "25" + "\n" +
-        "  2. Restore Health for $" + playerInfo.healthShopCost + "          5. LEAVE\n" +
+        "  2. Restore Health for $" + playerInfo.healthShopCost() + "           5. LEAVE\n" +
         "  3. Upgrade Attack for $" + playerInfo.attackShopCost + "\n" +
         "  4. Upgrade Speed for $" + playerInfo.speedShopCost + "\n" +
         "  \n" //+
