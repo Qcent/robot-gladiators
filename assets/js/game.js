@@ -527,8 +527,7 @@ const buildABot = function(name) {
 
 };
 const saveABot = function(bot) {
-    createdBots.pop(bot);
-
+    createdBots.push(bot);
     localStorage.setItem("GladiatorBots", JSON.stringify(createdBots))
 };
 const findABot = function(name) {
@@ -536,7 +535,7 @@ const findABot = function(name) {
 
     if (createdBots) {
         for (let i = 0; i < createdBots.length; i++) {
-            if (createdBots[i].name = name) {
+            if (createdBots[i].name === name) {
                 // load a bot to playerInfo
                 return i;
             }
@@ -764,7 +763,7 @@ var fightOrRun = function() {
             console.log(playerInfo.name + " has chosen to run from this fight! and now has " + playerInfo.money + " money left");
             window.alert(playerInfo.name + " has chosen to run from this fight! and now has " + playerInfo.money + " money left");
 
-            shop();
+            return false;
         } else if (playerInfo.money < 10) {
             console.log("Not enough money to skip fight");
             window.alert("Not enough money COWARD!\nBack In You GO! ...");
@@ -790,11 +789,12 @@ var fightOrRun = function() {
     }
 }
 var fight = function(enemy) {
-
-    while (enemy.health > 0 && playerInfo.health > 0) {
-
-        //check what player will do
-        if (fightOrRun()) { // true if fight is chosen
+    let ranAway = false;
+    while (enemy.health > 0 && playerInfo.health > 0 && !ranAway) {
+        ranAway = !fightOrRun(); // true if fight is chosen
+        console.log("ranAway: " + ranAway)
+            //check what player will do
+        if (!ranAway) {
 
             if (whoDrawsFirst(enemy) > 0) {
                 // positive numbers mean player attacks first
@@ -831,9 +831,10 @@ var fight = function(enemy) {
                     break;
                 }
             }
-
         } // end of if (FIGHT)
+        if (ranAway) { return false; }
     } // repeat while loop
+    return true;
 }
 var startGame = function() {
 
@@ -850,10 +851,8 @@ var startGame = function() {
     }
     */
     let botFound = findABot(playerInfo.name);
-    console.log(botFound)
+    if (botFound === false) { buildABot(playerInfo.name); } else { loadABot(botFound); }
 
-    if (!botFound) { buildABot(playerInfo.name); } else { loadABot(botFound); }
-    console.log("shold be starting game now")
     while (playerInfo.health > 0 && totalrounds < opponentList.length && opponentsRemaining()) { // you are alive and havent been in as many fights as there are opponents
         enemyInfo = [];
         weekOfBattle++;
@@ -876,19 +875,19 @@ var startGame = function() {
                 console.log(currentEnemy.name, currentEnemy);
                 console.log(playerInfo.name + ": attack: " + playerInfo.attack + ", speed: " + playerInfo.speed + ", health: " + playerInfo.health + "/" + playerInfo.maxHealth)
 
-                fight(currentEnemy);
+                let ranAway = !fight(currentEnemy);
 
                 if (currentEnemy.health <= 0) {
                     //if enemy is dead
                     beatenOpponents[weeksOpponents[i]] = true;
                 }
 
-                // if not at end of enemys and player is still alive
-                if (i < enemyInfo.length - 1 && playerInfo.health > 0) {
+                // if not at end of enemys and player is still alive but hasn't run away
+                if (i < enemyInfo.length - 1 && playerInfo.health > 0 && !ranAway) {
                     playerInfo.refillHealth(Math.floor(playerInfo.maxHealth * .18));
                     alert('You rest between battle and regain ' + Math.floor(playerInfo.maxHealth * (playerInfo.overNightRecharge + (i / 80))) + ' health')
                 }
-            } else { //playert has no health left
+            } else if (!ranAway) { //playert has no health left and didnt run
                 break;
             }
         }
