@@ -199,6 +199,7 @@ var playerInfo = {
     attackShopCost: 7,
     speedShopCost: 8,
     armourShopCost: 25,
+    armourReShopCost: function() { let x = (this.armourDamage > 0 ? 1 : 0); return Math.max(Math.floor(this.armourDamage * .35), x) },
     upgradeIncreaseCost: 0.4,
     overNightRecharge: 0.15,
 
@@ -209,9 +210,7 @@ var playerInfo = {
         this.healthUpShopCost = 10;
         this.attackShopCost = 7;
         this.speedShopCost = 8;
-        this.armourShopCost = 50;
-        this.hasArmour = false;
-        this.armourDamage = 0;
+        this.armourReset();
         this.attack = 10;
         this.speed = 6;
         this.money = 6;
@@ -284,6 +283,25 @@ var playerInfo = {
         }
 
     },
+    repairArmour: function() {
+
+        if (this.money >= this.armourReShopCost()) {
+            if (this.hasArmour) {
+                window.alert("Repairing " + this.name + "'s plate Armour for $" + this.armourReShopCost + ".");
+
+                this.money -= this.armourReShopCost();
+                this.armourDamage = 0;
+
+                shop();
+            } else {
+                window.alert("Sorry " + this.name + " is not equipped with any armour");
+                shop();
+            }
+        } else {
+            window.alert("Sorry " + this.name + " is too poor for that. Try something else");
+            shop();
+        }
+    },
     upgradeAttack: function(value) {
         if (value) { this.attack += Math.floor(value); } else {
             if (this.money >= this.attackShopCost) {
@@ -344,12 +362,24 @@ var playerInfo = {
         this.money += amount;
         this.totalEarnings += amount;
     },
+    armourReset: function() {
+        this.hasArmour = false;
+        this.armourDamage = 0;
+        this.armourShopCost = 50;
+    },
+    setUpgradeCosts: function() {
+        this.healthUpShopCost = Math.max(Math.floor(this.health / 4), 5);
+        this.attackShopCost = Math.max(Math.floor(this.attack * .8), 8);
+        this.speedShopCost = Math.max(Math.floor(this.speed * .8), 7);
+    },
 }
 const calcPayout = function() {
-    /*                           20       +       ceil:23/180*(3*7) = (+3)                *7  = 23*7 = 147
+    /*                         21
+                               20       +       ceil:23/180*(3*7) = (+3)                *7  = 23*7 = 147
                                 2         +         ceil: 34/80*(1*7) = (+5)            *7 =  7*7 =48                    
                        opponents beaten +  0||%maxhealth remaining*(weeks*3)  all multiplied by the weeks */
     return beatenOpponents.filter(Boolean).length + Math.max(0, Math.ceil(((playerInfo.health / playerInfo.maxHealth) * (weekOfBattle * 7)))) * (weekOfBattle);
+
 }
 const pickOpponents = function(num) {
     if (num > opponentList.length || num > opponentsRemaining()) { num = opponentsRemaining() }
@@ -414,14 +444,14 @@ const validateBotBuild = function(msg, mod) {
     if (Number.isInteger(val) && val <= playerInfo.statPoints) {
         if (mod && val % mod !== 0) {
             alert("Point value must be multiple of " + mod + ".");
-            return validateBotBuild(msg);
+            return validateBotBuild(msg, mod);
         }
 
         playerInfo.statPoints -= val;
         return Math.floor(val);
     } else {
         alert("Invalid Input");
-        return validateBotBuild(msg);
+        return validateBotBuild(msg, mod);
     }
 };
 const buildABot = function(name) {
@@ -439,7 +469,7 @@ const buildABot = function(name) {
         let input = window.prompt("Let's Build Your Fighting Robot\n\nYou have: " + playerInfo.statPoints + " Stat Points left.\n" +
             "1.Health: " + bot.health + "                   2.Speed: " + bot.speed + "                   3.Attack: " + bot.attack + '\n' +
             " Cost: 1pts                    Cost: 2pts                    Cost: 3pts \n\n" +
-            "Which stat would you like to set?  or QUIT");
+            "Which stat would you like to set?  or 9.All Done");
 
         switch (input.toUpperCase()) {
             case "1":
@@ -467,19 +497,26 @@ const buildABot = function(name) {
                 break;
 
             case "Q":
-            case "0":
+            case "9":
             case "QUIT":
-                botFinished = true;
-                playerInfo.name = bot.name;
-                playerInfo.health = bot.health;
-                playerInfo.maxHealth = bot.health;
-                playerInfo.speed = bot.speed;
-                playerInfo.attack = bot.attack;
-                /*  */
-                playerInfo.healthUpShopCost = Math.max(Math.floor(playerInfo.health / 4), 5);
-                playerInfo.attackShopCost = Math.max(Math.floor(playerInfo.attack * .8), 8);
-                playerInfo.speedShopCost = Math.max(Math.floor(playerInfo.speed * .8), 7);
+                if (playerInfo.statPoints > 0) { var ok = alert("You still have stat points to spend! Are you sure?"); }
+                if (ok || playerInfo.statPoints === 0) {
+                    botFinished = true;
+                    playerInfo.name = bot.name;
+                    playerInfo.health = bot.health;
+                    playerInfo.maxHealth = bot.health;
+                    playerInfo.speed = bot.speed;
+                    playerInfo.attack = bot.attack;
+                    /* Set the starting Upgrade costs based on stats chosen */
+                    /*
+                                        playerInfo.healthUpShopCost = Math.max(Math.floor(playerInfo.health / 4), 5);
+                                        playerInfo.attackShopCost = Math.max(Math.floor(playerInfo.attack * .8), 8);
+                                        playerInfo.speedShopCost = Math.max(Math.floor(playerInfo.speed * .8), 7);
+                                        */
+                    playerInfo.setUpgradeCosts();
 
+                    saveABot(bot);
+                }
                 break
             default:
                 // validate or something
@@ -488,6 +525,31 @@ const buildABot = function(name) {
         }
     }
 
+};
+const saveABot = function(bot) {
+    createdBots.pop(bot);
+
+    localStorage.setItem("GladiatorBots", JSON.stringify(createdBots))
+};
+const findABot = function(name) {
+    createdBots = JSON.parse(localStorage.getItem("GladiatorBots")) || [];
+
+    if (createdBots) {
+        for (let i = 0; i < createdBots.length; i++) {
+            if (createdBots[i].name = name) {
+                // load a bot to playerInfo
+                return i;
+            }
+        }
+    }
+    return false;
+};
+const loadABot = function(idx) {
+    playerInfo.name = createdBots[idx].name;
+    playerInfo.health = createdBots[idx].health;
+    playerInfo.maxHealth = createdBots[idx].health;
+    playerInfo.speed = createdBots[idx].speed;
+    playerInfo.attack = createdBots[idx].attack;
 };
 /*********************** */
 /*
@@ -518,7 +580,9 @@ var checkHighScore = function(score) {
             localStorage.setItem('robotGladiatorChamps', JSON.stringify(localChamp));
         }
     } else {
-        window.alert("Well you did your best but you still fell short of the Champ... \n" + localChamp.robot + " is still the greatest fighter with $" + localChamp.score + " in winnings.");
+        window.alert("Well you did your best but you still fell short of the Champ... \n" + localChamp.robot +
+            " is still the greatest fighter with $" + localChamp.score + " in winnings.\n\n" +
+            "Your Total: $" + playerInfo.totalEarnings);
     }
 }
 var getLocalChamp = function() {
@@ -551,13 +615,25 @@ var enemyHealthCheck = function(enemy) {
 var enemyMakeAttack = function(enemy) {
     // generate random damage value based on enemy's attack power
     damage = Math.floor(Math.max(1, randomNumber(enemy.attack * 2 / 3, enemy.attack)));
+
+    /*   ARMOUR DAMAGE LESSENING CODE  */
     if (playerInfo.hasArmour) {
 
         let newDamage = Math.ceil(damage * (randomNumber(55, 75) / 100));
         playerInfo.armourDamage += (damage - newDamage);
         console.log("Armour On!   atk power:" + damage + "  atk effect:" + newDamage);
         console.log("Your armour has protected you from " + playerInfo.armourDamage + " damage!");
+        damage = newDamage;
+
+        if (playerInfo.armourDamage > 100) {
+            if (randomNumber(0, 1)) {
+                console.log("Your plate armour can withstand no more. ");
+                playerInfo.armourReset();
+            }
+        }
     }
+    /*    ******************************        */
+
     // Subtract the value of `enemy.attack` from the value of `playerInfo.health` and use that result to update the value in the `playerInfo.health` variable.
     playerInfo.health = Math.max(0, playerInfo.health - damage);
 
@@ -578,10 +654,10 @@ var shop = function() {
         "  Attack: " + playerInfo.attack +
         "  Speed: " + playerInfo.speed + "\n\n" +
         "Would you like to:\n" +
-        "  1. Restore Health for $" + playerInfo.healthShopCost() + "           5. Upgrade Armour for $" + playerInfo.armourShopCost + "\n" +
-        "  2. Upgrade Health for $" + playerInfo.healthUpShopCost + "          0. LEAVE\n" +
+        "  1. Restore Health for $" + playerInfo.healthShopCost() + "            5. Upgrade Armour for $" + playerInfo.armourShopCost + "\n" +
+        "  2. Upgrade Health for $" + playerInfo.healthUpShopCost + "           6. Repair Armour for $" + playerInfo.armourReShopCost() + "\n" +
         "  3. Upgrade Attack for $" + playerInfo.attackShopCost + "\n" +
-        "  4. Upgrade Speed for $" + playerInfo.speedShopCost + "\n" +
+        "  4. Upgrade Speed for $" + playerInfo.speedShopCost + "          9. LEAVE\n" +
         "  \n" //+
         // "Please enter your choice: "
     );
@@ -620,7 +696,13 @@ var shop = function() {
             playerInfo.getArmour();
             break;
 
-        case "0":
+        case "6":
+        case "REPAIR":
+        case "FIX":
+            playerInfo.repairArmour();
+            break;
+
+        case "9":
         case "Q":
         case "X":
         case "QUIT":
@@ -767,8 +849,11 @@ var startGame = function() {
         beatenOpponents.splice(i, 1, true);
     }
     */
-    buildABot(playerInfo.name);
+    let botFound = findABot(playerInfo.name);
+    console.log(botFound)
 
+    if (!botFound) { buildABot(playerInfo.name); } else { loadABot(botFound); }
+    console.log("shold be starting game now")
     while (playerInfo.health > 0 && totalrounds < opponentList.length && opponentsRemaining()) { // you are alive and havent been in as many fights as there are opponents
         enemyInfo = [];
         weekOfBattle++;

@@ -1,8 +1,7 @@
 # Robot Gladiators
-A basic robot fighting simulator coded in JavaScript. No CSS and minimal HTML will be used.
+The most advance prompt based robot fighting game you have likely seen. At least twice as complex as the last Robot Gladiators you've encountered or your money back.
 
-Compete in the greatest Robo-Battle of all week. \
-Enter your bag-o-bolts in the tournament of a lifetime as you try to fight your way through the ranks, and Upgrade your Bot on your journey to take home the belt as the local Robot Boxing Champ
+Create your own robot fighter with customized stats and sign them up in the RoBot Champions Fighting League. Where the toughest fighting bots battle it out in front of a live audience, week after week. Fight for cash and clout in an epic struggle to rise through the ranks to become the leauge champion. And retire as the richest robot trainer in the world!
 
 ## Coding Objectives
 * Use variables, functions, and custom objects to create a battle simulator with upgradeable robots. 
@@ -11,7 +10,7 @@ Enter your bag-o-bolts in the tournament of a lifetime as you try to fight your 
 * Use Object methods for manipulating object variables. 
 * Validate user input to prevent invalid or null values. 
 * Convert between strings and numbers.
-* save high score / champion data with localStorage web API.
+* save high score / champion data and a list of built bots with localStorage web API.
 
 
 
