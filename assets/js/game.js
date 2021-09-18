@@ -186,7 +186,7 @@ var playerInfo = {
     speed: 6,
     money: 5,
     hasArmour: false,
-    armourDamage = 0,
+    armourDamage: 0,
     totalEarnings: 0,
     healthRefillValue: function() { //return Math.floor(this.maxHealth * .2)  //20% of max health
         return this.maxHealth;
