@@ -4,6 +4,7 @@ var currentEnemy = {};
 var beatenOpponents = [];
 var weeksOpponents = [];
 var enemyInfo = [];
+var createdBots = [];
 var localChamp = {
     robot: 'Paul the Robot',
     trainer: 'John',
@@ -184,6 +185,8 @@ var playerInfo = {
     attack: 10,
     speed: 6,
     money: 5,
+    hasArmour: false,
+    armourDamage = 0,
     totalEarnings: 0,
     healthRefillValue: function() { //return Math.floor(this.maxHealth * .2)  //20% of max health
         return this.maxHealth;
@@ -192,10 +195,11 @@ var playerInfo = {
     attackUpgradeValue: 3,
     speedIncreeseValue: 2,
     healthUpShopCost: 10,
-    healthShopCost: function() { return Math.floor((this.maxHealth - this.health) * .35) },
+    healthShopCost: function() { let x = (this.maxHealth > this.health ? 1 : 0); return Math.max(Math.floor((this.maxHealth - this.health) * .35), x) },
     attackShopCost: 7,
     speedShopCost: 8,
-    upgradeIncreaseCost: 0.36,
+    armourShopCost: 25,
+    upgradeIncreaseCost: 0.4,
     overNightRecharge: 0.15,
 
     reset: function() {
@@ -205,6 +209,9 @@ var playerInfo = {
         this.healthUpShopCost = 10;
         this.attackShopCost = 7;
         this.speedShopCost = 8;
+        this.armourShopCost = 35;
+        this.hasArmour = false;
+        this.armourDamage = 0;
         this.attack = 10;
         this.speed = 6;
         this.money = 6;
@@ -251,7 +258,7 @@ var playerInfo = {
                 this.setHealth(this.maxHealth * percentHealth);
                 this.money -= this.healthUpShopCost;
                 //charge more the next time:: 30% more each time
-                this.healthUpShopCost += Math.floor((this.healthUpShopCost) * this.upgradeIncreaseCost);
+                this.healthUpShopCost += Math.floor((this.healthUpShopCost) * (this.upgradeIncreaseCost * 1.2));
 
                 shop();
             } else {
@@ -259,7 +266,22 @@ var playerInfo = {
                 shop();
             }
         }
+    },
+    getArmour: function() {
 
+        if (this.money >= this.armourShopCost && !this.hasArmour) {
+            window.alert("Adding plate Armour to " + this.name + " for $" + this.armourShopCost + ".");
+
+            this.hasArmour = true;
+            this.money -= this.armourShopCost;
+            //charge more the next time
+            this.armourShopCost += Math.floor((this.armourShopCost) * (this.upgradeIncreaseCost * 2));
+
+            shop();
+        } else {
+            window.alert("Sorry " + this.name + " is too poor for that. Try something else");
+            shop();
+        }
 
     },
     upgradeAttack: function(value) {
@@ -346,7 +368,7 @@ const randomizeEnemyStats = function(enemy) {
 
     randomizeBaseStats(enemy);
 
-    let maxBoost = 10 * weekOfBattle; // everyweek increase max boost by 10
+    let maxBoost = 8 * weekOfBattle; // everyweek increase max boost by 10
     let totalBoost = 0;
     let boost = 0;
 
@@ -382,14 +404,95 @@ const randomizeBaseStats = function(enemy) {
     enemy.speed = allotment + ((weekOfBattle - 1) * 2);
     enemy.health = 10 + (statPoints * 2) + ((weekOfBattle - 1) * 2);
 
-}
+};
 const opponentsRemaining = function() {
-        return (opponentList.length - beatenOpponents.filter(Boolean).length);
+    return (opponentList.length - beatenOpponents.filter(Boolean).length);
+};
+const validateBotBuild = function(msg, mod) {
+    let val = parseInt(prompt("You have " + playerInfo.statPoints + " points to spend.\n" + msg));
+
+    if (Number.isInteger(val) && val <= playerInfo.statPoints) {
+        if (mod && val % mod !== 0) {
+            alert("Point value must be multiple of " + mod + ".");
+            return validateBotBuild(msg);
+        }
+
+        playerInfo.statPoints -= val;
+        return Math.floor(val);
+    } else {
+        alert("Invalid Input");
+        return validateBotBuild(msg);
     }
-    /*********************** */
-    /*
-            OLD CODE DO NOT CHANGE BELOW UNLESS NEEDED
-    /* *************************** */
+};
+const buildABot = function(name) {
+    // set stat points to start
+    // health starts at 10 and cost .5 stat points to increase
+    playerInfo.statPoints = 120;
+    let bot = {
+        name: name,
+        health: 0,
+        attack: 0,
+        speed: 0,
+    };
+    let botFinished = false;
+    while (!botFinished) {
+        let input = window.prompt("Let's Build Your Fighting Robot\n\nYou have: " + playerInfo.statPoints + " Stat Points left.\n" +
+            "1.Health: " + bot.health + "                   2.Speed: " + bot.speed + "                   3.Attack: " + bot.attack + '\n' +
+            " Cost: 1pts                    Cost: 2pts                    Cost: 3pts \n\n" +
+            "Which stat would you like to set?  or QUIT");
+
+        switch (input.toUpperCase()) {
+            case "1":
+            case "H":
+            case "HEALTH":
+                playerInfo.statPoints += bot.health;
+                input = validateBotBuild("How many points to Health?");
+                bot.health = input;
+                break;
+
+            case "2":
+            case "S":
+            case "SPEED":
+                playerInfo.statPoints += bot.speed * 2;
+                input = validateBotBuild("How many points to Speed?", 2);
+                bot.speed = input / 2;
+                break;
+
+            case "3":
+            case "A":
+            case "ATTACK":
+                playerInfo.statPoints += bot.attack * 3;
+                input = validateBotBuild("How many points to Attack?", 3);
+                bot.attack = input / 3;
+                break;
+
+            case "Q":
+            case "0":
+            case "QUIT":
+                botFinished = true;
+                playerInfo.name = bot.name;
+                playerInfo.health = bot.health;
+                playerInfo.maxHealth = bot.health;
+                playerInfo.speed = bot.speed;
+                playerInfo.attack = bot.attack;
+                /*  */
+                playerInfo.healthUpShopCost = Math.max(Math.floor(playerInfo.health / 4), 5);
+                playerInfo.attackShopCost = Math.max(Math.floor(playerInfo.attack * .8), 8);
+                playerInfo.speedShopCost = Math.max(Math.floor(playerInfo.speed * .8), 7);
+
+                break
+            default:
+                // validate or something
+                alert("nothing Chosen");
+                break
+        }
+    }
+
+};
+/*********************** */
+/*
+        OLD CODE DO NOT CHANGE BELOW UNLESS NEEDED
+/* *************************** */
 
 // function to generate a random numeric value
 var randomNumber = function(min, max) {
@@ -448,6 +551,13 @@ var enemyHealthCheck = function(enemy) {
 var enemyMakeAttack = function(enemy) {
     // generate random damage value based on enemy's attack power
     damage = Math.floor(Math.max(1, randomNumber(enemy.attack * 2 / 3, enemy.attack)));
+    if (playerInfo.hasArmour) {
+
+        let newDamage = Math.ceil(damage * (randomNumber(55, 75) / 100));
+        playerInfo.armourDamage += (damage - newDamage);
+        console.log("Armour On!   atk power:" + damage + "  atk effect:" + newDamage);
+        console.log("Your armour has protected you from " + playerInfo.armourDamage + " damage!");
+    }
     // Subtract the value of `enemy.attack` from the value of `playerInfo.health` and use that result to update the value in the `playerInfo.health` variable.
     playerInfo.health = Math.max(0, playerInfo.health - damage);
 
@@ -468,8 +578,8 @@ var shop = function() {
         "  Attack: " + playerInfo.attack +
         "  Speed: " + playerInfo.speed + "\n\n" +
         "Would you like to:\n" +
-        "  1. Restore Health for $" + playerInfo.healthShopCost() + "          5. Upgrade Armour for $" + "25" + "\n" +
-        "  2. Upgrade Health for $" + playerInfo.healthUpShopCost + "           5. LEAVE\n" +
+        "  1. Restore Health for $" + playerInfo.healthShopCost() + "           5. Upgrade Armour for $" + playerInfo.armourShopCost + "\n" +
+        "  2. Upgrade Health for $" + playerInfo.healthUpShopCost + "          0. LEAVE\n" +
         "  3. Upgrade Attack for $" + playerInfo.attackShopCost + "\n" +
         "  4. Upgrade Speed for $" + playerInfo.speedShopCost + "\n" +
         "  \n" //+
@@ -504,6 +614,13 @@ var shop = function() {
             break;
 
         case "5":
+        case "DEF":
+        case "HARD":
+        case "ARMOUR":
+            playerInfo.getArmour();
+            break;
+
+        case "0":
         case "Q":
         case "X":
         case "QUIT":
@@ -650,6 +767,7 @@ var startGame = function() {
         beatenOpponents.splice(i, 1, true);
     }
     */
+    buildABot(playerInfo.name);
 
     while (playerInfo.health > 0 && totalrounds < opponentList.length && opponentsRemaining()) { // you are alive and havent been in as many fights as there are opponents
         enemyInfo = [];
@@ -682,21 +800,15 @@ var startGame = function() {
 
                 // if not at end of enemys and player is still alive
                 if (i < enemyInfo.length - 1 && playerInfo.health > 0) {
-                    /*    //ask if they'd like to go shopping
-                        var storeConfirm = window.confirm("The fight is over, visit the repair bay?");
-                        if (storeConfirm) {
-                            shop();
-                        }
-                        */
                     playerInfo.refillHealth(Math.floor(playerInfo.maxHealth * .18));
-                    alert('You rest between battle and regain ' + Math.floor(playerInfo.maxHealth * playerInfo.overNightRecharge) + ' health')
+                    alert('You rest between battle and regain ' + Math.floor(playerInfo.maxHealth * (playerInfo.overNightRecharge + (i / 80))) + ' health')
                 }
             } else { //playert has no health left
                 break;
             }
         }
         if (playerInfo.health > 0 && opponentsRemaining()) {
-            let payout = calcPayout(); // + randomNumber(Math.max(1, randomNumber(0, weekOfBattle)), weekOfBattle));
+            let payout = calcPayout();
             playerInfo.takeCash(payout);
             window.alert("The week's fighting is over! And you came out on top!\nThe Robot Fighting League manager comes over and gives you your week's pay: '" + payout + " Big Ones!!'\n" +
                 managerMessage[weekOfBattle - 1]);
