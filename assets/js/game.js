@@ -148,7 +148,7 @@ const opponentList = [{
         speed: 8,
         health: 20,
     }, {
-        name: "Bender",
+        name: "Atlas",
         attack: 14,
         speed: 8,
         health: 20,
