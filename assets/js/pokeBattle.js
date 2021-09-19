@@ -30,17 +30,51 @@ const createBattleUIArea = (function() {
 
         i ? plrCard.append(cardContainer) : nmeCard.append(cardContainer);
     }
-
-
     /***/
     upLeft.append(nmeCard, plrSpriteBox);
     upRight.append(nmeSpriteBox, plrCard);
     /***/
     upperEl.append(upLeft, upRight);
-    /******LOW SCREEN */
+
+    /*********************** */
+    /******LOWER SCREEN */
     let loLeft = $("<div>").attr("id", "lower-left");
     let loRight = $("<div>").attr("id", "lower-right");
-    lowerEl.append(loLeft, loRight)
 
+    /* LEFT */
+    let textContainer = $("<div>").attr("id", "battle-choice-text-box");
+    let textArea = $("<div>").attr("id", "battle-choice-text").text("What will 'Robot Name' do?");
+
+    loLeft.append(textContainer.append(textArea));
+    /* RIGHT */
+    textContainer = $("<div>").attr("id", "battle-choice-opt-box");
+    textArea = $("<div>").attr("id", "battle-choice-opt").append(
+        $("<button>").attr("plr-choice", "FIGHT").text("FIGHT").prepend($("<span>").addClass('choiceIcon')),
+        $("<button>").attr("plr-choice", "RUN").text("RUN").prepend($("<span>").addClass('choiceIcon')),
+        $("<button>").attr("plr-choice", "TEST").text("TEST").prepend($("<span>").addClass('choiceIcon'))
+    );
+
+    loRight.append(textContainer.append(textArea));
+
+
+    /*** */
+    lowerEl.append(loLeft, loRight)
+        /**** */
     $("body").append(upperEl, lowerEl);
 })();
+
+const updateRobotCard = function(who) {
+    who = (who === "plr") ? 1 : 0;
+    let robot = (who) ? 'player' : 'enemy';
+
+    /*  cardName = */
+    $("#" + robot + "-card-name").text((who) ? playerInfo.name : currentEnemy.name);
+    /*  cardHP = */
+    $("#" + robot + "-HP-bar").css("width", ((who) ? (playerInfo.health / playerInfo.maxHealth) : (currentEnemy.health / currentEnemy.maxHealth)) * 100 + "%");
+    /*  hpText = */
+    $("#" + robot + "-HP-text").text(((who) ? (playerInfo.health + "/" + playerInfo.maxHealth) : (currentEnemy.health + "/" + currentEnemy.maxHealth)));
+    /*  spdText = */
+    $("#" + robot + "-SPD-text").text("Speed: " + ((who) ? playerInfo.speed : currentEnemy.speed));
+    /*  atkText = */
+    $("#" + robot + "-ATK-text").text("Attack: " + ((who) ? playerInfo.attack : currentEnemy.attack));
+};

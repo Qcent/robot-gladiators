@@ -1,263 +1,404 @@
-* {
-    margin: 0;
-    padding: 0;
-    box-sizing: border-box;
-    /*  border: 1px solid black; */
-}
-
-:root {
-    --health-green: rgb(9, 231, 46);
-    --danger-red: rgb(231, 9, 9);
-    --card-face: rgb(211, 195, 150);
-    --card-frame: rgb(90, 61, 6);
-}
-
-body {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    justify-content: center;
-}
-
-#Upper-Vis {
-    width: 80rem;
-    height: 40rem;
-    margin-top: 4rem;
-    /**/
-    display: flex;
-    align-items: stretch;
-}
-
-#upper-left,
-#upper-right,
-#lower-left,
-#lower-right {
-    width: 50%;
-    display: flex;
-    flex-direction: column;
-    justify-content: space-between;
-}
-
-#player-box,
-#enemy-box {
-    width: 65%;
-    height: 45%;
-    margin: 1rem auto;
-}
-
-#enemy-box {
-    background-image: url("https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/f19fad40395057.577d99b42166b.jpg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-#player-box {
-    margin-left: 20%;
-    background-image: url("https://i.pinimg.com/originals/be/a1/0e/bea10e38d51dcc700360608ab56d5e43.jpg");
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
-}
-
-#player-card,
-#enemy-card {
-    width: 95%;
-    height: 38%;
-    margin: 1rem .2rem 1rem auto;
-    display: flex;
-}
-
-#player-card {
-    margin: 1rem auto 1rem .2rem;
-    align-items: flex-end;
-}
-
-.battle-card {
-    width: 100%
-}
-
-.battle-card-frame {
-    border: 2rem solid;
-    border-top: 0;
-    border-left-color: rgba(0, 0, 0, 0);
-    border-right: 2rem solid var(--card-frame);
-    border-bottom-color: var(--card-frame);
-    border-bottom-right-radius: 2rem;
-    height: 3.6rem;
-    z-index: -1;
-}
-
-#enemy-card .battle-card-frame {
-    border: 3rem solid;
-    border-top: 0;
-    border-right-color: rgba(0, 0, 0, 0);
-    border-left: 2rem solid var(--card-frame);
-    border-bottom-color: var(--card-frame);
-    border-bottom-left-radius: 2rem;
-    border-bottom-right-radius: 0;
-    margin-left: 2.8rem;
-    position: relative;
-    bottom: 2.8rem;
-}
-
-.battle-card-face {
-    margin: 0 .5rem 0 2rem;
-    padding-left: 2.5rem;
-    font-size: 1.5rem;
-    background-color: var(--card-face);
-    border-radius: .25rem;
-    border-top-left-radius: 2rem;
-    border-bottom-right-radius: 2rem;
-}
-
-#player-card .battle-card-face {
-    position: relative;
-    top: 2rem;
-}
-
-#player-card .battle-card-frame div {
-    position: relative;
-    top: 1rem;
-}
-
-#enemy-card .battle-card-face {
-    margin: 0 3rem 0 .5rem;
-}
-
-.battle-card-face h2 {
-    font-size: 3rem;
-}
-
-.battle-HP-bar {
-    display: flex;
-    background-color: var(--health-green);
-    border: solid var(--health-green);
-    border-radius: 1rem;
-    margin-right: 1rem;
-}
-
-.battle-HP-bar div {
-    width: 100%;
-    display: flex;
-    justify-content: flex-end;
-    background-color: #fff;
-    border: .2rem solid #fff;
-    border-radius: 1rem;
-}
-
-#player-HP-bar {
-    width: 100%;
-    background-color: var(--health-green);
-    border: .2rem solid var(--health-green);
-    border-radius: 1rem;
-}
-
-#enemy-HP-bar {
-    width: 100%;
-    background-color: var(--danger-red);
-    border: .2rem solid var(--danger-red);
-    border-radius: 1rem;
-}
-
-.battle-card-face h3 {
-    text-align: right;
-    margin-right: 2rem;
-}
-
-.battle-card-stat.stat-pad {
-    margin-left: 40%;
-}
-
-.battle-card-stat {
-    display: inline-block;
-    width: 20%;
-}
-
-#enemy-card .battle-card-stat {
-    width: 25%;
-    font-size: 1rem;
-}
-
-#enemy-card .battle-card-face h3 {
-    display: inline-block;
-    text-align: right;
-    width: 43%;
-    margin-right: 1rem;
-}
-
-
-/**********************************
+                                          :root {
+                                             --white-text: honeydew;
+                                             --health-green: rgb(9, 231, 46);
+                                             --danger-red: rgb(231, 9, 9);
+                                             --card-face: rgb(211, 195, 150);
+                                             --card-frame: rgb(90, 61, 6);
+                                             --menu-bg1: rgb(12, 45, 107);
+                                             --dark-bg: rgb(19, 17, 17);
+                                             --gold-border: rgb(197, 156, 41);
+                                             --purp-border: rgb(141, 70, 163);
+                                             --light-shadow: #949189;
+                                             --dark-shadow: #484a63;
+                                         }
+                                         
+                                         * {
+                                             margin: 0;
+                                             padding: 0;
+                                             box-sizing: border-box;
+                                             /* border: 1px solid black;
+    */
+                                         }
+                                         
+                                         @font-face {
+                                             font-family: 'GameTxt';
+                                             src: url('../ConnectionIi-2wj8.otf') format("opentype");
+                                         }
+                                         
+                                         body {
+                                             display: flex;
+                                             flex-direction: column;
+                                             align-items: center;
+                                             justify-content: center;
+                                             font-family: 'Press Start 2P', cursive;
+                                         }
+                                         
+                                         #Upper-Vis {
+                                             width: 80rem;
+                                             height: 40rem;
+                                             margin-top: 4rem;
+                                             /**/
+                                             border: .3rem solid black;
+                                             border-radius: 1rem;
+                                             border-bottom-left-radius: 0;
+                                             border-bottom-right-radius: 0;
+                                             /**/
+                                             display: flex;
+                                             align-items: stretch;
+                                             /* */
+                                             background: #07daa4;
+                                             background-image: radial-gradient( at 59.5rem 23rem, rgb(85, 192, 112) 0%, rgb(85, 192, 112) 20%, rgb(190, 176, 47) 20%, rgb(190, 176, 47) 22.5%, rgb(160, 214, 171) 22.5%, transparent 45%), radial-gradient(ellipse 99rem 40em at 21rem 43rem, rgb(85, 192, 112) 0%, rgb(85, 192, 112) 20%, rgb(190, 176, 47) 20%, rgb(190, 176, 47) 22.5%, rgb(160, 214, 171) 22.5%, transparent 48%), radial-gradient( farthest-side at bottom left, rgba(255, 0, 255, 0.5), transparent), radial-gradient( farthest-corner at bottom right, rgba(53, 50, 255, 0.5), transparent 400px);
+                                         }
+                                         
+                                         .battle-card h2,
+                                         .battle-card h3,
+                                         #battle-choice-opt button {
+                                             text-shadow: .2rem .2rem .1rem var(--light-shadow);
+                                         }
+                                         
+                                         #upper-left,
+                                         #upper-right,
+                                         #lower-left,
+                                         #lower-right {
+                                             width: 50%;
+                                             display: flex;
+                                             flex-direction: column;
+                                             justify-content: space-between;
+                                         }
+                                         
+                                         #player-box,
+                                         #enemy-box {
+                                             width: 65%;
+                                             height: 45%;
+                                             margin: 0 auto;
+                                         }
+                                         
+                                         #enemy-box {
+                                             margin-top: 10rem;
+                                             background-image: url("https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/f19fad40395057.577d99b42166b.jpg");
+                                             background-size: contain;
+                                             background-repeat: no-repeat;
+                                             background-position: center;
+                                         }
+                                         
+                                         #player-box {
+                                             margin-left: 20%;
+                                             background-image: url("https://i.pinimg.com/originals/be/a1/0e/bea10e38d51dcc700360608ab56d5e43.jpg");
+                                             background-size: contain;
+                                             background-repeat: no-repeat;
+                                             background-position: center;
+                                         }
+                                         
+                                         #player-card,
+                                         #enemy-card {
+                                             width: 95%;
+                                             height: 38%;
+                                             margin: 1rem .2rem 1rem auto;
+                                             display: flex;
+                                         }
+                                         
+                                         #player-card {
+                                             margin: 1rem auto 1rem .2rem;
+                                             align-items: flex-end;
+                                         }
+                                         
+                                         .battle-card {
+                                             width: 100%;
+                                             filter: drop-shadow(.2rem .2rem .1rem var(--dark-shadow));
+                                         }
+                                         
+                                         .battle-card-frame {
+                                             border: 2rem solid;
+                                             border-top: 0;
+                                             border-left-color: rgba(0, 0, 0, 0);
+                                             border-right: 2rem solid var(--card-frame);
+                                             border-bottom-color: var(--card-frame);
+                                             border-bottom-right-radius: 2rem;
+                                             height: 3.6rem;
+                                             z-index: -1;
+                                         }
+                                         
+                                         #enemy-card {
+                                             margin-top: 5rem;
+                                         }
+                                         
+                                         #enemy-card .battle-card-frame {
+                                             border: 3rem solid;
+                                             border-top: 0;
+                                             border-right-color: rgba(0, 0, 0, 0);
+                                             border-left: 2rem solid var(--card-frame);
+                                             border-bottom-color: var(--card-frame);
+                                             border-bottom-left-radius: 2rem;
+                                             border-bottom-right-radius: 0;
+                                             margin-left: 2.8rem;
+                                             position: relative;
+                                             bottom: 2.8rem;
+                                         }
+                                         
+                                         .battle-card-face {
+                                             margin: 0 .8rem 0 2rem;
+                                             padding-left: 2.5rem;
+                                             font-size: 1.2rem;
+                                             background-color: var(--card-face);
+                                             border-radius: 1rem;
+                                             border-top-left-radius: 2rem;
+                                             border-bottom-right-radius: 2rem;
+                                             border: .4rem solid var(--card-frame);
+                                         }
+                                         
+                                         #player-card .battle-card-face {
+                                             position: relative;
+                                             top: 2.5rem;
+                                         }
+                                         
+                                         #player-card .battle-card-frame div {
+                                             position: relative;
+                                             top: 1rem;
+                                         }
+                                         
+                                         #enemy-card .battle-card-face {
+                                             margin: 0 3rem 0 .5rem;
+                                         }
+                                         
+                                         .battle-card-face h2 {
+                                             font-size: 2.2rem;
+                                             padding: .4rem 0;
+                                         }
+                                         
+                                         .battle-HP-bar {
+                                             display: flex;
+                                             color: goldenrod;
+                                             background-color: var(--menu-bg1);
+                                             border: .3rem solid var(--menu-bg1);
+                                             border-radius: 1rem;
+                                             margin-left: 4rem;
+                                             margin-right: 1rem;
+                                         }
+                                         
+                                         .battle-HP-bar span {
+                                             padding-right: 0rem;
+                                         }
+                                         
+                                         .battle-HP-bar div {
+                                             width: 100%;
+                                             display: flex;
+                                             justify-content: flex-end;
+                                             background-color: #fff;
+                                             border: 1px solid #fff;
+                                             border-radius: 1rem;
+                                         }
+                                         
+                                         #player-HP-bar {
+                                             width: 100%;
+                                             background-color: var(--health-green);
+                                             border: .2rem solid var(--health-green);
+                                             border-radius: 1rem;
+                                         }
+                                         
+                                         #enemy-HP-bar {
+                                             width: 100%;
+                                             background-color: var(--danger-red);
+                                             border: .2rem solid var(--danger-red);
+                                             border-radius: 1rem;
+                                         }
+                                         
+                                         .battle-HP-bar div div {
+                                             /* highlight on HP Bar */
+                                             border-top: .3rem solid rgba(0, 0, 0, .6) !important;
+                                         }
+                                         
+                                         .battle-card-face h3 {
+                                             text-align: right;
+                                             margin-right: 2rem;
+                                             padding: .3rem 0;
+                                         }
+                                         
+                                         .battle-card-stat {
+                                             display: inline-block;
+                                             width: 30%;
+                                             font-size: .8rem;
+                                             text-shadow: .2rem .2rem .1rem var(--light-shadow);
+                                         }
+                                         
+                                         .battle-card-stat.stat-pad {
+                                             margin-left: 10%;
+                                         }
+                                         
+                                         #player-card .battle-card-stat {
+                                             color: var(--white-text);
+                                             width: 30%;
+                                             padding-top: .4rem;
+                                             text-shadow: .2rem .2rem .1rem var(--dark-bg);
+                                         }
+                                         
+                                         #enemy-card .battle-card-face h3 {
+                                             display: inline-block;
+                                             text-align: right;
+                                             width: 33%;
+                                             margin-right: 1rem;
+                                         }
+                                         /**********************************
 **         LOWER SECTION         */
-
-#Lower-Vis {
-    width: 80rem;
-    height: 15rem;
-    /**/
-    display: flex;
-}
-
-
-/*********************************
+                                         
+                                         #Lower-Vis * {
+                                             /* border: 1px solid black; */
+                                         }
+                                         
+                                         #Lower-Vis {
+                                             width: 80rem;
+                                             height: 15rem;
+                                             /**/
+                                             display: flex;
+                                             font-family: 'Gametxt', cursive;
+                                         }
+                                         
+                                         #lower-left,
+                                         #lower-right {
+                                             color: var(--white-text);
+                                             background-color: var(--dark-bg);
+                                             padding: .15rem;
+                                             padding-top: .1rem;
+                                             padding-left: .3rem;
+                                             padding-bottom: .3rem;
+                                         }
+                                         
+                                         #lower-right {
+                                             color: var(--white-text);
+                                             padding-right: .3rem;
+                                         }
+                                         
+                                         #battle-choice-text-box {
+                                             background-color: var(--gold-border);
+                                             border: 1.2rem solid var(--gold-border);
+                                             border-radius: 1.5rem;
+                                             width: 100%;
+                                             height: 100%;
+                                         }
+                                         
+                                         #battle-choice-text {
+                                             font-size: 2.5rem;
+                                             font-weight: 100;
+                                             text-shadow: .2rem .2rem .1rem var(--dark-shadow);
+                                             background-color: var(--menu-bg1);
+                                             border: .5rem solid var(--white-text);
+                                             border-radius: .5rem;
+                                             padding: 2rem;
+                                             width: 100%;
+                                             height: 100%;
+                                             border-right: 0;
+                                         }
+                                         
+                                         #battle-choice-text-box,
+                                         #battle-choice-text {
+                                             border-right: 0;
+                                             border-top-right-radius: 0;
+                                             border-bottom-right-radius: 0;
+                                         }
+                                         
+                                         #battle-choice-opt-box {
+                                             background-color: var(--purp-border);
+                                             border: 1.2rem solid var(--purp-border);
+                                             border-radius: .5rem;
+                                             width: 100%;
+                                             height: 100%;
+                                         }
+                                         
+                                         #battle-choice-opt {
+                                             display: flex;
+                                             flex-wrap: wrap;
+                                             background-color: var(--white-text);
+                                             border: .5rem solid var(--white-text);
+                                             border-radius: .5rem;
+                                             padding: .5rem;
+                                             width: 100%;
+                                             height: 100%;
+                                             border-right: 0;
+                                         }
+                                         
+                                         #battle-choice-opt button {
+                                             width: 50%;
+                                             font-family: 'GameTxt';
+                                             font-size: 3rem;
+                                             text-align: left;
+                                             padding-top: .4rem;
+                                             border: 0;
+                                             background-color: var(--white-text);
+                                         }
+                                         
+                                         #battle-choice-opt button:focus .choiceIcon {
+                                             opacity: 1;
+                                         }
+                                         
+                                         .choiceIcon {
+                                             content: url('../images/right-arrow-svgrepo-com.svg');
+                                             position: relative;
+                                             top: .3rem;
+                                             left: .5rem;
+                                             width: 3rem;
+                                             height: 3rem;
+                                             opacity: 0;
+                                             filter: drop-shadow(.2rem .2rem .1rem var(--light-shadow));
+                                         }
+                                         /*********************************
 **   RESPOSIVE SCREEN SIZING    **
 *********************************/
-
-@media screen and (max-width: 320px) {
-     :root {
-        font-size: 20%;
-    }
-}
-
-@media screen and (min-width: 321px) {
-     :root {
-        font-size: 22%;
-    }
-}
-
-@media screen and (min-width: 375px) {
-     :root {
-        font-size: 25%;
-    }
-}
-
-@media screen and (min-width: 425px) {
-     :root {
-        font-size: 30%;
-    }
-}
-
-@media screen and (min-width: 545px) {
-     :root {
-        font-size: 35%;
-    }
-}
-
-@media screen and (min-width: 576px) {
-     :root {
-        font-size: 40%;
-    }
-}
-
-@media screen and (min-width: 600px) {
-     :root {
-        font-size: 45%;
-    }
-}
-
-@media screen and (min-width: 786px) {
-     :root {
-        font-size: 58%;
-    }
-}
-
-@media screen and (min-width: 1024px) {
-     :root {
-        font-size: 70%;
-    }
-}
-
-@media screen and (min-width: 1440px) {
-     :root {
-        font-size: 80%;
-    }
-}
+                                         
+                                         @media screen and (max-width: 320px) {
+                                              :root {
+                                                 font-size: 20%;
+                                             }
+                                         }
+                                         
+                                         @media screen and (min-width: 321px) {
+                                              :root {
+                                                 font-size: 22%;
+                                             }
+                                         }
+                                         
+                                         @media screen and (min-width: 375px) {
+                                              :root {
+                                                 font-size: 25%;
+                                             }
+                                         }
+                                         
+                                         @media screen and (min-width: 425px) {
+                                              :root {
+                                                 font-size: 30%;
+                                             }
+                                         }
+                                         
+                                         @media screen and (min-width: 545px) {
+                                              :root {
+                                                 font-size: 35%;
+                                             }
+                                         }
+                                         
+                                         @media screen and (min-width: 576px) {
+                                              :root {
+                                                 font-size: 40%;
+                                             }
+                                         }
+                                         
+                                         @media screen and (min-width: 600px) {
+                                              :root {
+                                                 font-size: 45%;
+                                             }
+                                         }
+                                         
+                                         @media screen and (min-width: 786px) {
+                                              :root {
+                                                 font-size: 58%;
+                                             }
+                                         }
+                                         
+                                         @media screen and (min-width: 1024px) {
+                                              :root {
+                                                 font-size: 70%;
+                                             }
+                                         }
+                                         
+                                         @media screen and (min-width: 1440px) {
+                                              :root {
+                                                 font-size: 80%;
+                                             }
+                                         }

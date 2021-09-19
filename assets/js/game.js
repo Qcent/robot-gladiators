@@ -413,6 +413,7 @@ const randomizeEnemyStats = function(enemy) {
     boost = randomNumber(0, (maxBoost - totalBoost)); //get a random stat boost value upto maxBoost
     totalBoost += boost; //keep track of boost handed out in total boost
     enemy.health = enemy.health + boost; //apply boost to stat
+    enemy.maxHealth = enemy.health; // set the maxHealth for calc percentages
 
     boost = randomNumber(0, (maxBoost - totalBoost)); //get a random stat boost value upto maxBoost-boost handed out so far
     totalBoost += boost;
