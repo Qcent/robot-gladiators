@@ -1005,6 +1005,8 @@ const UIGame = (() => {
             updateRobotCard('plr');
             updateRobotCard('nme');
 
+            $('#playerNameHolder').text(playerInfo.name.toUpperCase());
+
             /********** HERE DOWN */
             // let ranAway = !fight(currentEnemy);
             /* above is triggered with a click */
@@ -1127,3 +1129,5 @@ $("#battle-choice-opt-box").on('click', 'button', function(event) {
 
     UIGame.fight(playerInput);
 });
+
+UIGame.startGame();

@@ -43,7 +43,7 @@ const createBattleUIArea = (function() {
 
     /* LEFT */
     let textContainer = $("<div>").attr("id", "battle-choice-text-box");
-    let textArea = $("<div>").attr("id", "battle-choice-text").text("What will 'Robot Name' do?");
+    let textArea = $("<div>").attr("id", "battle-choice-text").html("What will <span id='playerNameHolder'></span> do?");
 
     loLeft.append(textContainer.append(textArea));
     /* RIGHT */
