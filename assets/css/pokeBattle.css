@@ -1,0 +1,263 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    /*  border: 1px solid black; */
+}
+
+:root {
+    --health-green: rgb(9, 231, 46);
+    --danger-red: rgb(231, 9, 9);
+    --card-face: rgb(211, 195, 150);
+    --card-frame: rgb(90, 61, 6);
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+
+#Upper-Vis {
+    width: 80rem;
+    height: 40rem;
+    margin-top: 4rem;
+    /**/
+    display: flex;
+    align-items: stretch;
+}
+
+#upper-left,
+#upper-right,
+#lower-left,
+#lower-right {
+    width: 50%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+#player-box,
+#enemy-box {
+    width: 65%;
+    height: 45%;
+    margin: 1rem auto;
+}
+
+#enemy-box {
+    background-image: url("https://mir-s3-cdn-cf.behance.net/project_modules/max_1200/f19fad40395057.577d99b42166b.jpg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#player-box {
+    margin-left: 20%;
+    background-image: url("https://i.pinimg.com/originals/be/a1/0e/bea10e38d51dcc700360608ab56d5e43.jpg");
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+#player-card,
+#enemy-card {
+    width: 95%;
+    height: 38%;
+    margin: 1rem .2rem 1rem auto;
+    display: flex;
+}
+
+#player-card {
+    margin: 1rem auto 1rem .2rem;
+    align-items: flex-end;
+}
+
+.battle-card {
+    width: 100%
+}
+
+.battle-card-frame {
+    border: 2rem solid;
+    border-top: 0;
+    border-left-color: rgba(0, 0, 0, 0);
+    border-right: 2rem solid var(--card-frame);
+    border-bottom-color: var(--card-frame);
+    border-bottom-right-radius: 2rem;
+    height: 3.6rem;
+    z-index: -1;
+}
+
+#enemy-card .battle-card-frame {
+    border: 3rem solid;
+    border-top: 0;
+    border-right-color: rgba(0, 0, 0, 0);
+    border-left: 2rem solid var(--card-frame);
+    border-bottom-color: var(--card-frame);
+    border-bottom-left-radius: 2rem;
+    border-bottom-right-radius: 0;
+    margin-left: 2.8rem;
+    position: relative;
+    bottom: 2.8rem;
+}
+
+.battle-card-face {
+    margin: 0 .5rem 0 2rem;
+    padding-left: 2.5rem;
+    font-size: 1.5rem;
+    background-color: var(--card-face);
+    border-radius: .25rem;
+    border-top-left-radius: 2rem;
+    border-bottom-right-radius: 2rem;
+}
+
+#player-card .battle-card-face {
+    position: relative;
+    top: 2rem;
+}
+
+#player-card .battle-card-frame div {
+    position: relative;
+    top: 1rem;
+}
+
+#enemy-card .battle-card-face {
+    margin: 0 3rem 0 .5rem;
+}
+
+.battle-card-face h2 {
+    font-size: 3rem;
+}
+
+.battle-HP-bar {
+    display: flex;
+    background-color: var(--health-green);
+    border: solid var(--health-green);
+    border-radius: 1rem;
+    margin-right: 1rem;
+}
+
+.battle-HP-bar div {
+    width: 100%;
+    display: flex;
+    justify-content: flex-end;
+    background-color: #fff;
+    border: .2rem solid #fff;
+    border-radius: 1rem;
+}
+
+#player-HP-bar {
+    width: 100%;
+    background-color: var(--health-green);
+    border: .2rem solid var(--health-green);
+    border-radius: 1rem;
+}
+
+#enemy-HP-bar {
+    width: 100%;
+    background-color: var(--danger-red);
+    border: .2rem solid var(--danger-red);
+    border-radius: 1rem;
+}
+
+.battle-card-face h3 {
+    text-align: right;
+    margin-right: 2rem;
+}
+
+.battle-card-stat.stat-pad {
+    margin-left: 40%;
+}
+
+.battle-card-stat {
+    display: inline-block;
+    width: 20%;
+}
+
+#enemy-card .battle-card-stat {
+    width: 25%;
+    font-size: 1rem;
+}
+
+#enemy-card .battle-card-face h3 {
+    display: inline-block;
+    text-align: right;
+    width: 43%;
+    margin-right: 1rem;
+}
+
+
+/**********************************
+**         LOWER SECTION         */
+
+#Lower-Vis {
+    width: 80rem;
+    height: 15rem;
+    /**/
+    display: flex;
+}
+
+
+/*********************************
+**   RESPOSIVE SCREEN SIZING    **
+*********************************/
+
+@media screen and (max-width: 320px) {
+     :root {
+        font-size: 20%;
+    }
+}
+
+@media screen and (min-width: 321px) {
+     :root {
+        font-size: 22%;
+    }
+}
+
+@media screen and (min-width: 375px) {
+     :root {
+        font-size: 25%;
+    }
+}
+
+@media screen and (min-width: 425px) {
+     :root {
+        font-size: 30%;
+    }
+}
+
+@media screen and (min-width: 545px) {
+     :root {
+        font-size: 35%;
+    }
+}
+
+@media screen and (min-width: 576px) {
+     :root {
+        font-size: 40%;
+    }
+}
+
+@media screen and (min-width: 600px) {
+     :root {
+        font-size: 45%;
+    }
+}
+
+@media screen and (min-width: 786px) {
+     :root {
+        font-size: 58%;
+    }
+}
+
+@media screen and (min-width: 1024px) {
+     :root {
+        font-size: 70%;
+    }
+}
+
+@media screen and (min-width: 1440px) {
+     :root {
+        font-size: 80%;
+    }
+}
