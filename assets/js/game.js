@@ -941,13 +941,12 @@ var endGame = function() {
     var playAgainConfirm = window.confirm("Would you like to play again?");
 
     if (playAgainConfirm) {
-        startGame();
+        UIGame.startGame();
     } else {
         window.alert("Thank you for playing Robot Gladiators!\n Y'all come back now, ya hear!");
     }
 };
 
-//startGame();
 
 const UIGame = (() => {
     let nmeIdx = 0;
@@ -958,6 +957,13 @@ const UIGame = (() => {
         beatenOpponents = [];
         weekOfBattle = 0;
         totalrounds = 0;
+
+        /* GAME TESTING TO LIMIT OPPONENTS 
+        for (let i = 0; i < opponentList.length - 1; i++) {
+            beatenOpponents.splice(i, 1, true);
+        }
+        /*  */
+
         //Intro Takes it from Here
         displayIntro();
     }
@@ -991,10 +997,12 @@ const UIGame = (() => {
     }
     const startNewRound = () => {
 
-        createBattleUIArea();
+
 
         let i = totalrounds % 3;
         nmeIdx = i; // a global refference to the enemyInfo[i]
+
+        if (i === 0) { createBattleUIArea(); } // only redraw if first of the week
 
         if (playerInfo.health > 0 && i < enemyInfo.length) {
             currentEnemy = Object.create(enemyInfo[i]);
@@ -1018,6 +1026,7 @@ const UIGame = (() => {
         }
     }
     const sendOutTheBots = () => {
+        createBattleUIArea(); // reset the area but only need to reset the enemy card
         updateRobotCard('plr');
         updateRobotCard('nme');
 
@@ -1134,14 +1143,14 @@ const UIGame = (() => {
             inputToContinue(isThereMoreToFight);
 
         } else { //Guy is still alive
-            createBattleText("He's Still Alive!!");
+            createBattleText('The battle continues!');
         }
     }
     const isThereMoreToFight = () => {
         // if not at end of enemys and player is still alive but hasn't run away
         if (nmeIdx < enemyInfo.length - 1 && playerInfo.health > 0) {
             playerInfo.refillHealth(Math.floor(playerInfo.maxHealth * .18));
-
+            updateRobotCard('plr');
             createMessageText('You rest between battle and regain ' + Math.floor(playerInfo.maxHealth * (playerInfo.overNightRecharge + (nmeIdx / 80))) + ' health')
             inputToContinue(startNewRound);
             return;
@@ -1170,11 +1179,17 @@ const UIGame = (() => {
             // BEAT THE WHOLE GAME /*   
             let payout = calcPayout();
             playerInfo.takeCash(payout);
-            window.alert("The Robot Fighting League manager comes over with a Beamin' Smile in his face!\n" +
-                "'Wheeee! Doooggy! That's some uh' the finest robot rasslin' I've ever had the pleasure to be in the presence of'.\n" +
-                "'Boy, you done made me a very rich and a very... I say very , Happy Man!' \n" +
-                "'Take this bonus Champ! and go on a vacation, I ain't got no more bots left for you to break.'\n" +
+            createMenuUIArea();
+            $('#menu-content').css('width', '80%').css('text-align', 'left');
+
+            setMenuContent("The Robot Fighting League manager comes over with a Beamin' Smile in his face!<br><br>" +
+                "'Wheeee! Doooggy! That's some uh' the finest robot rasslin' I've ever had the pleasure to be in the presence of'.<br><br>" +
+                "'Boy, you done made me a very rich and a very...<br>I say very , Happy Man!' <br><br>" +
+                "'Take this bonus Champ! and go on a vacation, I ain't got no more bots left for you to break.'<br><br>" +
                 "He hands over: $" + payout);
+            setMenuText("Great Job!!! You Beat the Game! 🤖");
+
+            inputToContinue(endGame);
         }
     }
 
@@ -1191,8 +1206,7 @@ const UIGame = (() => {
             "  2. Upgrade Health for $" + playerInfo.healthUpShopCost + "           6. Repair Armour for $" + playerInfo.armourReShopCost() + "\n" +
             "  3. Upgrade Attack for $" + playerInfo.attackShopCost + "\n" +
             "  4. Upgrade Speed for $" + playerInfo.speedShopCost + "          9. LEAVE\n" +
-            "  \n" //+
-            // "Please enter your choice: "
+            "  \n"
         );
 
         //use switch to carry out actions
@@ -1263,7 +1277,6 @@ const UIGame = (() => {
                 break;
         }
     };
-
     const displayIntro = () => {
         createMenuUIArea(true);
         setMenuContent("<h2>Welcome to Robot Gladiators!</h2> " +
