@@ -252,10 +252,10 @@ var playerInfo = {
                 this.health += this.healthRefillValue();
 
                 if (this.health > this.maxHealth) { this.health = this.maxHealth; }
-                shop();
+                UIGame.guiShop();
             } else {
                 window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-                shop();
+                UIGame.guiShop();
             }
         }
 
@@ -272,10 +272,10 @@ var playerInfo = {
                 //charge more the next time:: 30% more each time
                 this.healthUpShopCost += Math.floor((this.healthUpShopCost) * (this.upgradeIncreaseCost * 1.2));
 
-                shop();
+                UIGame.guiShop();
             } else {
                 window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-                shop();
+                UIGame.guiShop();
             }
         }
     },
@@ -289,10 +289,10 @@ var playerInfo = {
             //charge more the next time
             this.armourShopCost += Math.floor((this.armourShopCost) * (this.upgradeIncreaseCost * 2));
 
-            shop();
+            UIGame.guiShop();
         } else {
             window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-            shop();
+            UIGame.guiShop();
         }
 
     },
@@ -305,14 +305,14 @@ var playerInfo = {
                 this.money -= this.armourReShopCost();
                 this.armourDamage = 0;
 
-                shop();
+                UIGame.guiShop();
             } else {
                 window.alert("Sorry " + this.name + " is not equipped with any armour");
-                shop();
+                UIGame.guiShop();
             }
         } else {
             window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-            shop();
+            UIGame.guiShop();
         }
     },
     upgradeAttack: function(value) {
@@ -325,10 +325,10 @@ var playerInfo = {
                 //charge more the next time:: 20% more each time
                 this.attackShopCost += Math.floor((this.attackShopCost) * this.upgradeIncreaseCost);
 
-                shop();
+                UIGame.guiShop();
             } else {
                 window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-                shop();
+                UIGame.guiShop();
             }
         }
 
@@ -343,10 +343,10 @@ var playerInfo = {
                 //charge more the next time:: 20% more each time
                 this.speedShopCost += Math.floor((this.speedShopCost) * this.upgradeIncreaseCost);
 
-                shop();
+                UIGame.guiShop();
             } else {
                 window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-                shop();
+                UIGame.guiShop();
             }
         }
     },
@@ -611,15 +611,8 @@ var getLocalChamp = function() {
     */
 }
 var enemyHealthCheck = function(enemy) {
-    //check enemys health
+    //check enemys health returns null or the health left
     if (enemy.health <= 0) { //if no health
-
-        //reward player
-        let reward = randomNumber(3 + weekOfBattle, 9 + weekOfBattle);
-        playerInfo.takeCash(reward);
-
-        console.log(enemy.name + " has died!");
-        window.alert(enemy.name + " is defeated!!\n You found $" + reward + " among their wreakage!");
         return null;
     } else { // still health left
         console.log(enemy.name + " still has " + enemy.health + " health left.");
@@ -723,6 +716,7 @@ var shop = function() {
         case "EXIT":
         case "LEAVE":
             //window.alert("Leaving the store.");
+            // startNewWeek();
             break;
 
         case "FIGHT":
@@ -1048,8 +1042,6 @@ const UIGame = (() => {
 
                 if (!enemyHealthCheck(enemy)) {
                     //check enemys health after attack 
-                    //break;
-                    //return true;
                     nmeIsDead = true;
                 }
                 // enemy robot now attacks
@@ -1082,18 +1074,19 @@ const UIGame = (() => {
                 // now the player attacks 
                 plrDam = playerInfo.makeAttack(enemy);
                 updateRobotCard('nme');
-
                 /*
                 window.alert(enemy.name + " attacks first for " + dam1 + " damage!\n" +
                     playerInfo.name + " retaliates for " + dam2 + " damage!\n");
 
                     ********* animation herere **********/
 
+                /* NOT NEEDED 
                 if (!enemyHealthCheck(enemy)) {
                     //check enemys health after attack and break if dead
                     nmeIsDead = true;
-                    // break;
+ 
                 }
+                */
             }
             /// update the screen with message
             createMessageText(((plrFirst > 0) ? playerInfo.name : enemy.name) + " attacks first for " + ((plrFirst > 0) ? plrDam : nmeDam) + " damage!<br>" +
@@ -1131,41 +1124,145 @@ const UIGame = (() => {
             //if enemy is dead
             beatenOpponents[weeksOpponents[nmeIdx]] = true;
 
-            // if not at end of enemys and player is still alive but hasn't run away
-            if (nmeIdx < enemyInfo.length - 1 && playerInfo.health > 0) {
-                playerInfo.refillHealth(Math.floor(playerInfo.maxHealth * .18));
-                alert('You rest between battle and regain ' + Math.floor(playerInfo.maxHealth * (playerInfo.overNightRecharge + (nmeIdx / 80))) + ' health')
+            //reward player
+            let reward = randomNumber(3 + weekOfBattle, 9 + weekOfBattle);
+            playerInfo.takeCash(reward);
 
-                startNewRound();
-            } else
+            console.log(currentEnemy.name + " has died!  You get $" + reward);
+            createMessageText(currentEnemy.name + " is defeated!!<br>You found $" + reward + " among their wreakage!");
 
-            if (playerInfo.health > 0 && opponentsRemaining()) {
-                let payout = calcPayout();
-                playerInfo.takeCash(payout);
-                window.alert("The week's fighting is over! And you came out on top!\nThe Robot Fighting League manager comes over and gives you your week's pay: '" + payout + " Big Ones!!'\n" +
-                    managerMessage[weekOfBattle - 1]);
-                //lets go shopping
-                window.alert("Let's visit the repair bay.");
-                shop();
-                startNewWeek();
-
-            } else if (!opponentsRemaining()) {
-                // BEAT THE WHOLE GAME /*   
-                let payout = calcPayout();
-                playerInfo.takeCash(payout);
-                window.alert("The Robot Fighting League manager comes over with a Beamin' Smile in his face!\n" +
-                    "'Wheeee! Doooggy! That's some uh' the finest robot rasslin' I've ever had the pleasure to be in the presence of'.\n" +
-                    "'Boy, you done made me a very rich and a very... I say very , Happy Man!' \n" +
-                    "'Take this bonus Champ! and go on a vacation, I ain't got no more bots left for you to break.'\n" +
-                    "He hands over: $" + payout);
-            }
+            inputToContinue(isThereMoreToFight);
 
         } else { //Guy is still alive
-            createBattleText();
+            createBattleText("He's Still Alive!!");
+        }
+    }
+    const isThereMoreToFight = () => {
+        // if not at end of enemys and player is still alive but hasn't run away
+        if (nmeIdx < enemyInfo.length - 1 && playerInfo.health > 0) {
+            playerInfo.refillHealth(Math.floor(playerInfo.maxHealth * .18));
+
+            createMessageText('You rest between battle and regain ' + Math.floor(playerInfo.maxHealth * (playerInfo.overNightRecharge + (nmeIdx / 80))) + ' health')
+            inputToContinue(startNewRound);
+            return;
+        } else
+
+        if (playerInfo.health > 0 && opponentsRemaining()) {
+            let payout = calcPayout();
+            playerInfo.takeCash(payout);
+
+            createMenuUIArea();
+
+            setMenuText("The week's fighting is over! And you came out on top! The Robot Fighting League manager comes over and gives you your week's pay 💵💵💵 '$" + payout + " Big Ones!!' 💵💵💵  ");
+            setMenuContent(managerMessage[weekOfBattle - 1]);
+
+            inputToContinue(guiShop);
+            return
+            /* shop() will send to startNewWeek when exited
+
+            //lets go shopping
+            window.alert("Let's visit the repair bay.");
+            shop();
+            startNewWeek();
+            */
+
+        } else if (!opponentsRemaining()) {
+            // BEAT THE WHOLE GAME /*   
+            let payout = calcPayout();
+            playerInfo.takeCash(payout);
+            window.alert("The Robot Fighting League manager comes over with a Beamin' Smile in his face!\n" +
+                "'Wheeee! Doooggy! That's some uh' the finest robot rasslin' I've ever had the pleasure to be in the presence of'.\n" +
+                "'Boy, you done made me a very rich and a very... I say very , Happy Man!' \n" +
+                "'Take this bonus Champ! and go on a vacation, I ain't got no more bots left for you to break.'\n" +
+                "He hands over: $" + payout);
         }
     }
 
     /********* somethings i am keeping sperate down here i dont know why */
+    const guiShop = function() {
+        //ask player what they would like to do
+        var shopOptionPrompt = window.prompt("END OF WEEK " + weekOfBattle + " STATUS:\n" +
+            "  Cash: $ " + playerInfo.money +
+            "  Health: " + playerInfo.health + "/" + playerInfo.maxHealth +
+            "  Attack: " + playerInfo.attack +
+            "  Speed: " + playerInfo.speed + "\n\n" +
+            "Would you like to:\n" +
+            "  1. Restore Health for $" + playerInfo.healthShopCost() + "            5. Upgrade Armour for $" + playerInfo.armourShopCost + "\n" +
+            "  2. Upgrade Health for $" + playerInfo.healthUpShopCost + "           6. Repair Armour for $" + playerInfo.armourReShopCost() + "\n" +
+            "  3. Upgrade Attack for $" + playerInfo.attackShopCost + "\n" +
+            "  4. Upgrade Speed for $" + playerInfo.speedShopCost + "          9. LEAVE\n" +
+            "  \n" //+
+            // "Please enter your choice: "
+        );
+
+        //use switch to carry out actions
+        switch (shopOptionPrompt.toUpperCase()) {
+            case "1":
+            case "RESTORE":
+            case "FILL":
+            case "HEALTH":
+                playerInfo.refillHealth();
+                break;
+
+            case "2":
+                playerInfo.upgradeHealth();
+                break;
+
+            case "3":
+            case "UPGRADE":
+            case "ATTACK":
+            case "POWER":
+                playerInfo.upgradeAttack();
+                break;
+
+            case "4":
+            case "SPEED":
+            case "FAST":
+            case "INCREASE":
+                playerInfo.increeseSpeed();
+                break;
+
+            case "5":
+            case "DEF":
+            case "HARD":
+            case "ARMOUR":
+                playerInfo.getArmour();
+                break;
+
+            case "6":
+            case "REPAIR":
+            case "FIX":
+                playerInfo.repairArmour();
+                break;
+
+            case "9":
+            case "Q":
+            case "X":
+            case "QUIT":
+            case "EXIT":
+            case "LEAVE":
+                //window.alert("Leaving the store.");
+                startNewWeek();
+                break;
+
+            case "FIGHT":
+                //window.alert("Leaving the store.");
+                playerInfo.upgradeAttack(1);
+                playerInfo.cheater = true;
+                break;
+
+            case "HURRY":
+                //window.alert("Leaving the store.");
+                playerInfo.increeseSpeed(1);
+                playerInfo.cheater = true;
+                break;
+
+            default:
+                window.alert("You did not type a valid option. Try something else");
+                guiShop();
+                break;
+        }
+    };
 
     const displayIntro = () => {
         createMenuUIArea(true);
@@ -1215,6 +1312,7 @@ const UIGame = (() => {
         startGame,
         fight,
         runAway,
+        guiShop,
     }
 })();
 
