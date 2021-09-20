@@ -1,4 +1,41 @@
-const createBattleUIArea = (function() {
+const clearScreen = () => {
+    $('#Upper-Vis') ? $('#Upper-Vis').remove() : null;
+    $('#Lower-Vis') ? $('#Lower-Vis').remove() : null;
+}
+const setMenuText = (txt) => {
+    $('#menu-text').text(txt);
+}
+const setMenuContent = (txt) => {
+    $('#menu-content section').html(txt);
+}
+const createMenuUIArea = (bool) => {
+    clearScreen();
+    let upperEl = $("<div>").attr("id", "Upper-Vis").addClass("menu-ui");
+    let lowerEl = $("<div>").attr("id", "Lower-Vis");
+
+    let upperBox = $("<div>").attr("id", "upper-container");
+    /***/
+    upperBox.html(" <div class = 'menu-bg'></div><div class='menu-bg menu-bg2'></div> <div class='menu-bg menu-bg3'></div><div id='menu-content'><section></section></div>");
+    /***/
+
+    upperEl.append(upperBox);
+
+    /*********************** */
+    /******LOWER SCREEN */
+    let lowerBox = $("<div>").attr("id", "lower-container");
+
+    let textContainer = $("<div>").attr("id", "menu-text-box");
+    let textArea = $("<div>").attr("id", "menu-text").html("Lorem, ipsum dolor sit amet consectetur adipisicing elit. Provident facilis aliquam minima saepe, velit blanditiis.");
+
+    lowerBox.append(textContainer.append(textArea), bool ? $('<span>').attr('id', 'menu-ok-check') : null);
+
+    /*** */
+    lowerEl.append(lowerBox)
+        /**** */
+    $("body").append(upperEl, lowerEl);
+};
+const createBattleUIArea = function() {
+    clearScreen();
 
     let upperEl = $("<div>").attr("id", "Upper-Vis");
     let lowerEl = $("<div>").attr("id", "Lower-Vis");
@@ -55,15 +92,20 @@ const createBattleUIArea = (function() {
     );
 
     loRight.append(textContainer.append(textArea));
-
-
     /*** */
     lowerEl.append(loLeft, loRight)
         /**** */
     $("body").append(upperEl, lowerEl);
-})();
 
-const updateRobotCard = function(who) {
+    /******** Set up button click listener */
+    $("#battle-choice-opt-box").on('click', 'button', function(event) {
+
+        let playerInput = $(event.target).attr("plr-choice");
+        if (playerInput === "RUN") { UIGame.runAway(playerInput); }
+        if (playerInput === "FIGHT") { UIGame.fight(playerInput); }
+    });
+};
+const updateRobotCard = (who) => {
     who = (who === "plr") ? 1 : 0;
     let robot = (who) ? 'player' : 'enemy';
 
@@ -78,3 +120,5 @@ const updateRobotCard = function(who) {
     /*  atkText = */
     $("#" + robot + "-ATK-text").text("Attack: " + ((who) ? playerInfo.attack : currentEnemy.attack));
 };
+
+createMenuUIArea();
