@@ -960,19 +960,12 @@ const UIGame = (() => {
 
     const startGame = () => {
         getLocalChamp();
-        displayIntro();
 
         beatenOpponents = [];
         weekOfBattle = 0;
         totalrounds = 0;
-        /********** HERE DOWN */
-
-        //playerInfo.reset();
-        // let botFound = findABot(playerInfo.name);
-        //if (botFound === false) { buildABot(playerInfo.name); } else { loadABot(botFound); }
-
-
-        // startNewWeek();
+        //Intro Takes it from Here
+        displayIntro();
     }
     const startNewWeek = () => {
         if (playerInfo.health > 0 && totalrounds < opponentList.length && opponentsRemaining()) { // you are alive and havent been in as many fights as there are opponents
@@ -997,7 +990,10 @@ const UIGame = (() => {
             });
 
         } //END OF IF IN GAME LOOP
-        else { endGame(); }
+        else {
+            alert('No health or no opponents but probably no opponents\n OpponentsRemaining: ' + opponentsRemaining() + "\n Opponents last fought: " + weeksOpponents.length);
+            endGame();
+        }
     }
     const startNewRound = () => {
 
@@ -1010,53 +1006,63 @@ const UIGame = (() => {
             currentEnemy = Object.create(enemyInfo[i]);
 
             totalrounds++;
-            window.alert("    Week " + weekOfBattle + " : Round " + (i + 1) + "\n Your opponent: " + currentEnemy.name + "🤖 ");
+            createMessageText("    Week " + weekOfBattle + " : Round " + (i + 1) + "<br> Your opponent: 🤖 " + currentEnemy.name + " 🤖 ");
 
             let boostGiven = randomizeEnemyStats(currentEnemy);
-
+            /*********** */
             console.log("Was boosted: " + boostGiven);
             console.log(currentEnemy.name, currentEnemy);
             console.log(playerInfo.name + ": attack: " + playerInfo.attack + ", speed: " + playerInfo.speed + ", health: " + playerInfo.health + "/" + playerInfo.maxHealth)
+                /*********** */
 
-            updateRobotCard('plr');
-            updateRobotCard('nme');
-
-            $('#playerNameHolder').text(playerInfo.name.toUpperCase());
-
-            /********** HERE DOWN */
-            // let ranAway = !fight(currentEnemy);
-            /* above is triggered with a click */
-
+            inputToContinue(sendOutTheBots);
+            /// should send the function to run after continue
+            //  );
 
         } else if (i >= enemyInfo.length) {
             alert("Error not enough enemeys in buffer")
         }
     }
+    const sendOutTheBots = () => {
+        updateRobotCard('plr');
+        updateRobotCard('nme');
+
+        createBattleText("Here they come!");
+        // $('#playerNameHolder').text(playerInfo.name.toUpperCase());
+    }
     const fight = () => {
         let enemy = currentEnemy;
         let nmeIsDead = false;
+
         if (enemy.health > 0 && playerInfo.health > 0) {
 
-            /*  PLAYER WILL HAVE CLICKED FIGHT TO GET TO THIS SO RUN AWAY IS A WHOLE OTHER FUNCTION  */
-            if (whoDrawsFirst(enemy) > 0) {
+            let plrFirst = whoDrawsFirst(enemy);
+            let plrDam = 0;
+            let nmeDam = 0;
+
+            if (plrFirst > 0) {
                 // positive numbers mean player attacks first
-                let dam1 = playerInfo.makeAttack(enemy);
+
+                plrDam = playerInfo.makeAttack(enemy);
                 updateRobotCard('nme');
 
                 if (!enemyHealthCheck(enemy)) {
-                    //check enemys health after attack and break if dead
+                    //check enemys health after attack 
                     //break;
                     //return true;
                     nmeIsDead = true;
                 }
                 // enemy robot now attacks
                 if (!nmeIsDead) {
-                    let dam2 = enemyMakeAttack(enemy);
+                    nmeDam = enemyMakeAttack(enemy);
                 }
                 updateRobotCard('plr');
 
-                window.alert(playerInfo.name + " attacks first for " + dam1 + " damage!" +
-                    nmeIsDead ? '' : ('\n' + enemy.name + " retaliates for " + dam2 + " damage!\n"));
+                // window.alert(playerInfo.name + " attacks first for " + dam1 + " damage!" +
+                //     nmeIsDead ? '' : ('\n' + enemy.name + " retaliates for " + dam2 + " damage!\n"));
+                /**************** */
+                //make some damage animations here
+                /***************** */
 
                 if (!playerInfo.healthCheck()) {
                     //check player health, break if dead
@@ -1065,22 +1071,23 @@ const UIGame = (() => {
                 }
             } else { // was a negative number and enemy robot will attack first
                 // enemy robot  attacks first
-                let dam1 = enemyMakeAttack(enemy);
+                nmeDam = enemyMakeAttack(enemy);
                 updateRobotCard('plr');
 
                 if (!playerInfo.healthCheck()) {
                     //check player health, break if dead
-                    window.alert(enemy.name + " attacks first for " + dam1 + " damage!");
-                    /// break;
                     endGame();
                     return false;
                 }
                 // now the player attacks 
-                let dam2 = playerInfo.makeAttack(enemy);
+                plrDam = playerInfo.makeAttack(enemy);
                 updateRobotCard('nme');
 
+                /*
                 window.alert(enemy.name + " attacks first for " + dam1 + " damage!\n" +
                     playerInfo.name + " retaliates for " + dam2 + " damage!\n");
+
+                    ********* animation herere **********/
 
                 if (!enemyHealthCheck(enemy)) {
                     //check enemys health after attack and break if dead
@@ -1088,41 +1095,12 @@ const UIGame = (() => {
                     // break;
                 }
             }
+            /// update the screen with message
+            createMessageText(((plrFirst > 0) ? playerInfo.name : enemy.name) + " attacks first for " + ((plrFirst > 0) ? plrDam : nmeDam) + " damage!<br>" +
+                ((plrFirst > 0) ? enemy.name : playerInfo.name) + " retaliates for " + ((plrFirst > 0) ? nmeDam : plrDam) + " damage!");
 
-            if (nmeIsDead) {
-                //if enemy is dead
-                beatenOpponents[weeksOpponents[nmeIdx]] = true;
+            inputToContinue(isEnemyDead);
 
-                // if not at end of enemys and player is still alive but hasn't run away
-                if (nmeIdx < enemyInfo.length - 1 && playerInfo.health > 0) {
-                    playerInfo.refillHealth(Math.floor(playerInfo.maxHealth * .18));
-                    alert('You rest between battle and regain ' + Math.floor(playerInfo.maxHealth * (playerInfo.overNightRecharge + (nmeIdx / 80))) + ' health')
-
-                    startNewRound();
-                } else
-
-                if (playerInfo.health > 0 && opponentsRemaining()) {
-                    let payout = calcPayout();
-                    playerInfo.takeCash(payout);
-                    window.alert("The week's fighting is over! And you came out on top!\nThe Robot Fighting League manager comes over and gives you your week's pay: '" + payout + " Big Ones!!'\n" +
-                        managerMessage[weekOfBattle - 1]);
-                    //lets go shopping
-                    window.alert("Let's visit the repair bay.");
-                    shop();
-                    startNewWeek();
-
-                } else if (!opponentsRemaining()) {
-                    // BEAT THE WHOLE GAME /*   
-                    let payout = calcPayout();
-                    playerInfo.takeCash(payout);
-                    window.alert("The Robot Fighting League manager comes over with a Beamin' Smile in his face!\n" +
-                        "'Wheeee! Doooggy! That's some uh' the finest robot rasslin' I've ever had the pleasure to be in the presence of'.\n" +
-                        "'Boy, you done made me a very rich and a very... I say very , Happy Man!' \n" +
-                        "'Take this bonus Champ! and go on a vacation, I ain't got no more bots left for you to break.'\n" +
-                        "He hands over: $" + payout);
-                }
-
-            }
         } // end of if (FIGHT)    
     }
     const runAway = () => {
@@ -1147,8 +1125,47 @@ const UIGame = (() => {
             return false;
         }
     }
+    const isEnemyDead = () => {
 
-    /********* just dialog stuff below here i hope */
+        if (!enemyHealthCheck(currentEnemy)) {
+            //if enemy is dead
+            beatenOpponents[weeksOpponents[nmeIdx]] = true;
+
+            // if not at end of enemys and player is still alive but hasn't run away
+            if (nmeIdx < enemyInfo.length - 1 && playerInfo.health > 0) {
+                playerInfo.refillHealth(Math.floor(playerInfo.maxHealth * .18));
+                alert('You rest between battle and regain ' + Math.floor(playerInfo.maxHealth * (playerInfo.overNightRecharge + (nmeIdx / 80))) + ' health')
+
+                startNewRound();
+            } else
+
+            if (playerInfo.health > 0 && opponentsRemaining()) {
+                let payout = calcPayout();
+                playerInfo.takeCash(payout);
+                window.alert("The week's fighting is over! And you came out on top!\nThe Robot Fighting League manager comes over and gives you your week's pay: '" + payout + " Big Ones!!'\n" +
+                    managerMessage[weekOfBattle - 1]);
+                //lets go shopping
+                window.alert("Let's visit the repair bay.");
+                shop();
+                startNewWeek();
+
+            } else if (!opponentsRemaining()) {
+                // BEAT THE WHOLE GAME /*   
+                let payout = calcPayout();
+                playerInfo.takeCash(payout);
+                window.alert("The Robot Fighting League manager comes over with a Beamin' Smile in his face!\n" +
+                    "'Wheeee! Doooggy! That's some uh' the finest robot rasslin' I've ever had the pleasure to be in the presence of'.\n" +
+                    "'Boy, you done made me a very rich and a very... I say very , Happy Man!' \n" +
+                    "'Take this bonus Champ! and go on a vacation, I ain't got no more bots left for you to break.'\n" +
+                    "He hands over: $" + payout);
+            }
+
+        } else { //Guy is still alive
+            createBattleText();
+        }
+    }
+
+    /********* somethings i am keeping sperate down here i dont know why */
 
     const displayIntro = () => {
         createMenuUIArea(true);

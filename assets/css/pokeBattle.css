@@ -1,6 +1,7 @@
 :root {
     --white-text: honeydew;
     --health-green: rgb(9, 231, 46);
+    --warning-yellow: rgb(240, 220, 40);
     --danger-red: rgb(231, 9, 9);
     --card-face: rgb(211, 195, 150);
     --card-frame: rgb(90, 61, 6);
@@ -12,6 +13,11 @@
     --dark-shadow: #484a63;
 }
 
+@font-face {
+    font-family: 'GameTxt';
+    src: url('../ConnectionIi-2wj8.otf') format("opentype");
+}
+
 * {
     margin: 0;
     padding: 0;
@@ -19,9 +25,14 @@
     /* border: 1px solid black;*/
 }
 
-@font-face {
-    font-family: 'GameTxt';
-    src: url('../ConnectionIi-2wj8.otf') format("opentype");
+.battle-weakened {
+    background-color: var(--warning-yellow) !important;
+    border-color: var(--warning-yellow) !important;
+}
+
+.battle-danger {
+    background-color: var(--danger-red) !important;
+    border-color: var(--danger-red) !important;
 }
 
 body {

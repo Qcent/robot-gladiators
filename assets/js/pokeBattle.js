@@ -8,10 +8,56 @@ const setMenuText = (txt) => {
 const setMenuContent = (txt) => {
     $('#menu-content section').html(txt);
 }
+const createBattleText = (txt) => {
+    $('#Lower-Vis') ? $('#Lower-Vis').remove() : null;
+
+    let lowerEl = $("<div>").attr("id", "Lower-Vis");
+
+    let loLeft = $("<div>").attr("id", "lower-left");
+    let loRight = $("<div>").attr("id", "lower-right");
+
+    /* LEFT */
+    let textContainer = $("<div>").attr("id", "battle-choice-text-box");
+    let textArea = $("<div>").attr("id", "battle-choice-text").html((txt ? (txt + "<br>") : '') + "What will <span id='playerNameHolder'>" + playerInfo.name + "</span> do?");
+
+    loLeft.append(textContainer.append(textArea));
+    /* RIGHT */
+    textContainer = $("<div>").attr("id", "battle-choice-opt-box");
+    textArea = $("<div>").attr("id", "battle-choice-opt").append(
+        $("<button>").attr("plr-choice", "FIGHT").text("FIGHT").prepend($("<span>").addClass('choiceIcon')),
+        $("<button>").attr("plr-choice", "RUN").text("RUN").prepend($("<span>").addClass('choiceIcon')),
+        $("<button>").attr("plr-choice", "TEST").text("TEST").prepend($("<span>").addClass('choiceIcon'))
+    );
+
+    loRight.append(textContainer.append(textArea));
+    /*** */
+    $("body").append(lowerEl.append(loLeft, loRight));
+
+    /******** Set up button click listener */
+    $("#battle-choice-opt-box").on('click', 'button', function(event) {
+        let playerInput = $(event.target).attr("plr-choice");
+        if (playerInput === "RUN") { UIGame.runAway(playerInput); }
+        if (playerInput === "FIGHT") { UIGame.fight(playerInput); }
+    });
+}
+const createMessageText = (txt, bool) => {
+    $('#Lower-Vis') ? $('#Lower-Vis').remove() : null;
+
+    let lowerEl = $("<div>").attr("id", "Lower-Vis");
+
+    let lowerBox = $("<div>").attr("id", "lower-container");
+
+    let textContainer = $("<div>").attr("id", "menu-text-box");
+    let textArea = $("<div>").attr("id", "menu-text").html(txt);
+
+    lowerBox.append(textContainer.append(textArea), bool ? $('<span>').attr('id', 'menu-ok-check') : null);
+    /*** */
+    $("body").append(lowerEl.append(lowerBox));
+}
 const createMenuUIArea = (bool) => {
     clearScreen();
     let upperEl = $("<div>").attr("id", "Upper-Vis").addClass("menu-ui");
-    let lowerEl = $("<div>").attr("id", "Lower-Vis");
+
 
     let upperBox = $("<div>").attr("id", "upper-container");
     /***/
@@ -19,26 +65,19 @@ const createMenuUIArea = (bool) => {
     /***/
 
     upperEl.append(upperBox);
+    $("body").append(upperEl);
 
     /*********************** */
-    /******LOWER SCREEN */
-    let lowerBox = $("<div>").attr("id", "lower-container");
+    /******LOWER SCREEN */ // el ,  txt , checkbox
+    createMessageText(null, bool)
 
-    let textContainer = $("<div>").attr("id", "menu-text-box");
-    let textArea = $("<div>").attr("id", "menu-text").html("Lorem, ipsum dolor sit amet consectetur adipisicing elit. Provident facilis aliquam minima saepe, velit blanditiis.");
+    /**** */
 
-    lowerBox.append(textContainer.append(textArea), bool ? $('<span>').attr('id', 'menu-ok-check') : null);
-
-    /*** */
-    lowerEl.append(lowerBox)
-        /**** */
-    $("body").append(upperEl, lowerEl);
 };
 const createBattleUIArea = function() {
     clearScreen();
 
     let upperEl = $("<div>").attr("id", "Upper-Vis");
-    let lowerEl = $("<div>").attr("id", "Lower-Vis");
 
     let upLeft = $("<div>").attr("id", "upper-left");
     let upRight = $("<div>").attr("id", "upper-right");
@@ -49,7 +88,7 @@ const createBattleUIArea = function() {
     let plrSpriteBox = $("<div>").attr("id", "player-box");
     /**/
 
-    for (let i = 0; i <= 1; i++) {
+    for (let i = 0; i <= 1; i++) { // does enemy then player
         let out = i ? 'player' : 'enemy';
         let cardContainer = $("<div>").addClass("battle-card");;
         let cardFrame = $("<div>").addClass("battle-card-frame");
@@ -73,42 +112,16 @@ const createBattleUIArea = function() {
     /***/
     upperEl.append(upLeft, upRight);
 
+    $("body").append(upperEl);
     /*********************** */
     /******LOWER SCREEN */
-    let loLeft = $("<div>").attr("id", "lower-left");
-    let loRight = $("<div>").attr("id", "lower-right");
+    createBattleText(null);
+    /**** */
 
-    /* LEFT */
-    let textContainer = $("<div>").attr("id", "battle-choice-text-box");
-    let textArea = $("<div>").attr("id", "battle-choice-text").html("What will <span id='playerNameHolder'></span> do?");
-
-    loLeft.append(textContainer.append(textArea));
-    /* RIGHT */
-    textContainer = $("<div>").attr("id", "battle-choice-opt-box");
-    textArea = $("<div>").attr("id", "battle-choice-opt").append(
-        $("<button>").attr("plr-choice", "FIGHT").text("FIGHT").prepend($("<span>").addClass('choiceIcon')),
-        $("<button>").attr("plr-choice", "RUN").text("RUN").prepend($("<span>").addClass('choiceIcon')),
-        $("<button>").attr("plr-choice", "TEST").text("TEST").prepend($("<span>").addClass('choiceIcon'))
-    );
-
-    loRight.append(textContainer.append(textArea));
-    /*** */
-    lowerEl.append(loLeft, loRight)
-        /**** */
-    $("body").append(upperEl, lowerEl);
-
-    /******** Set up button click listener */
-    $("#battle-choice-opt-box").on('click', 'button', function(event) {
-
-        let playerInput = $(event.target).attr("plr-choice");
-        if (playerInput === "RUN") { UIGame.runAway(playerInput); }
-        if (playerInput === "FIGHT") { UIGame.fight(playerInput); }
-    });
 };
 const updateRobotCard = (who) => {
     who = (who === "plr") ? 1 : 0;
     let robot = (who) ? 'player' : 'enemy';
-
     /*  cardName = */
     $("#" + robot + "-card-name").text((who) ? playerInfo.name : currentEnemy.name);
     /*  cardHP = */
@@ -119,6 +132,29 @@ const updateRobotCard = (who) => {
     $("#" + robot + "-SPD-text").text("Speed: " + ((who) ? playerInfo.speed : currentEnemy.speed));
     /*  atkText = */
     $("#" + robot + "-ATK-text").text("Attack: " + ((who) ? playerInfo.attack : currentEnemy.attack));
-};
 
+    /*** HP Bar Colors */
+    let hp = (who) ? playerInfo.health : currentEnemy.health;
+    if (hp <= 0) {
+        $("#" + robot + "-HP-bar").addClass('battle-danger').css('opacity', '0');
+    } else {
+        let hpp = (who) ? (playerInfo.health / playerInfo.maxHealth) : (currentEnemy.health / currentEnemy.maxHealth);
+        let opAtk = (who) ? currentEnemy.attack : playerInfo.attack;
+        $("#" + robot + "-HP-bar").addClass((hpp <= 0.5) ? (hp > (opAtk * 2) ? 'battle-weakened' : 'battle-danger') : '');
+    }
+};
+const inputToContinue = (callBack) => {
+    setTimeout(() => {
+        $('body').keypress(function() {
+            $('body').trigger('click');
+            $('body').off('keypress');
+        });
+        $('body').on('click', function() {
+            console.log("input detected");
+            $('body').off('click'); // remove listener
+
+            callBack(); //go to next part of game
+        });
+    }, 450);
+}
 createMenuUIArea();
