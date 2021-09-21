@@ -88,22 +88,19 @@ body {
     width: 65%;
     height: 45%;
     margin: 0 auto;
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
 }
 
 #enemy-box {
     margin-top: 10rem;
     background-image: url('../images/EnemyRobot.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
 }
 
 #player-box {
     margin-left: 20%;
     background-image: url('../images/PlayerRobot.png');
-    background-size: contain;
-    background-repeat: no-repeat;
-    background-position: center;
 }
 
 #player-card,
@@ -394,6 +391,7 @@ body {
     text-align: center;
     opacity: .8;
     cursor: pointer;
+    text-shadow: .2rem .2rem .1rem var(--light-shadow);
 }
 
 #menu-content h2 {
@@ -527,6 +525,23 @@ body {
 
 /*    BUILD A BOT STYLES    */
 
+.name-bot {
+    width: 40rem;
+}
+
+.name-bot h2 {
+    padding-bottom: 2rem;
+}
+
+.name-bot input {
+    width: 30rem;
+    font-family: 'Press Start 2P', cursive;
+    font-size: 1.5rem;
+    text-shadow: .2rem .2rem .1rem var(--light-shadow);
+    padding: .5rem;
+    margin-top: 1.5rem;
+}
+
 #BuildABot.wrapper {
     width: 40rem;
 }
@@ -550,7 +565,7 @@ body {
 
 .slider-value-output {
     padding-left: 1rem;
-    padding-top: .4rem;
+    padding-top: 0;
 }
 
 .slider-name {
@@ -562,6 +577,7 @@ body {
     font-size: .8rem;
     padding-right: 8rem;
     text-align: right;
+    text-shadow: .1rem .1rem .1rem var(--light-shadow);
 }
 
 .build-subtitle {
@@ -668,11 +684,17 @@ body {
      :root {
         font-size: 35%;
     }
+    .slider-value-output {
+        padding-top: .2rem;
+    }
 }
 
 @media screen and (min-width: 576px) {
      :root {
         font-size: 40%;
+    }
+    .slider-value-output {
+        padding-top: .3rem;
     }
 }
 

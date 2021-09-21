@@ -166,9 +166,9 @@ const opponentList = [{
     }
 ];
 const managerMessage = [
-    "'Nice work, kid!... You're really going places.'\n'Whaat? You think I didnt see you pocket all that money from the ring?'\n'Just keep winning fights and the payouts will get bigger.'",
-    "'Whoooey boy!, you really gave them folks a show this week!'\n'You keep this up and you just might get yourself a plaque on the wall.'",
-    "'Great Show out there, Champ!'\n'Say? Where'd you learn to fight like that anyhow?... ah nevermind, you just come back and win next week, then you'll really get paid.'",
+    "'Nice work, kid!...<br>You're really going places.'<br><br>'Whaat? You think I didn't see you pocket all that money from the ring?'<br><br>'Just keep winning fights and the payouts will get bigger.'",
+    "'Whoooey boy!, you really gave them folks a show this week!'<br><br>'You keep this up and you just might get yourself a plaque on the wall.'",
+    "'Great Show out there, Champ!'<br>'Say? Where'd you learn to fight like that anyhow?... <br><br>ah nevermind, you just come back and win next week, then you'll really get paid.'",
     "Week 4 out the door",
     "Week 5, Stayin' Alive!",
     "Week Six, getchore Kicks",
@@ -983,17 +983,11 @@ const UIGame = (() => {
                 enemyInfo.push(opponentList[robot]);
             });
 
-            createMenuUIArea(true);
+            createMenuUIArea();
             setMenuContent("<h2>WELCOME TO THE JUNGLE!</h2><div>Week: " + weekOfBattle + "</div>");
             setMenuText("Welcome to the Robo Fighting Leagues. Each week you'll face off against 3 different opponents. How many weeks can you last?");
 
-            $("#menu-content").on('click', function(event) {
-                startNewRound();
-            });
-
-            $("#menu-ok-check").on('click', function(event) {
-                startNewRound();
-            });
+            inputToContinue(startNewRound);
 
         } //END OF IF IN GAME LOOP
         else {
@@ -1167,6 +1161,7 @@ const UIGame = (() => {
             playerInfo.takeCash(payout);
 
             createMenuUIArea();
+            $('#menu-content').css('width', '58%').css('text-align', 'left');
 
             setMenuText("The week's fighting is over! And you came out on top! The Robot Fighting League manager comes over and gives you your week's pay 💵💵💵 '$" + payout + " Big Ones!!' 💵💵💵  ");
             setMenuContent(managerMessage[weekOfBattle - 1]);
@@ -1283,7 +1278,53 @@ const UIGame = (() => {
                 break;
         }
     };
+    const guiNameABot = function() {
 
+        createMenuUIArea();
+
+        let content = $('<div>').addClass('name-bot');
+        let titleEl = $('<h2>').text("Let's Name this Bot!");
+        let labelEl = $('<label>').attr('for', 'build-bot-name').text("What will you call it?");
+        let inputEl = $('<input>').attr('type', 'text').attr('id', 'build-bot-name').attr('name', 'build-bot-name');
+        let submit = $('<div>').addClass('fancy-button').text('Done');
+
+        content.append(titleEl, labelEl, inputEl, submit);
+
+        setMenuContent(content);
+        setMenuText("Just one more thing!, let's give your new Bot a Name.");
+
+        $('#build-bot-name').focus();
+        $('#build-bot-name').on('keypress', function(e) {
+            if (e.which == 13) {
+                $('.fancy-button').click();
+            }
+            // $('#build-bot-name').off();
+        });
+        $('.fancy-button').on('click', function(e) {
+            // $('.fancy-button').off();
+            if ($('#build-bot-name').val() !== '') {
+                buildingBot.name = $('#build-bot-name').val();
+
+                console.log(buildingBot);
+
+                if (findABot(buildingBot.name)) {
+                    alert('Bot Already Exists');
+                } else if (createdBots.length > 5) { // only six bots allowed to be saved
+                    alert('Too Many Bots in the Kitchen');
+                } else {
+                    saveABot(buildingBot);
+
+                    loadABot(findABot(buildingBot.name));
+                    startNewWeek();
+                }
+
+
+            } else {
+                $('#build-bot-name').attr('placeholder', "please enter a name").focus();
+            }
+        });
+
+    }
     const guiBuildABot = function() {
         playerInfo.statPoints = 119;
         createMenuUIArea();
@@ -1318,7 +1359,6 @@ const UIGame = (() => {
             let oldVal = buildingBot[type];
             let newVal = $('#' + type + '-SlideVal').val();
 
-
             //if val is more then stored val
             if (newVal > oldVal) {
                 let statVal = (newVal - oldVal);
@@ -1334,13 +1374,8 @@ const UIGame = (() => {
                 } else { //if not enough points
                     //take max points available then reset range val values
 
-                    //get stat val of what is left in pool
-                    statVal = (pool / statvalues[type]);
-
-                    //get mod of statval % statvalues[type]
-                    if (statVal % statvalues[type]) {
-                        statVal = statVal - (statVal % statvalues[type]);
-                    }
+                    //get stat val of what is left in pool :: no decimals
+                    statVal = Math.floor(pool / statvalues[type]);
 
                     // calc new point val
                     pointVal = (statVal * statvalues[type]);
@@ -1352,21 +1387,14 @@ const UIGame = (() => {
                     buildingBot[type] += statVal;
 
                     // reset the range values
-
                     $('.slider').each((i, slide) => {
-
                         let type = $(slide).attr('id').replace('-range', '');
                         $(slide).val(buildingBot[type]);
-
                         $(slide).siblings('.slider-value-output').val(buildingBot[type]);
-
                     });
-
                 }
-
             }
-            // if val is less then stored val
-            if (newVal < oldVal) {
+            if (newVal < oldVal) { // if val is less then stored val
                 let statVal = (oldVal - newVal);
                 let pointVal = (statVal * statvalues[type]);
                 //update stored stat val
@@ -1374,26 +1402,19 @@ const UIGame = (() => {
                 //return points to stat pool
                 playerInfo.statPoints += pointVal;
             }
-
             /************* */
             $('#statPointsRemaining').text(playerInfo.statPoints);
 
-            //set new max for all sliders based on remaining statpoints
-
-
         });
 
-        $('#buildBotOK').on('click', (e) => {
-
+        $('#buildBotOK').on('click', () => {
             if (playerInfo.statPoints > 0) {
                 if (confirm('You still have points remaining!')) {
-                    //send on their way
-                    alert('you said ok');
+                    guiNameABot();
                 };
             } else {
-                // send on their way
+                guiNameABot();
             }
-
         });
 
     }
@@ -1419,7 +1440,7 @@ const UIGame = (() => {
     }
     const selectABot = () => {
         createMenuUIArea(false);
-        $("#menu-content").css("padding-top", '2rem');
+        $("#menu-content").css("padding-top", '2rem').css("width", '55rem');
 
         createdBots = JSON.parse(localStorage.getItem("GladiatorBots")) || [];
 

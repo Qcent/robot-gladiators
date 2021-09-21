@@ -150,7 +150,6 @@ const inputToContinue = (callBack) => {
             $('body').off('keypress');
         });
         $('body').on('click', function() {
-            console.log("input detected");
             $('body').off('click'); // remove listener
 
             callBack(); //go to next part of game
