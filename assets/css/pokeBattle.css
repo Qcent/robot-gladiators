@@ -411,18 +411,18 @@ body {
     width: 40rem;
 }
 
-.wrapper div {
+.wrapper .ChampStats {
     width: 50%;
     text-align: right;
     align-content: center;
 }
 
-.wrapper div:nth-child(even) {
+.wrapper .ChampStats:nth-child(even) {
     text-align: left;
     padding-left: 1rem;
 }
 
-.wrapper .saved-bot {
+.fancy-button {
     padding: 1rem;
     margin: .3rem;
     text-shadow: .2rem .2rem .1rem var(--dark-shadow);
@@ -438,7 +438,7 @@ body {
     display: block;
 }
 
-.wrapper .saved-bot:hover {
+.fancy-button:hover {
     background-position: right center;
     color: #fff;
     text-decoration: none;
@@ -513,6 +513,114 @@ body {
     100% {
         background-position: 100% 50%
     }
+}
+
+
+/************* **************/
+
+
+/*    BUILD A BOT STYLES    */
+
+#statPointsRemaining {
+    font-size: 3rem;
+    position: relative;
+    top: 1.3rem;
+}
+
+.wrapper .slidecontainer {
+    width: 100%;
+    padding: .6rem;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+}
+
+.wrapper .slidecontainer:first-child {
+    padding-top: 2.5rem;
+}
+
+.slider-value-output {
+    padding-left: 1rem;
+    padding-top: .6rem;
+}
+
+.slider-name {
+    width: 100%;
+    text-align: left;
+}
+
+.point-cost {
+    font-size: .8rem;
+    padding-right: 8rem;
+    text-align: right;
+}
+
+.build-subtitle {
+    margin-bottom: 2rem;
+    ;
+}
+
+.slider-value-output {
+    width: 3.5rem;
+    padding-right: 4rem;
+}
+
+
+/* The slider itself */
+
+.slider {
+    -webkit-appearance: none;
+    /* Override default CSS styles */
+    appearance: none;
+    width: 25rem;
+    /* Full-width */
+    height: 25px;
+    /* Specified height */
+    background: #d3d3d3;
+    /* Grey background */
+    outline: none;
+    /* Remove outline */
+    opacity: 0.7;
+    /* Set transparency (for mouse-over effects on hover) */
+    -webkit-transition: .2s;
+    /* 0.2 seconds transition on hover */
+    transition: opacity .2s;
+}
+
+
+/* Mouse-over effects */
+
+.slider:hover {
+    opacity: 1;
+    /* Fully shown on mouse-over */
+}
+
+
+/* The slider handle (use -webkit- (Chrome, Opera, Safari, Edge) and -moz- (Firefox) to override default look) */
+
+.slider::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    /* Override default look */
+    appearance: none;
+    width: 25px;
+    /* Set a specific slider handle width */
+    height: 25px;
+    /* Slider handle height */
+    background: #04AA6D;
+    /* Green background */
+    cursor: pointer;
+    /* Cursor on hover */
+}
+
+.slider::-moz-range-thumb {
+    width: 25px;
+    /* Set a specific slider handle width */
+    height: 25px;
+    /* Slider handle height */
+    background: #04AA6D;
+    /* Green background */
+    cursor: pointer;
+    /* Cursor on hover */
 }
 
 

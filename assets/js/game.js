@@ -5,6 +5,12 @@ var beatenOpponents = [];
 var weeksOpponents = [];
 var enemyInfo = [];
 var createdBots = [];
+var buildingBot = {
+    name: '',
+    health: 1,
+    attack: 0,
+    speed: 0,
+};
 var localChamp = {
     robot: 'Paul the Robot',
     trainer: 'John',
@@ -1277,13 +1283,129 @@ const UIGame = (() => {
                 break;
         }
     };
+
+    const guiBuildABot = function() {
+        playerInfo.statPoints = 119;
+        createMenuUIArea();
+
+        let content = $('<div>').addClass('wrapper');
+
+        let title = $('<h2>').text("Build-a-Bot WorkShop")
+        let subtitle = $('<p>').addClass('build-subtitle').html("<br>You have <span id='statPointsRemaining'>" + playerInfo.statPoints + "</span> Stat Points remaining");
+
+        let sliderBars = $('<div>').addClass('wrapper');
+
+        let healthCont = $('<div>').addClass('slidecontainer').append($('<span>').addClass('slider-name').text('Health Points').append($('<div>').addClass('point-cost').text('Cost: 1pts')), $('<input>').addClass('slider').addClass('tied').attr('id', 'health-range').attr('type', 'range').attr('min', '1').attr('max', '120').attr('value', '1').attr('oninput', "this.nextElementSibling.value = this.value"), $('<output>').attr('id', 'health-SlideVal').addClass('slider-value-output').text('1'));
+        let speedCont = $('<div>').addClass('slidecontainer').append($('<span>').addClass('slider-name').text('Speed Points').append($('<div>').addClass('point-cost').text('Cost: 2pts')), $('<input>').addClass('slider').addClass('tied').attr('id', 'speed-range').attr('type', 'range').attr('min', '0').attr('max', '60').attr('step', '1').attr('value', '0').attr('oninput', "this.nextElementSibling.value = this.value"), $('<output>').attr('id', 'speed-SlideVal').addClass('slider-value-output').text('0'));
+        let attackCont = $('<div>').addClass('slidecontainer').append($('<span>').addClass('slider-name').text('Attack Points').append($('<div>').addClass('point-cost').text('Cost: 3pts')), $('<input>').addClass('slider').addClass('tied').attr('id', 'attack-range').attr('type', 'range').attr('min', '0').attr('max', '40').attr('step', '1').attr('value', '0').attr('oninput', "this.nextElementSibling.value = this.value"), $('<output>').attr('id', 'attack-SlideVal').addClass('slider-value-output').text('0'));
+
+        $(sliderBars).append(healthCont, speedCont, attackCont);
+
+
+        let okButton = $("<div>").addClass('fancy-button').attr('id', 'buildBotOK').text('All Done');
+
+        content.append(title, subtitle, sliderBars, okButton);
+
+        setMenuContent(content);
+        setMenuText("Adjust your robot's stats as you see fit.");
+
+        $('#menu-content').css('padding', '5vmin');
+
+        $('.slider').on('click', (e) => {
+            let statvalues = { health: 1, speed: 2, attack: 3 };
+            let pool = playerInfo.statPoints;
+
+            let type = $(e.target).attr('id').replace('-range', '');
+
+            let oldVal = buildingBot[type];
+            let newVal = $('#' + type + '-SlideVal').val();
+
+
+            //if val is more then stored val
+            if (newVal > oldVal) {
+                let statVal = (newVal - oldVal);
+                let pointVal = (statVal * statvalues[type]);
+                //if there are enough points
+                if (pointVal <= pool) {
+                    //    console.log(`in pool: ${pool} | change in val: ${statVal} x ${statvalues[type]} =  stat val: ${pointVal}`);
+                    //take points from stat pool
+                    playerInfo.statPoints -= pointVal;
+                    //update stat val
+                    buildingBot[type] += statVal
+
+                } else { //if not enough points
+                    //take max points available then reset range val values
+
+                    //get stat val of what is left in pool
+                    statVal = (pool / statvalues[type]);
+
+                    //get mod of statval % statvalues[type]
+                    if (statVal % statvalues[type]) {
+                        statVal = statVal - (statVal % statvalues[type]);
+                    }
+
+                    // calc new point val
+                    pointVal = (statVal * statvalues[type]);
+
+                    //take points from stat pool
+                    playerInfo.statPoints -= pointVal;
+
+                    //allocate as many points as possible
+                    buildingBot[type] += statVal;
+
+                    // reset the range values
+
+                    $('.slider').each((i, slide) => {
+
+                        let type = $(slide).attr('id').replace('-range', '');
+                        $(slide).val(buildingBot[type]);
+
+                        $(slide).siblings('.slider-value-output').val(buildingBot[type]);
+
+                    });
+
+                }
+
+            }
+            // if val is less then stored val
+            if (newVal < oldVal) {
+                let statVal = (oldVal - newVal);
+                let pointVal = (statVal * statvalues[type]);
+                //update stored stat val
+                buildingBot[type] -= statVal;
+                //return points to stat pool
+                playerInfo.statPoints += pointVal;
+            }
+
+            /************* */
+            $('#statPointsRemaining').text(playerInfo.statPoints);
+
+            //set new max for all sliders based on remaining statpoints
+
+
+        });
+
+        $('#buildBotOK').on('click', (e) => {
+
+            if (playerInfo.statPoints > 0) {
+                if (confirm('You still have points remaining!')) {
+                    //send on their way
+                    alert('you said ok');
+                };
+            } else {
+                // send on their way
+            }
+
+        });
+
+    }
     const displayIntro = () => {
         createMenuUIArea(true);
         setMenuContent("<h2>Welcome to Robot Gladiators!</h2> " +
-            "<div class='wrapper'> <div><span class='emoji'>🥊</span> Current Champion: </div><div>" +
-            localChamp.robot + " <span class='emoji'>🤖</span></div><div> <span class='emoji'>🔔</span> Rounds Fought: </div><div>" +
-            localChamp.rounds + " <span class='emoji'>🔔</span></div><div><span class='emoji'>💰</span> Prize Winnings: </div><div><span class='emoji'>💵</span>  $" +
-            localChamp.score + " <span class='emoji'>💵</span>  </div><div> <span class='emoji'>💪</span> Trainer: </div><div>" +
+            "<div class='wrapper'> <div class='ChampStats'><span class='emoji'>🥊</span> Current Champion: </div><div class='ChampStats'>" +
+            localChamp.robot + " <span class='emoji'>🤖</span></div><div class='ChampStats'> <span class='emoji'>🔔</span> Rounds Fought: </div><div class='ChampStats'>" +
+            localChamp.rounds + " <span class='emoji'>🔔</span></div><div class='ChampStats'><span class='emoji'>💰</span> Prize Winnings: </div><div class='ChampStats'><span class='emoji'>💵</span>  $" +
+            localChamp.score + " <span class='emoji'>💵</span>  </div><div class='ChampStats'> <span class='emoji'>💪</span> Trainer: </div><div class='ChampStats'>" +
             localChamp.trainer + " <span class='emoji'>💪</span></div></div>");
         setMenuText("Will you enter your Bot, and try your luck in the Great Robo Death Match?");
 
@@ -1305,15 +1427,16 @@ const UIGame = (() => {
 
         let botList = "";
         createdBots.forEach(function(bot) {
-            botList += "<span class='saved-bot'>" + bot.name + "</span>";
+            botList += "<span class='saved-bot fancy-button'>" + bot.name + "</span>";
         });
 
-        setMenuContent("<h2>Select a Fighting Robot...</h2> <div id='built-bot-list' class='wrapper'>" + botList + "<span class='saved-bot' id='newBotButton'>Create New Robot</span></div>");
+        setMenuContent("<h2>Select a Fighting Robot...</h2> <div id='built-bot-list' class='wrapper'>" + botList + "<span class='saved-bot fancy-button' id='newBotButton'>Create New Robot</span></div>");
         setMenuText("Choose a Bot or, build a new one?");
 
         $("#built-bot-list").on('click', 'span', function(event) {
             if (event.target.matches('#newBotButton')) {
-                alert('Go to graphical build a bot!');
+                guiBuildABot();
+                return;
             } else {
                 loadABot(findABot($(event.target).text()));
                 startNewWeek();
