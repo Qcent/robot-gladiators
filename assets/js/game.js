@@ -1288,11 +1288,11 @@ const UIGame = (() => {
         playerInfo.statPoints = 119;
         createMenuUIArea();
 
-        let content = $('<div>').addClass('wrapper');
+        $('#menu-content').css('padding-bottom', '1rem')
 
+        let content = $('<div>').addClass('wrapper').attr('id', 'BuildABot');
         let title = $('<h2>').text("Build-a-Bot WorkShop")
         let subtitle = $('<p>').addClass('build-subtitle').html("<br>You have <span id='statPointsRemaining'>" + playerInfo.statPoints + "</span> Stat Points remaining");
-
         let sliderBars = $('<div>').addClass('wrapper');
 
         let healthCont = $('<div>').addClass('slidecontainer').append($('<span>').addClass('slider-name').text('Health Points').append($('<div>').addClass('point-cost').text('Cost: 1pts')), $('<input>').addClass('slider').addClass('tied').attr('id', 'health-range').attr('type', 'range').attr('min', '1').attr('max', '120').attr('value', '1').attr('oninput', "this.nextElementSibling.value = this.value"), $('<output>').attr('id', 'health-SlideVal').addClass('slider-value-output').text('1'));
@@ -1301,7 +1301,6 @@ const UIGame = (() => {
 
         $(sliderBars).append(healthCont, speedCont, attackCont);
 
-
         let okButton = $("<div>").addClass('fancy-button').attr('id', 'buildBotOK').text('All Done');
 
         content.append(title, subtitle, sliderBars, okButton);
@@ -1309,9 +1308,8 @@ const UIGame = (() => {
         setMenuContent(content);
         setMenuText("Adjust your robot's stats as you see fit.");
 
-        $('#menu-content').css('padding', '5vmin');
 
-        $('.slider').on('click', (e) => {
+        $('.slider').on('change', (e) => {
             let statvalues = { health: 1, speed: 2, attack: 3 };
             let pool = playerInfo.statPoints;
 
@@ -1402,7 +1400,7 @@ const UIGame = (() => {
     const displayIntro = () => {
         createMenuUIArea(true);
         setMenuContent("<h2>Welcome to Robot Gladiators!</h2> " +
-            "<div class='wrapper'> <div class='ChampStats'><span class='emoji'>🥊</span> Current Champion: </div><div class='ChampStats'>" +
+            "<div class='wrapper'id='champ-wrapper'> <div class='ChampStats'><span class='emoji'>🥊</span> Current Champion: </div><div class='ChampStats'>" +
             localChamp.robot + " <span class='emoji'>🤖</span></div><div class='ChampStats'> <span class='emoji'>🔔</span> Rounds Fought: </div><div class='ChampStats'>" +
             localChamp.rounds + " <span class='emoji'>🔔</span></div><div class='ChampStats'><span class='emoji'>💰</span> Prize Winnings: </div><div class='ChampStats'><span class='emoji'>💵</span>  $" +
             localChamp.score + " <span class='emoji'>💵</span>  </div><div class='ChampStats'> <span class='emoji'>💪</span> Trainer: </div><div class='ChampStats'>" +

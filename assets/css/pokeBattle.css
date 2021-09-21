@@ -386,10 +386,11 @@ body {
 }
 
 #menu-content {
+    font-size: 1.2rem;
     background-color: rgba(255, 255, 255, .8);
     border-radius: .25em;
     box-shadow: 0 0 .25em rgba(0, 0, 0, .25);
-    padding: 10vmin;
+    padding: 4rem;
     text-align: center;
     opacity: .8;
     cursor: pointer;
@@ -401,14 +402,18 @@ body {
 
 .emoji {
     position: relative;
-    bottom: 3px;
+    bottom: 1px;
 }
 
 .wrapper {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
-    width: 40rem;
+}
+
+#champ-wrapper.wrapper {
+    width: 100%;
+    justify-content: center;
 }
 
 .wrapper .ChampStats {
@@ -427,14 +432,14 @@ body {
     margin: .3rem;
     text-shadow: .2rem .2rem .1rem var(--dark-shadow);
     background-image: linear-gradient(to right, #757F9A 0%, #D7DDE8 51%, #757F9A 100%);
-    margin: 10px;
-    padding: 15px 45px;
+    margin: .7rem;
+    padding: .8rem 3.5rem;
     text-align: center;
     transition: 0.5s;
     background-size: 200% auto;
     color: white;
     box-shadow: .2rem .2rem .1rem var(--dark-shadow);
-    border-radius: 10px;
+    border-radius: .7rem;
     display: block;
 }
 
@@ -452,6 +457,7 @@ body {
 }
 
 .wrapper #newBotButton.saved-bot {
+    margin: 2rem 10rem 0;
     background-image: linear-gradient(to right, #FF8008 0%, #FFC837 51%, #FF8008 100%)
 }
 
@@ -521,10 +527,17 @@ body {
 
 /*    BUILD A BOT STYLES    */
 
+#BuildABot.wrapper {
+    width: 40rem;
+}
+
 #statPointsRemaining {
     font-size: 3rem;
-    position: relative;
-    top: 1.3rem;
+    vertical-align: middle;
+}
+
+#buildBotOK {
+    margin-top: 2rem;
 }
 
 .wrapper .slidecontainer {
@@ -535,13 +548,9 @@ body {
     justify-content: flex-end;
 }
 
-.wrapper .slidecontainer:first-child {
-    padding-top: 2.5rem;
-}
-
 .slider-value-output {
     padding-left: 1rem;
-    padding-top: .6rem;
+    padding-top: .4rem;
 }
 
 .slider-name {
@@ -557,7 +566,7 @@ body {
 
 .build-subtitle {
     margin-bottom: 2rem;
-    ;
+    vertical-align: middle;
 }
 
 .slider-value-output {
@@ -574,7 +583,7 @@ body {
     appearance: none;
     width: 25rem;
     /* Full-width */
-    height: 25px;
+    height: 1.5rem;
     /* Specified height */
     background: #d3d3d3;
     /* Grey background */
@@ -602,9 +611,9 @@ body {
     -webkit-appearance: none;
     /* Override default look */
     appearance: none;
-    width: 25px;
+    width: 1.5rem;
     /* Set a specific slider handle width */
-    height: 25px;
+    height: 1.5rem;
     /* Slider handle height */
     background: #04AA6D;
     /* Green background */
@@ -613,9 +622,9 @@ body {
 }
 
 .slider::-moz-range-thumb {
-    width: 25px;
+    width: 1.5rem;
     /* Set a specific slider handle width */
-    height: 25px;
+    height: 1.5rem;
     /* Slider handle height */
     background: #04AA6D;
     /* Green background */
@@ -649,6 +658,9 @@ body {
 @media screen and (min-width: 425px) {
      :root {
         font-size: 30%;
+    }
+    .emoji {
+        bottom: 2px;
     }
 }
 
@@ -685,5 +697,41 @@ body {
 @media screen and (min-width: 1440px) {
      :root {
         font-size: 80%;
+    }
+}
+
+@media (min-aspect-ratio: 8/4) {
+     :root {
+        font-size: 48%;
+    }
+    #Upper-Vis {
+        margin-top: .5rem;
+    }
+}
+
+@media (min-width: 1300px),
+(min-height: 1000px) {
+     :root {
+        font-size: 100%;
+    }
+    #Upper-Vis {
+        margin-top: 4rem;
+    }
+}
+
+@media screen and (orientation:landscape) {
+    #Upper-Vis {
+        margin-top: 1rem;
+    }
+    @media screen and (max-height: 34rem) {
+        #Upper-Vis {
+            height: 33rem;
+            background-image: radial-gradient( at 59.5rem 18.5rem, rgb(85, 192, 112) 0%, rgb(85, 192, 112) 20%, rgb(190, 176, 47) 20%, rgb(190, 176, 47) 22.5%, rgb(160, 214, 171) 22.5%, transparent 45%), radial-gradient(ellipse 99rem 40em at 21rem 36rem, rgb(85, 192, 112) 0%, rgb(85, 192, 112) 20%, rgb(190, 176, 47) 20%, rgb(190, 176, 47) 22.5%, rgb(160, 214, 171) 22.5%, transparent 48%), radial-gradient( farthest-side at bottom left, rgba(255, 0, 255, 0.5), transparent), radial-gradient( farthest-corner at bottom right, rgba(53, 50, 255, 0.5), transparent 400px);
+        }
+    }
+    @media screen and (max-height: 32rem) {
+         :root {
+            font-size: 35%;
+        }
     }
 }
