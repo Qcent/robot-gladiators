@@ -1539,11 +1539,13 @@ const UIGame = (() => {
     const showInfo = () => {
 
         alert(
-            "                ROBOT GLADIATORS - GRAPHICAL EDITION \n\n" +
-            "                             Programmed by Dave Quinn \n" +
-            "                                          Sept 2021 \n\n" +
+            "                ROBOT GLADIATORS - GRAPHICAL EDITION \n" +
+            "                              Programmed by Dave Quinn \n" +
+            "                                            Sept 2021 \n\n" +
             "                                     Robot ArtWork by: \n" +
-            "                                  Dude one and Dude 2 \n");
+            "                                      Tak Beom Heogh \n" +
+            "                         https://www.behance.net/takbeom \n\n" +
+            "                                       gadget-bot.com \n");
 
     }
 
