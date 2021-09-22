@@ -414,18 +414,16 @@ const pickOpponents = function(num) {
     return output; // return the list of opponents
 };
 const randomizeEnemyStats = function(enemy) {
-
     randomizeBaseStats(enemy);
 
-    let maxBoost = 8 * weekOfBattle; // everyweek increase max boost by 10
+    let maxBoost = 8 * weekOfBattle; // everyweek increase max boost by 8
     let totalBoost = 0;
     let boost = 0;
 
-    console.log();
     /*                                     speed boost is capped at 1/2 of players speed                 */
     //boost = randomNumber(0, (Math.max(maxBoost, playerInfo.speed / 2) - totalBoost));
     boost = randomNumber(0, ((maxBoost > (playerInfo.speed / 2) ? (playerInfo.speed / 2) : maxBoost) - totalBoost));
-    console.log("speed boost: " + boost)
+    //console.log("speed boost: " + boost)
     totalBoost += boost;
     enemy.speed = enemy.speed + boost;
 
@@ -954,6 +952,11 @@ var endGame = function() {
 };
 
 
+/**************** */
+/* NEWEST CODE 
+ALL METHODS SHOULD ONE 
+DAY BE DOWN HERE
+/************** */
 const UIGame = (() => {
     let nmeIdx = 0;
 
@@ -1099,31 +1102,37 @@ const UIGame = (() => {
             }
             /// update the screen with message
             createMessageText(((plrFirst > 0) ? playerInfo.name : enemy.name) + " attacks first for " + ((plrFirst > 0) ? plrDam : nmeDam) + " damage!<br>" +
-                ((plrFirst > 0) ? enemy.name : playerInfo.name) + " retaliates for " + ((plrFirst > 0) ? nmeDam : plrDam) + " damage!");
+
+                (((plrFirst > 0) ? nmeDam : plrDam) == 0 ? (((plrFirst > 0) ? enemy.name : playerInfo.name) + " has collapsed in a heap!") :
+
+                    (((plrFirst > 0) ? enemy.name : playerInfo.name) + " retaliates for " + ((plrFirst > 0) ? nmeDam : plrDam) + " damage!")));
+
 
             inputToContinue(isEnemyDead);
 
         } // end of if (FIGHT)    
     }
     const runAway = () => {
-        var confirmSkip = window.confirm("Are you sure you want to run from the fight?");
+        var confirmSkip = true; //= window.confirm("Are you sure you want to run from the fight?");
 
         //if yes(true), leave fight
         if (confirmSkip && playerInfo.money >= 10 && currentEnemy.speed < playerInfo.speed * 1.5) {
             //subtract money from player for skipping
             playerInfo.money = Math.max(0, playerInfo.money - 10);
             console.log(playerInfo.name + " has chosen to run from this fight! and now has $" + playerInfo.money + " left");
-            window.alert(playerInfo.name + " has chosen to run from this fight! and now has $" + playerInfo.money + " left");
+            createMessageText(playerInfo.name + " has chosen to run from this fight, and now has $" + playerInfo.money + " left");
 
+            inputToContinue(UIGame.isThereMoreToFight);
             return true;
         } else if (confirmSkip && playerInfo.money < 10) {
             console.log("Not enough money to skip fight");
-            window.alert("Not enough money COWARD!\nBack In You GO! ...");
-
+            createMessageText("You ain't got enough money COWARD!<br>Get back in there! ...");
+            inputToContinue(UIGame.fight);
             return false;
         } else if (confirmSkip) {
             console.log("Not fast enough to run");
-            window.alert("Its no use!\nYour opponent is too fast to run from...");
+            createMessageText("Its no use! Your opponent is too fast...");
+            inputToContinue(UIGame.fight);
             return false;
         }
     }
@@ -1194,7 +1203,7 @@ const UIGame = (() => {
         }
     }
 
-    /********* somethings i am keeping sperate down here i dont know why */
+    /********* the different screen are made down here  */
     const guiShop = function() {
         //ask player what they would like to do
         var shopOptionPrompt = window.prompt("END OF WEEK " + weekOfBattle + " STATUS:\n" +
@@ -1440,7 +1449,11 @@ const UIGame = (() => {
     }
     const selectABot = () => {
         createMenuUIArea(false);
-        $("#menu-content").css("padding-top", '2rem').css("width", '55rem');
+        $("#menu-content").css("padding-top", '2rem')
+            .css("width", '55rem')
+            .css('position', 'relative')
+            .css('top', 'relative0');
+        $("#menu-content").append($('<div>').addClass('delete-bot-icon').text("🗑️"));
 
         createdBots = JSON.parse(localStorage.getItem("GladiatorBots")) || [];
 
@@ -1461,13 +1474,61 @@ const UIGame = (() => {
                 startNewWeek();
             }
         });
+        $(".delete-bot-icon").on('click', function(event) {
+            deleteABot();
+        });
+    }
+    const deleteABot = () => {
+        createMenuUIArea(false);
+        $("#menu-content").css("padding-top", '2rem').css("width", '55rem');
+
+        createdBots = JSON.parse(localStorage.getItem("GladiatorBots")) || [];
+
+        let botList = "";
+        createdBots.forEach(function(bot) {
+            botList += "<span class='saved-bot fancy-button delete-bot'>" + bot.name + "</span>";
+        });
+
+        setMenuContent("<h2>Delete a Fighting Robot...</h2> <div id='built-bot-list' class='wrapper'>" + botList + "<span class='saved-bot fancy-button' id='cancelDelete'>Go Back</span></div>");
+        setMenuText("Choose a Bot to Terminate!");
+
+        $("#built-bot-list").on('click', 'span', function(event) {
+            if (confirm("Are you sure you want to delete this bot? " + $(event.target).text())) {
+                createdBots.splice(findABot($(event.target).text()), 1);
+
+                //console.log(findABot($(event.target).text()))
+                //console.log(createdBots.splice(findABot($(event.target).text()), 1));
+                /* splice is not working here for some reason so im creating a new array and saving that to local storage */
+                var newArray = createdBots.filter(function(entry) { return entry.name !== $(event.target).text(); });
+
+                //console.log(newArray)
+
+                localStorage.setItem("GladiatorBots", JSON.stringify(newArray));
+                selectABot();
+            }
+        });
+        $("#cancelDelete").on('click', function(event) {
+            selectABot();
+        });
+    }
+    const showInfo = () => {
+
+        alert(
+            "                ROBOT GLADIATORS - GRAPHICAL EDITION \n\n" +
+            "                             Programmed by Dave Quinn \n" +
+            "                                          Sept 2021 \n\n" +
+            "                                     Robot ArtWork by: \n" +
+            "                                  Dude one and Dude 2 \n");
+
     }
 
     return {
         startGame,
         fight,
         runAway,
+        isThereMoreToFight,
         guiShop,
+        showInfo
     }
 })();
 

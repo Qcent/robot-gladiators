@@ -26,7 +26,7 @@ const createBattleText = (txt) => {
     textArea = $("<div>").attr("id", "battle-choice-opt").append(
         $("<button>").attr("plr-choice", "FIGHT").text("FIGHT").prepend($("<span>").addClass('choiceIcon')),
         $("<button>").attr("plr-choice", "RUN").text("RUN").prepend($("<span>").addClass('choiceIcon')),
-        $("<button>").attr("plr-choice", "TEST").text("TEST").prepend($("<span>").addClass('choiceIcon'))
+        $("<button>").attr("plr-choice", "INFO").text("INFO").prepend($("<span>").addClass('choiceIcon'))
     );
 
     loRight.append(textContainer.append(textArea));
@@ -36,9 +36,29 @@ const createBattleText = (txt) => {
     /******** Set up button click listener */
     $("#battle-choice-opt-box").on('click', 'button', function(event) {
         let playerInput = $(event.target).attr("plr-choice");
-        if (playerInput === "RUN") { UIGame.runAway(playerInput); }
-        if (playerInput === "FIGHT") { UIGame.fight(playerInput); }
+        if (playerInput === "RUN") { UIGame.runAway(); }
+        if (playerInput === "FIGHT") { UIGame.fight(); }
+        if (playerInput === "INFO") { UIGame.showInfo(); }
     });
+    /*********** arrow key and enter key handling */
+    /* $(document).on('keypress', function(e) {
+        // if (e.which == 13) { //enter
+            console.log($("#battle-choice-opt-box").activeElement)
+        //$("#battle-choice-opt-box").activeElement.click() // enter already triggers the highlighted element
+     }
+     */
+
+    /*     OTHER KEYS NOT WORKING ON MAC SO UNTESTABLE FOR NOW    
+    if (e.which == 37 || e.which == 38) { //left || up
+        alert('left');
+    }
+    if (e.which == 39 || e.which == 40) { //right || down
+        alert('right');
+    } else {
+        alert(e.which);
+    }
+
+    });*/
 }
 const createMessageText = (txt, bool) => {
     $('#Lower-Vis') ? $('#Lower-Vis').remove() : null;
@@ -93,9 +113,9 @@ const createBattleUIArea = function() {
         let cardContainer = $("<div>").addClass("battle-card");;
         let cardFrame = $("<div>").addClass("battle-card-frame");
         let cardFace = $("<div>").addClass("battle-card-face");
-        let cardName = $("<h2>").attr("id", out + "-card-name").text("Robo Name");
+        let cardName = $("<h2>").attr("id", out + "-card-name").html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?");
         let cardHP = $("<div>").addClass("battle-HP-bar").append($("<span>").text("HP")).append($("<div>").append($("<div>").attr("id", out + "-HP-bar")));
-        let hpText = $("<h3>").attr("id", out + "-HP-text").text("100/100");
+        let hpText = $("<h3>").attr("id", out + "-HP-text").text("DQ");
         let spdText = $("<div>").addClass("battle-card-stat").attr("id", out + "-SPD-text").text("Speed: 5");
         let atkText = $("<div>").addClass("battle-card-stat").attr("id", out + "-ATK-text").text("Attack: 10");
         let statBox = i ? $("<div>").append($("<div>").addClass("battle-card-stat stat-pad"), spdText, atkText) : $("<span>").append(spdText, atkText);

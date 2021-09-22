@@ -441,6 +441,26 @@ body {
     display: block;
 }
 
+.fancy-button.delete-bot {
+    background-image: linear-gradient(to right, #e52d27 0%, #b31217 51%, #e52d27 100%)
+}
+
+.delete-bot-icon {
+    position: absolute;
+    bottom: 2rem;
+    right: 3rem;
+    font-size: 3rem;
+    height: 6rem;
+    width: 6rem;
+    padding-top: 1rem;
+}
+
+.delete-bot-icon:hover {
+    background-color: rgba(253, 0, 0, .8);
+    background: radial-gradient(circle, rgba(200, 108, 108, 1) 0%, rgba(255, 58, 40, 1) 43%, rgba(255, 247, 246, 1) 97%, rgba(255, 255, 255, 0) 100%);
+    border-radius: 50%;
+}
+
 .fancy-button:hover {
     background-position: right center;
     color: #fff;
