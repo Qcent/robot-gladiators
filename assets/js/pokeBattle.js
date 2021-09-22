@@ -175,5 +175,4 @@ const inputToContinue = (callBack) => {
             callBack(); //go to next part of game
         });
     }, 450);
-}
-createMenuUIArea();
+};

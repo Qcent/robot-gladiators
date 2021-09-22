@@ -252,16 +252,16 @@ var playerInfo = {
             }
         } else {
             if (this.money >= this.healthShopCost()) {
-                window.alert("Refilling " + this.name + "'s Health by " + (this.maxHealth - this.health) + " for $" + this.healthShopCost() + ".");
+                setMenuText("Refilling " + this.name + "'s Health by " + (this.maxHealth - this.health) + " for $" + this.healthShopCost() + ".");
 
                 this.money -= this.healthShopCost();
                 this.health += this.healthRefillValue();
 
                 if (this.health > this.maxHealth) { this.health = this.maxHealth; }
-                UIGame.guiShop();
+                UIGame.guiShop('reload');
             } else {
-                window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-                UIGame.guiShop();
+                setMenuText("Sorry " + this.name + " is too poor for that. Try something else");
+                UIGame.guiShop('reload');
             }
         }
 
@@ -270,7 +270,7 @@ var playerInfo = {
 
         if (value) { this.maxHealth += Math.floor(value); } else {
             if (this.money >= this.healthUpShopCost) {
-                window.alert("Increasing " + this.name + "'s Max Health by " + this.healthUpgrageValue + " for $" + this.healthUpShopCost + ".");
+                setMenuText("Increasing " + this.name + "'s Max Health by " + this.healthUpgrageValue + " for $" + this.healthUpShopCost + ".");
                 let percentHealth = this.health / this.maxHealth;
                 this.maxHealth += this.healthUpgrageValue;
                 this.setHealth(this.maxHealth * percentHealth);
@@ -278,27 +278,27 @@ var playerInfo = {
                 //charge more the next time:: 30% more each time
                 this.healthUpShopCost += Math.floor((this.healthUpShopCost) * (this.upgradeIncreaseCost * 1.2));
 
-                UIGame.guiShop();
+                UIGame.guiShop('reload');
             } else {
-                window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-                UIGame.guiShop();
+                setMenuText("Sorry " + this.name + " is too poor for that. Try something else");
+                UIGame.guiShop('reload');
             }
         }
     },
     getArmour: function() {
 
         if (this.money >= this.armourShopCost && !this.hasArmour) {
-            window.alert("Adding plate Armour to " + this.name + " for $" + this.armourShopCost + ".");
+            setMenuText("Adding plate Armour to " + this.name + " for $" + this.armourShopCost + ".");
 
             this.hasArmour = true;
             this.money -= this.armourShopCost;
             //charge more the next time
             this.armourShopCost += Math.floor((this.armourShopCost) * (this.upgradeIncreaseCost * 2));
 
-            UIGame.guiShop();
+            UIGame.guiShop('reload');
         } else {
-            window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-            UIGame.guiShop();
+            setMenuText("Sorry " + this.name + " is too poor for that. Try something else");
+            UIGame.guiShop('reload');
         }
 
     },
@@ -306,35 +306,35 @@ var playerInfo = {
 
         if (this.money >= this.armourReShopCost()) {
             if (this.hasArmour) {
-                window.alert("Repairing " + this.name + "'s plate Armour for $" + this.armourReShopCost + ".");
+                setMenuText("Repairing " + this.name + "'s plate Armour for $" + this.armourReShopCost + ".");
 
                 this.money -= this.armourReShopCost();
                 this.armourDamage = 0;
 
-                UIGame.guiShop();
+                UIGame.guiShop('reload');
             } else {
-                window.alert("Sorry " + this.name + " is not equipped with any armour");
-                UIGame.guiShop();
+                setMenuText("Sorry " + this.name + " is not equipped with any armour");
+                UIGame.guiShop('reload');
             }
         } else {
-            window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-            UIGame.guiShop();
+            setMenuText("Sorry " + this.name + " is too poor for that. Try something else");
+            UIGame.guiShop('reload');
         }
     },
     upgradeAttack: function(value) {
         if (value) { this.attack += Math.floor(value); } else {
             if (this.money >= this.attackShopCost) {
-                window.alert("Upgrading " + this.name + "'s Attack by " + this.attackUpgradeValue + " for $" + this.attackShopCost + ".");
+                setMenuText("Upgrading " + this.name + "'s Attack by " + this.attackUpgradeValue + " for $" + this.attackShopCost + ".");
 
                 this.attack += this.attackUpgradeValue;
                 this.money -= this.attackShopCost;
                 //charge more the next time:: 20% more each time
                 this.attackShopCost += Math.floor((this.attackShopCost) * this.upgradeIncreaseCost);
 
-                UIGame.guiShop();
+                UIGame.guiShop('reload');
             } else {
-                window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-                UIGame.guiShop();
+                setMenuText("Sorry " + this.name + " is too poor for that. Try something else");
+                UIGame.guiShop('reload');
             }
         }
 
@@ -342,17 +342,17 @@ var playerInfo = {
     increeseSpeed: function(value) {
         if (value) { this.speed += Math.floor(value); } else {
             if (this.money >= this.speedShopCost) {
-                window.alert("Upgrading " + this.name + "'s Speed by " + this.speedIncreeseValue + " for $" + this.speedShopCost + ".");
+                setMenuText("Upgrading " + this.name + "'s Speed by " + this.speedIncreeseValue + " for $" + this.speedShopCost + ".");
 
                 this.speed += this.speedIncreeseValue;
                 this.money -= this.speedShopCost;
                 //charge more the next time:: 20% more each time
                 this.speedShopCost += Math.floor((this.speedShopCost) * this.upgradeIncreaseCost);
 
-                UIGame.guiShop();
+                UIGame.guiShop('reload');
             } else {
-                window.alert("Sorry " + this.name + " is too poor for that. Try something else");
-                UIGame.guiShop();
+                setMenuText("Sorry " + this.name + " is too poor for that. Try something else");
+                UIGame.guiShop('reload');
             }
         }
     },
@@ -598,7 +598,7 @@ var checkHighScore = function(score) {
             localStorage.setItem('robotGladiatorChamps', JSON.stringify(localChamp));
         }
     } else {
-        window.alert("Well you did your best but you still fell short of the Champ... \n" + localChamp.robot +
+        setMenuText("Well you did your best but you still fell short of the Champ... \n" + localChamp.robot +
             " is still the greatest fighter with $" + localChamp.score + " in winnings.\n\n" +
             "Your Total: $" + playerInfo.totalEarnings);
     }
@@ -988,7 +988,10 @@ const UIGame = (() => {
 
             createMenuUIArea();
             setMenuContent("<h2>WELCOME TO THE JUNGLE!</h2><div>Week: " + weekOfBattle + "</div>");
-            setMenuText("Welcome to the Robo Fighting Leagues. Each week you'll face off against 3 different opponents. How many weeks can you last?");
+
+            (weekOfBattle > 1) ?
+            setMenuText("Welcome to the Robo Fighting Leagues. Prepare for Battle"):
+                setMenuText("Welcome to the Robo Fighting Leagues. Each week you'll face off against 3 different opponents. How many weeks can you last?");
 
             inputToContinue(startNewRound);
 
@@ -1100,7 +1103,7 @@ const UIGame = (() => {
                 }
                 */
             }
-            /// update the screen with message
+            /// update the screen with message   // lots of ternary statements here so one line can handle all cases
             createMessageText(((plrFirst > 0) ? playerInfo.name : enemy.name) + " attacks first for " + ((plrFirst > 0) ? plrDam : nmeDam) + " damage!<br>" +
 
                 (((plrFirst > 0) ? nmeDam : plrDam) == 0 ? (((plrFirst > 0) ? enemy.name : playerInfo.name) + " has collapsed in a heap!") :
@@ -1204,88 +1207,110 @@ const UIGame = (() => {
     }
 
     /********* the different screen are made down here  */
-    const guiShop = function() {
-        //ask player what they would like to do
-        var shopOptionPrompt = window.prompt("END OF WEEK " + weekOfBattle + " STATUS:\n" +
-            "  Cash: $ " + playerInfo.money +
-            "  Health: " + playerInfo.health + "/" + playerInfo.maxHealth +
-            "  Attack: " + playerInfo.attack +
-            "  Speed: " + playerInfo.speed + "\n\n" +
-            "Would you like to:\n" +
-            "  1. Restore Health for $" + playerInfo.healthShopCost() + "            5. Upgrade Armour for $" + playerInfo.armourShopCost + "\n" +
-            "  2. Upgrade Health for $" + playerInfo.healthUpShopCost + "           6. Repair Armour for $" + playerInfo.armourReShopCost() + "\n" +
-            "  3. Upgrade Attack for $" + playerInfo.attackShopCost + "\n" +
-            "  4. Upgrade Speed for $" + playerInfo.speedShopCost + "          9. LEAVE\n" +
-            "  \n"
-        );
-
-        //use switch to carry out actions
-        switch (shopOptionPrompt.toUpperCase()) {
-            case "1":
-            case "RESTORE":
-            case "FILL":
-            case "HEALTH":
-                playerInfo.refillHealth();
-                break;
-
-            case "2":
-                playerInfo.upgradeHealth();
-                break;
-
-            case "3":
-            case "UPGRADE":
-            case "ATTACK":
-            case "POWER":
-                playerInfo.upgradeAttack();
-                break;
-
-            case "4":
-            case "SPEED":
-            case "FAST":
-            case "INCREASE":
-                playerInfo.increeseSpeed();
-                break;
-
-            case "5":
-            case "DEF":
-            case "HARD":
-            case "ARMOUR":
-                playerInfo.getArmour();
-                break;
-
-            case "6":
-            case "REPAIR":
-            case "FIX":
-                playerInfo.repairArmour();
-                break;
-
-            case "9":
-            case "Q":
-            case "X":
-            case "QUIT":
-            case "EXIT":
-            case "LEAVE":
-                //window.alert("Leaving the store.");
-                startNewWeek();
-                break;
-
-            case "FIGHT":
-                //window.alert("Leaving the store.");
-                playerInfo.upgradeAttack(1);
-                playerInfo.cheater = true;
-                break;
-
-            case "HURRY":
-                //window.alert("Leaving the store.");
-                playerInfo.increeseSpeed(1);
-                playerInfo.cheater = true;
-                break;
-
-            default:
-                window.alert("You did not type a valid option. Try something else");
-                guiShop();
-                break;
+    const guiShop = function(reload) {
+        if (!reload) { //if reloading don't create a new menu
+            createMenuUIArea();
+            $('#menu-content')
+                .css('background-color', 'rgba(59, 98, 150, 0.5)')
+                .css('padding', '1rem');
         }
+
+        let content = $('<div>').addClass('wrapper').attr('id', 'shopMenu');
+
+        let title = $('<h2>').text('Welcome to the Robot WorkShop');
+        let subtitle = $('<p>').html("You have $<span id='cashRemaining'>" + playerInfo.money + "</span> to spend");
+
+        let hpCol = $('<div>').addClass('wrapper shop-col').append($('<h3>').text("HEALTH"));
+        let spdCol = $('<div>').addClass('wrapper shop-col').append($('<h3>').text("SPEED"));
+        let atkCol = $('<div>').addClass('wrapper shop-col').append($('<h3>').text("ATTACK"));
+        let armCol = $('<div>').addClass('wrapper shop-col').append($('<h3>').text("ARMOUR"));
+
+        let allDone = $('<div>').addClass('fancy-button').attr('id', 'shopAllDone').attr('tabindex', '0').attr('id', 'leave').text('All Done');
+
+        /***** A HACK FOR A BORDER TO FILL ALL THE WAY DOWN */
+        let bottomBox = $('<div>').addClass('wrapper shop-box bottom-box bordered').append($('<span>').text('  '));
+        let bottomBox2 = $('<div>').addClass('wrapper shop-box bottom-box dbl-bordered').append($('<span>').text('  '));
+        /* HEALTH */
+        let hpRestore = $('<div>').addClass('wrapper shop-box').append($('<span>').text('Restore'), $('<div>').addClass('shop-button hp-restore').attr('id', 'refill').attr('tabindex', '0').text('$' + playerInfo.healthShopCost()));
+        let hpUpgrade = $('<div>').addClass('wrapper shop-box').append($('<span>').text('Upgrade'), $('<div>').addClass('shop-button hp-improve').attr('id', 'health').attr('tabindex', '0').text('$' + playerInfo.healthUpShopCost));
+
+        hpCol.append(hpRestore, hpUpgrade);
+        /* SPEED */
+        let spdUpgrade = $('<div>').addClass('wrapper shop-box bordered').append($('<span>').text('Upgrade'), $('<div>').addClass('shop-button speed-improve').attr('id', 'fast').attr('tabindex', '0').text('$' + playerInfo.speedShopCost));
+
+        spdCol.append(spdUpgrade, bottomBox);
+        /* ATTACK */
+        let atkUpgrade = $('<div>').addClass('wrapper shop-box dbl-bordered').append($('<span>').text('Upgrade'), $('<div>').addClass('shop-button attack-improve').attr('id', 'power').attr('tabindex', '0').text('$' + playerInfo.attackShopCost));
+
+        atkCol.append(atkUpgrade, bottomBox2);
+        /* ARMOUR */
+        let armRestore = $('<div>').addClass('wrapper shop-box').append($('<span>').text('Restore'), $('<div>').addClass('shop-button armour-restore').attr('id', 'repair').attr('tabindex', '0').text('$' + playerInfo.armourReShopCost()));
+        let armUpgrade = $('<div>').addClass('wrapper shop-box').append($('<span>').text('Install'), $('<div>').addClass('shop-button armour-install').attr('id', 'armour').attr('tabindex', '0').text('$' + playerInfo.armourShopCost));
+
+        armCol.append(armRestore, armUpgrade);
+
+        content.append(title, subtitle, hpCol, spdCol, atkCol, armCol, allDone)
+
+        setMenuContent(content);
+
+        if (!reload) {
+            setMenuText("How would you like to improve your bot?")
+        }
+
+        $('[tabindex]').on('click', (e) => {
+            //use switch to carry out actions
+            switch ($(e.target).attr('id').toUpperCase()) {
+
+                case "REFILL":
+                    playerInfo.refillHealth();
+                    break;
+
+                case "HEALTH":
+                    playerInfo.upgradeHealth();
+                    break;
+
+                case "POWER":
+                    playerInfo.upgradeAttack();
+                    break;
+
+                case "FAST":
+                    playerInfo.increeseSpeed();
+                    break;
+
+                case "ARMOUR":
+                    playerInfo.getArmour();
+                    break;
+
+                case "REPAIR":
+                    playerInfo.repairArmour();
+                    break;
+
+                case "LEAVE":
+                    //window.alert("Leaving the store.");
+                    startNewWeek();
+                    break;
+
+                case "FIGHT":
+                    //window.alert("Leaving the store.");
+                    playerInfo.upgradeAttack(1);
+                    playerInfo.cheater = true;
+                    break;
+
+                case "HURRY":
+                    //window.alert("Leaving the store.");
+                    playerInfo.increeseSpeed(1);
+                    playerInfo.cheater = true;
+                    break;
+
+                default:
+                    alert("You did not type a valid option. Try something else");
+
+                    guiShop();
+                    break;
+            }
+
+        });
+
     };
     const guiNameABot = function() {
 

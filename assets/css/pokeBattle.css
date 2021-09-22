@@ -425,6 +425,7 @@ body {
     padding-left: 1rem;
 }
 
+.shop-button,
 .fancy-button {
     padding: 1rem;
     margin: .3rem;
@@ -435,7 +436,7 @@ body {
     text-align: center;
     transition: 0.5s;
     background-size: 200% auto;
-    color: white;
+    color: var(--white-text);
     box-shadow: .2rem .2rem .1rem var(--dark-shadow);
     border-radius: .7rem;
     display: block;
@@ -461,9 +462,9 @@ body {
     border-radius: 50%;
 }
 
+.shop-button:hover,
 .fancy-button:hover {
     background-position: right center;
-    color: #fff;
     text-decoration: none;
 }
 
@@ -566,7 +567,8 @@ body {
     width: 40rem;
 }
 
-#statPointsRemaining {
+#statPointsRemaining,
+#cashRemaining {
     font-size: 3rem;
     vertical-align: middle;
 }
@@ -666,6 +668,84 @@ body {
     /* Green background */
     cursor: pointer;
     /* Cursor on hover */
+}
+
+
+/***************************
+WORK SHOP STYLES
+********************/
+
+#shopMenu {
+    margin: 0 auto;
+    width: 60rem;
+    justify-content: center;
+}
+
+#shopMenu p {
+    width: 100%;
+    height: 4rem;
+    text-align: center;
+}
+
+.wrapper.shop-col {
+    width: 20%;
+    flex-direction: column;
+    justify-content: flex-start;
+}
+
+.wrapper .shop-box {
+    padding-top: 1.2rem;
+    text-shadow: none;
+    filter: drop-shadow(.2rem .2rem .1rem var(--dark-shadow));
+}
+
+.bordered {
+    border-left: .1rem solid var(--menu-bg1);
+}
+
+.dbl-bordered {
+    border-right: .1rem solid var(--menu-bg1);
+    border-left: .1rem solid var(--menu-bg1);
+}
+
+.shop-box.bottom-box {
+    height: 6.7rem;
+}
+
+.shop-button {
+    width: 8rem;
+    padding: .5rem 0;
+    text-align: center;
+    color: var(--dark-bg);
+    text-shadow: .1rem .1rem .1rem var(--light-shadow);
+}
+
+.hp-restore {
+    background-image: linear-gradient(to right, #e446dc 0%, #d19dd8 51%, #db33cd 100%);
+}
+
+.hp-improve {
+    background-image: linear-gradient(to right, #ad2121 0%, #da8989 51%, #e03b65 100%);
+}
+
+.speed-improve {
+    background-image: linear-gradient(to right, #e9d362 0%, #dffd72 51%, #e9d362 100%);
+}
+
+.attack-improve {
+    background-image: linear-gradient(to right, #ce6925 0%, #fdb572 51%, #e06d01 100%);
+}
+
+.armour-restore {
+    background-image: linear-gradient(to right, #79df75 0%, #5ace6d 51%, #0f9b32 100%);
+}
+
+.armour-install {
+    background-image: linear-gradient(to right, #2636c5 0%, #5072ce 51%, #418ace 100%);
+}
+
+#shopAllDone {
+    margin-top: 5rem;
 }
 
 
