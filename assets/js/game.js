@@ -306,7 +306,7 @@ var playerInfo = {
 
         if (this.money >= this.armourReShopCost()) {
             if (this.hasArmour) {
-                setMenuText("Repairing " + this.name + "'s plate Armour for $" + this.armourReShopCost + ".");
+                setMenuText("Repairing " + this.name + "'s plate Armour for $" + this.armourReShopCost() + ".");
 
                 this.money -= this.armourReShopCost();
                 this.armourDamage = 0;
@@ -1462,12 +1462,7 @@ const UIGame = (() => {
             localChamp.trainer + " <span class='emoji'>💪</span></div></div>");
         setMenuText("Will you enter your Bot, and try your luck in the Great Robo Death Match?");
 
-        $("#menu-content").on('click', function(event) {
-            playerInfo.resetForUi();
-            selectABot();
-        });
-
-        $("#menu-ok-check").on('click', function(event) {
+        inputToContinue(() => {
             playerInfo.resetForUi();
             selectABot();
         });
