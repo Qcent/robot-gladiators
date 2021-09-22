@@ -12,10 +12,11 @@ var buildingBot = {
     speed: 0,
 };
 var localChamp = {
-    robot: 'Paul the Robot',
-    trainer: 'John',
-    score: '100',
+    robot: "Andy  D'Botto ",
+    trainer: 'Mark B',
+    score: 40,
     rounds: 4,
+    points: 500,
 };
 const opponentList = [{
         name: "Lt. Commander Data",
@@ -580,39 +581,11 @@ var randomNumber = function(min, max) {
 
     return value;
 };
-var checkHighScore = function(score) {
-
-    if (parseInt(localChamp.score) < playerInfo.totalEarnings) {
-        //New High Score
-        let scoreName = window.prompt("You set a NEW HIGH SCORE !!!\n\nPlease Enter Your Name:");
-        if (!scoreName) { checkHighScore(score); } // if no name is entered re run function
-        else {
-            // update localChamp
-            localChamp = {
-                    robot: playerInfo.name,
-                    trainer: scoreName,
-                    score: playerInfo.totalEarnings,
-                    rounds: totalrounds,
-                }
-                // set new highscore
-            localStorage.setItem('robotGladiatorChamps', JSON.stringify(localChamp));
-        }
-    } else {
-        setMenuText("Well you did your best but you still fell short of the Champ... \n" + localChamp.robot +
-            " is still the greatest fighter with $" + localChamp.score + " in winnings.\n\n" +
-            "Your Total: $" + playerInfo.totalEarnings);
-    }
-}
 var getLocalChamp = function() {
     // if localStorage values are not null set tehm the localChamp values
 
     localChamp = JSON.parse(localStorage.getItem('robotGladiatorChamps')) || localChamp;
 
-    /*
-    localChamp.trainer = ((window.localStorage.getItem("high-score-name")) ? window.localStorage.getItem("high-score-name") : localChamp.trainer);
-    localChamp.robot = ((window.localStorage.getItem("high-score-robot")) ? window.localStorage.getItem("high-score-robot") : localChamp.robot);
-    localChamp.score = ((window.localStorage.getItem("high-score")) ? window.localStorage.getItem("high-score") : localChamp.score);
-    */
 }
 var enemyHealthCheck = function(enemy) {
     //check enemys health returns null or the health left
@@ -652,11 +625,27 @@ var enemyMakeAttack = function(enemy) {
     console.log(enemy.name + " has attacked " + playerInfo.name + " for " + damage + ".");
     return damage;
 }
-var displayWelcome = function() {
-    window.alert("Welcome to Robot Gladiators!\n\n " +
-        "     Current Champion: 🥊 " + localChamp.robot + " 🤖\n      Rounds: 🔔 " + localChamp.rounds + "\n      Prize Winnings: 💵$" + localChamp.score + "💵 \n      Trainer: 💪 " + localChamp.trainer + "\n\n" +
-        "Will you enter your Bot, and try your luck in the Great Robo Death Match?");
-}
+var whoDrawsFirst = function(enemy) {
+    //function to determine who attacks first in each round of battle
+
+    //get differentce in opponents speeds
+    let diff = (playerInfo.speed - currentEnemy.speed)
+        // positive number means player is faster
+        // negative means enemy is faster
+
+    //flip a coin; if heads(>.5) chance is 1 if tails(<=.5) chance is -1
+    let chance = ((Math.random() > 0.5) ? 1 : (-1));
+
+    // take the diff and add a ranmdom int from (-2...+2) and return value
+    return diff + (randomNumber(1, 2) * chance);
+};
+
+
+/************************************** */
+/****** REPLACED BY METHODS IN UIGame() */
+/*  vvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvvv*/
+/*
+
 var shop = function() {
     //ask player what they would like to do
     var shopOptionPrompt = window.prompt("END OF WEEK " + weekOfBattle + " STATUS:\n" +
@@ -740,20 +729,6 @@ var shop = function() {
             shop();
             break;
     }
-};
-var whoDrawsFirst = function(enemy) {
-    //function to determine who attacks first in each round of battle
-
-    //get differentce in opponents speeds
-    let diff = (playerInfo.speed - currentEnemy.speed)
-        // positive number means player is faster
-        // negative means enemy is faster
-
-    //flip a coin; if heads(>.5) chance is 1 if tails(<=.5) chance is -1
-    let chance = ((Math.random() > 0.5) ? 1 : (-1));
-
-    // take the diff and add a ranmdom int from (-2...+2) and return value
-    return diff + (randomNumber(1, 2) * chance);
 };
 var fightOrRun = function() {
 
@@ -862,7 +837,7 @@ var startGame = function() {
     for (let i = 0; i < opponentList.length - 2; i++) {
         beatenOpponents.splice(i, 1, true);
     }
-    */
+    
     let botFound = findABot(playerInfo.name);
     if (botFound === false) { buildABot(playerInfo.name); } else { loadABot(botFound); }
 
@@ -925,21 +900,61 @@ var startGame = function() {
     } //END OF WHILE LOOP
     endGame();
 };
+var displayWelcome = function() {
+    window.alert("Welcome to Robot Gladiators!\n\n " +
+        "     Current Champion: 🥊 " + localChamp.robot + " 🤖\n      Rounds: 🔔 " + localChamp.rounds + "\n      Prize Winnings: 💵$" + localChamp.score + "💵 \n      Trainer: 💪 " + localChamp.trainer + "\n\n" +
+        "Will you enter your Bot, and try your luck in the Great Robo Death Match?");
+}
+/*^^^^^^^^^^^^ LEGACY CODE ABOVE  ^^^^^^^^^^^^^ */
+///*************************************** */
+
+
+/******* NEDDS TO BE UPDATED OR LOOKED AT */
+var checkHighScore = function(score) {
+
+    if (!localChamp.points) { localChamp.points = 1000; } /// hack for backwards compatability
+    let points = (playerInfo.money * playerInfo.attack * playerInfo.speed * playerInfo.maxHealth);
+    console.log(points + " ; " + parseInt(localChamp.points))
+    if (parseInt(localChamp.points) < points) {
+        //New High Score
+        let scoreName = window.prompt("You set a NEW HIGH SCORE !!!\n\nPlease Enter Your Name:");
+        if (!scoreName) { checkHighScore(score); } // if no name is entered re run function
+        else {
+            // update localChamp
+            localChamp = {
+                    robot: playerInfo.name,
+                    trainer: scoreName,
+                    score: playerInfo.totalEarnings,
+                    rounds: totalrounds,
+                    points: points,
+                }
+                // set new highscore
+            localStorage.setItem('robotGladiatorChamps', JSON.stringify(localChamp));
+        }
+    } else {
+        setMenuText("Well you did your best but you still fell short of the Champ... \n" + localChamp.robot +
+            " is still the greatest fighter with $" + localChamp.score + " in winnings.\n\n" +
+            "Your Total: $" + playerInfo.totalEarnings);
+    }
+
+    inputToContinue(null);
+}
 var endGame = function() {
     if (playerInfo.health > 0) {
-        //let score = (playerInfo.money * playerInfo.attack * playerInfo.speed * playerInfo.health);
         window.alert("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived " + totalrounds + " rounds\n                      and WON!! the game! 🎉🤖🎉 \n\n" +
             "You finished the tournament with a grand total winnings of: \n                                    💰 $" + playerInfo.totalEarnings + " 💰");
 
-        checkHighScore(playerInfo.totalEarnings);
+        checkHighScore();
 
     } else {
-        window.alert("You have lost your robot in battle! \n" +
-            "After " + weekOfBattle + " weeks of battle and " + totalrounds + " rounds, " +
-            playerInfo.name + " has gone to the big scrap yard in the sky. \n" +
-            "        🤖 Game Over! 🤖 ");
+        createMenuUIArea();
 
-        checkHighScore(playerInfo.totalEarnings);
+        setMenuContent("You have lost your robot in battle! <br>" +
+            "After " + weekOfBattle + " weeks of battle and " + totalrounds + " rounds, " +
+            playerInfo.name + " has gone to the big scrap yard in the sky. <br>" +
+            "🤖 Game Over! 🤖 ");
+
+        checkHighScore();
     }
 
     var playAgainConfirm = window.confirm("Would you like to play again?");
@@ -1175,18 +1190,12 @@ const UIGame = (() => {
             createMenuUIArea();
             $('#menu-content').css('width', '58%').css('text-align', 'left');
 
-            setMenuText("The week's fighting is over! And you came out on top! The Robot Fighting League manager comes over and gives you your week's pay 💵💵💵 '$" + payout + " Big Ones!!' 💵💵💵  ");
+            setMenuText("The week's fighting is over! And you're' on top! The Robot Fighting League manager comes over and gives you your pay: 💵💵💵 '$" + payout + " Big Ones!!' 💵💵💵  ");
             setMenuContent(managerMessage[weekOfBattle - 1]);
 
             inputToContinue(guiShop);
             return
-            /* shop() will send to startNewWeek when exited
-
-            //lets go shopping
-            window.alert("Let's visit the repair bay.");
-            shop();
-            startNewWeek();
-            */
+            //guiShop() will send to startNewWeek when exited
 
         } else if (!opponentsRemaining()) {
             // BEAT THE WHOLE GAME /*   
@@ -1360,7 +1369,7 @@ const UIGame = (() => {
 
     }
     const guiBuildABot = function() {
-        playerInfo.statPoints = 119;
+        playerInfo.statPoints = 99;
         createMenuUIArea();
 
         $('#menu-content').css('padding-bottom', '1rem')
