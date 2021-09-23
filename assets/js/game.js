@@ -726,6 +726,9 @@ var checkHighScore = function(score) {
     }
 
     inputToContinue(() => {
+        displayIntro();
+
+        /*
         var playAgainConfirm = window.confirm("Would you like to play again?");
 
         if (playAgainConfirm) {
@@ -733,6 +736,7 @@ var checkHighScore = function(score) {
         } else {
             window.alert("Thank you for playing Robot Gladiators!\n Y'all come back now, ya hear!");
         }
+        */
     });
 
 
