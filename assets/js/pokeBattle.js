@@ -2,8 +2,12 @@ const clearScreen = () => {
     $('#Upper-Vis') ? $('#Upper-Vis').remove() : null;
     $('#Lower-Vis') ? $('#Lower-Vis').remove() : null;
 }
-const setMenuText = (txt) => {
+const setMenuText = (txt, pos) => {
     $('#menu-text').text(txt);
+
+    if (pos) {
+        $('#menu-text').css('text-align', 'center');
+    }
 }
 const setMenuContent = (txt) => {
     $('#menu-content section').html(txt);
@@ -114,7 +118,9 @@ const createBattleUIArea = function() {
         let cardFrame = $("<div>").addClass("battle-card-frame");
         let cardFace = $("<div>").addClass("battle-card-face");
         let cardName = $("<h2>").attr("id", out + "-card-name").html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?");
-        let cardHP = $("<div>").addClass("battle-HP-bar").append($("<span>").text("HP")).append($("<div>").append($("<div>").attr("id", out + "-HP-bar")));
+        let cardHP = $("<div>").addClass("battle-HP-bar").append($("<span class='ArmourIcon'>").addClass(out)
+            .html(`<svg ><circle cx="11" cy="9" r="8" stroke="#0C2D6B" stroke-width="1"  /></svg>`),
+            $("<span class='HP-text'>").text("HP")).append($("<div>").append($("<div>").attr("id", out + "-HP-bar")));
         let hpText = $("<h3>").attr("id", out + "-HP-text").text("DQ");
         let spdText = $("<div>").addClass("battle-card-stat").attr("id", out + "-SPD-text").text("Speed: 5");
         let atkText = $("<div>").addClass("battle-card-stat").attr("id", out + "-ATK-text").text("Attack: 10");
@@ -160,7 +166,27 @@ const updateRobotCard = (who) => {
     } else {
         let hpp = (who) ? (playerInfo.health / playerInfo.maxHealth) : (currentEnemy.health / currentEnemy.maxHealth);
         let opAtk = (who) ? currentEnemy.attack : playerInfo.attack;
-        $("#" + robot + "-HP-bar").addClass((hpp <= 0.5) ? (hp > (opAtk * 2) ? 'battle-weakened' : 'battle-danger') : '');
+        $("#" + robot + "-HP-bar").addClass((hpp <= 0.55) ? (hp > (opAtk * 2) ? 'battle-weakened' : 'battle-danger') : '');
+    }
+
+    /**** ARMOUR SHOWING AND COLOR */
+    if ((who) ? playerInfo.hasArmour : currentEnemy.hasArmour) {
+        $(".ArmourIcon." + robot).show();
+
+        let armDamage = (who) ? playerInfo.armourDamage : currentEnemy.armourDamage;
+        /*
+                if (armDamage >= 75) {
+                    $(".ArmourIcon." + robot).addClass('deadArmour');
+                }
+                if (armDamage >= 55) {
+                    $(".ArmourIcon." + robot).addClass('damagedArmour');
+                }
+        */
+        let armP = (who) ? (playerInfo.armourDamage / 100) : (currentEnemy.armDamage / 100);
+        let opAtk = (who) ? currentEnemy.attack : playerInfo.attack;
+        $(".ArmourIcon." + robot).addClass((armP >= 0.55) ? ((100 - armDamage) > (opAtk * 2) ? 'damagedArmour' : 'deadArmour') : '');
+    } else {
+        $(".ArmourIcon." + robot).hide();
     }
 };
 const inputToContinue = (callBack) => {

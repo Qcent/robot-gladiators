@@ -11,6 +11,11 @@
     --purp-border: rgb(141, 70, 163);
     --light-shadow: #949189;
     --dark-shadow: #484a63;
+    --armour-normal: rgb(49, 92, 219);
+    --armour-damaged: rgb(219, 165, 49);
+    /** GRADIENTS  */
+    --menu-bg-gradient: linear-gradient(-60deg, #C4E0A0 50%, #9FCFEF 50%);
+    --battle-bg-gradient: radial-gradient( at 59.5rem 23rem, rgb(85, 192, 112) 0%, rgb(85, 192, 112) 20%, rgb(190, 176, 47) 20%, rgb(190, 176, 47) 22.5%, rgb(160, 214, 171) 22.5%, transparent 45%), radial-gradient(ellipse 99rem 40em at 21rem 43rem, rgb(85, 192, 112) 0%, rgb(85, 192, 112) 20%, rgb(190, 176, 47) 20%, rgb(190, 176, 47) 22.5%, rgb(160, 214, 171) 22.5%, transparent 48%), radial-gradient( farthest-side at bottom left, rgba(255, 0, 255, 0.5), transparent), radial-gradient( farthest-corner at bottom right, rgba(53, 50, 255, 0.5), transparent 400px);
 }
 
 @font-face {
@@ -58,7 +63,7 @@ body {
     align-items: stretch;
     /* */
     background: #07daa4;
-    background-image: radial-gradient( at 59.5rem 23rem, rgb(85, 192, 112) 0%, rgb(85, 192, 112) 20%, rgb(190, 176, 47) 20%, rgb(190, 176, 47) 22.5%, rgb(160, 214, 171) 22.5%, transparent 45%), radial-gradient(ellipse 99rem 40em at 21rem 43rem, rgb(85, 192, 112) 0%, rgb(85, 192, 112) 20%, rgb(190, 176, 47) 20%, rgb(190, 176, 47) 22.5%, rgb(160, 214, 171) 22.5%, transparent 48%), radial-gradient( farthest-side at bottom left, rgba(255, 0, 255, 0.5), transparent), radial-gradient( farthest-corner at bottom right, rgba(53, 50, 255, 0.5), transparent 400px);
+    background-image: var(--battle-bg-gradient);
 }
 
 #Upper-Vis.menu-ui {
@@ -180,6 +185,22 @@ body {
     padding: .4rem 0;
 }
 
+.ArmourIcon {
+    width: 1.6rem;
+    height: 1rem;
+    fill: var(--armour-normal);
+    transform: scale(1.5);
+    display: none;
+}
+
+.damagedArmour {
+    fill: var(--armour-damaged) !important;
+}
+
+.deadArmour {
+    fill: var(--danger-red) !important;
+}
+
 .battle-HP-bar {
     display: flex;
     color: goldenrod;
@@ -190,8 +211,16 @@ body {
     margin-right: 1rem;
 }
 
-.battle-HP-bar span {
-    padding-right: 0rem;
+.battle-HP-bar .HP-text {
+    /* Golden gradient on HP text  */
+    position: relative;
+    top: .1rem;
+    background: #FCEABB;
+    background: -webkit-linear-gradient(to bottom, #FCEABB 0%, #FCCD4D 50%, #F8B500 51%, #FBDF93 100%);
+    background: -moz-linear-gradient(to bottom, #FCEABB 0%, #FCCD4D 50%, #F8B500 51%, #FBDF93 100%);
+    background: linear-gradient(to bottom, #FCEABB 0%, #FCCD4D 50%, #F8B500 51%, #FBDF93 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
 }
 
 .battle-HP-bar div {
@@ -363,7 +392,7 @@ body {
 
 .menu-bg {
     animation: slide 3s ease-in-out infinite alternate;
-    background-image: linear-gradient(-60deg, #C4E0A0 50%, #9FCFEF 50%);
+    background-image: var(--menu-bg-gradient);
     bottom: 0;
     left: -0;
     opacity: .5;

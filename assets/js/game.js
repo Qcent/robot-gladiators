@@ -174,7 +174,7 @@ const managerMessage = [
     "Week 5, Stayin' Alive!",
     "Week Six, getchore Kicks",
     "Week Seven, livin in Robot Heaven",
-    "Week Eight, set'em Straigh",
+    "Week Eight, set'em Straight",
     "Week Nine: End Of The Line!",
     "Week Ten, well you should have won by now, how many robots could there be?"
 ]
@@ -193,6 +193,7 @@ var playerInfo = {
     speed: 6,
     money: 5,
     hasArmour: false,
+    lostArmour: false,
     armourDamage: 0,
     totalEarnings: 0,
     healthRefillValue: function() { //return Math.floor(this.maxHealth * .2)  //20% of max health
@@ -398,7 +399,10 @@ const calcPayout = function() {
                                20       +       ceil:23/180*(3*7) = (+3)                *7  = 23*7 = 147
                                 2         +         ceil: 34/80*(1*7) = (+5)            *7 =  7*7 =48                    
                        opponents beaten +  0||%maxhealth remaining*(weeks*3)  all multiplied by the weeks */
-    return beatenOpponents.filter(Boolean).length + Math.max(0, Math.ceil(((playerInfo.health / playerInfo.maxHealth) * (weekOfBattle * 7)))) * (weekOfBattle);
+    //  return beatenOpponents.filter(Boolean).length + Math.max(0, Math.ceil(((playerInfo.health / playerInfo.maxHealth) * (weekOfBattle * 7)))) * (weekOfBattle);
+
+
+    return (beatenOpponents.filter(Boolean).length * (weekOfBattle + 1)) + Math.max(0, Math.ceil(((playerInfo.health / playerInfo.maxHealth) * (weekOfBattle * 2))))
 
 }
 const pickOpponents = function(num) {
@@ -603,7 +607,7 @@ var enemyMakeAttack = function(enemy) {
     /*   ARMOUR DAMAGE LESSENING CODE  */
     if (playerInfo.hasArmour) {
 
-        let newDamage = Math.ceil(damage * (randomNumber(55, 75) / 100));
+        let newDamage = Math.ceil(damage * (randomNumber(70, 83) / 100));
         playerInfo.armourDamage += (damage - newDamage);
         console.log("Armour On!   atk power:" + damage + "  atk effect:" + newDamage);
         console.log("Your armour has protected you from " + playerInfo.armourDamage + " damage!");
@@ -612,6 +616,9 @@ var enemyMakeAttack = function(enemy) {
         if (playerInfo.armourDamage > 100) {
             if (randomNumber(0, 1)) {
                 console.log("Your plate armour can withstand no more. ");
+                playerInfo.lostArmour = true;
+                //  createMessageText("Your plate armour can withstand no more. ");
+                //  inputToContinue(playerInfo.armourReset);
                 playerInfo.armourReset();
             }
         }
@@ -908,13 +915,12 @@ var displayWelcome = function() {
 /*^^^^^^^^^^^^ LEGACY CODE ABOVE  ^^^^^^^^^^^^^ */
 ///*************************************** */
 
-
 /******* NEDDS TO BE UPDATED OR LOOKED AT */
 var checkHighScore = function(score) {
 
     if (!localChamp.points) { localChamp.points = 1000; } /// hack for backwards compatability
     let points = (playerInfo.money * playerInfo.attack * playerInfo.speed * playerInfo.maxHealth);
-    console.log(points + " ; " + parseInt(localChamp.points))
+
     if (parseInt(localChamp.points) < points) {
         //New High Score
         let scoreName = window.prompt("You set a NEW HIGH SCORE !!!\n\nPlease Enter Your Name:");
@@ -932,40 +938,51 @@ var checkHighScore = function(score) {
             localStorage.setItem('robotGladiatorChamps', JSON.stringify(localChamp));
         }
     } else {
-        setMenuText("Well you did your best but you still fell short of the Champ... \n" + localChamp.robot +
-            " is still the greatest fighter with $" + localChamp.score + " in winnings.\n\n" +
+        setMenuContent("Well you did your best but you still fell short of the Champ... <br>🤖 " + localChamp.robot +
+            " 🤖 <br>is still the greatest fighter with $" + localChamp.score + " in winnings.<br><br>" +
             "Your Total: $" + playerInfo.totalEarnings);
+
+
     }
 
-    inputToContinue(null);
+    inputToContinue(() => {
+        var playAgainConfirm = window.confirm("Would you like to play again?");
+
+        if (playAgainConfirm) {
+            UIGame.startGame();
+        } else {
+            window.alert("Thank you for playing Robot Gladiators!\n Y'all come back now, ya hear!");
+        }
+    });
+
+
 }
 var endGame = function() {
-    if (playerInfo.health > 0) {
-        window.alert("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived " + totalrounds + " rounds\n                      and WON!! the game! 🎉🤖🎉 \n\n" +
-            "You finished the tournament with a grand total winnings of: \n                                    💰 $" + playerInfo.totalEarnings + " 💰");
+    createMenuUIArea();
+    $('#menu-content').css('width', '58rem');
 
-        checkHighScore();
+    if (playerInfo.health > 0) {
+
+        setMenuContent("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived " + totalrounds + " rounds<br> and WON!! the game! 🎉🤖🎉 <br><br>" +
+            "You finished the tournament with a grand total winnings of: <br>  💰 $" + playerInfo.totalEarnings + " 💰");
+
+        setMenuText("🥊🤖 🎉🤖🎉  !! You WON !! 🎉🤖🎉 🤖🥊", 'center');
+
+        inputToContinue(checkHighScore);
 
     } else {
-        createMenuUIArea();
 
         setMenuContent("You have lost your robot in battle! <br>" +
-            "After " + weekOfBattle + " weeks of battle and " + totalrounds + " rounds, " +
-            playerInfo.name + " has gone to the big scrap yard in the sky. <br>" +
-            "🤖 Game Over! 🤖 ");
+            "After " + weekOfBattle + " weeks of battle and " + totalrounds + " rounds <br> " +
+            playerInfo.name + " has gone to the big scrap yard in the sky.");
 
-        checkHighScore();
+        setMenuText("🤖 Game Over! 🤖 ", 'center');
+
+        inputToContinue(checkHighScore);
+
     }
 
-    var playAgainConfirm = window.confirm("Would you like to play again?");
-
-    if (playAgainConfirm) {
-        UIGame.startGame();
-    } else {
-        window.alert("Thank you for playing Robot Gladiators!\n Y'all come back now, ya hear!");
-    }
 };
-
 
 /**************** */
 /* NEWEST CODE 
@@ -1018,18 +1035,16 @@ const UIGame = (() => {
     }
     const startNewRound = () => {
 
-
-
         let i = totalrounds % 3;
         nmeIdx = i; // a global refference to the enemyInfo[i]
 
-        if (i === 0) { createBattleUIArea(); } // only redraw if first of the week
+        if (i === 0) { createBattleUIArea(); } // only redraw if first of the week // 
 
         if (playerInfo.health > 0 && i < enemyInfo.length) {
             currentEnemy = Object.create(enemyInfo[i]);
 
             totalrounds++;
-            createMessageText("    Week " + weekOfBattle + " : Round " + (i + 1) + "<br> Your opponent: 🤖 " + currentEnemy.name + " 🤖 ");
+            createMessageText("Week " + weekOfBattle + " : Round " + (i + 1) + "<br> Your opponent: 🤖 " + currentEnemy.name + " 🤖 ");
 
             let boostGiven = randomizeEnemyStats(currentEnemy);
             /*********** */
@@ -1039,8 +1054,6 @@ const UIGame = (() => {
                 /*********** */
 
             inputToContinue(sendOutTheBots);
-            /// should send the function to run after continue
-            //  );
 
         } else if (i >= enemyInfo.length) {
             alert("Error not enough enemeys in buffer")
@@ -1118,12 +1131,19 @@ const UIGame = (() => {
                 }
                 */
             }
+
+            /*  new feature */
+            let armourNotice = '';
+            if (playerInfo.lostArmour) {
+                armourNotice = "<br>Your plate armour has broken!";
+                playerInfo.lostArmour = false;
+            }
             /// update the screen with message   // lots of ternary statements here so one line can handle all cases
             createMessageText(((plrFirst > 0) ? playerInfo.name : enemy.name) + " attacks first for " + ((plrFirst > 0) ? plrDam : nmeDam) + " damage!<br>" +
 
                 (((plrFirst > 0) ? nmeDam : plrDam) == 0 ? (((plrFirst > 0) ? enemy.name : playerInfo.name) + " has collapsed in a heap!") :
 
-                    (((plrFirst > 0) ? enemy.name : playerInfo.name) + " retaliates for " + ((plrFirst > 0) ? nmeDam : plrDam) + " damage!")));
+                    (((plrFirst > 0) ? enemy.name : playerInfo.name) + " retaliates for " + ((plrFirst > 0) ? nmeDam : plrDam) + " damage!")) + armourNotice);
 
 
             inputToContinue(isEnemyDead);
@@ -1209,7 +1229,7 @@ const UIGame = (() => {
                 "'Boy, you done made me a very rich and a very...<br>I say very , Happy Man!' <br><br>" +
                 "'Take this bonus Champ! and go on a vacation, I ain't got no more bots left for you to break.'<br><br>" +
                 "He hands over: $" + payout);
-            setMenuText("Great Job!!! You Beat the Game! 🤖");
+            setMenuText("🥊🤖 🎉🤖🎉  !! Great Job !! 🎉🤖🎉 🤖🥊", 'center');
 
             inputToContinue(endGame);
         }
@@ -1462,7 +1482,7 @@ const UIGame = (() => {
 
     }
     const displayIntro = () => {
-        createMenuUIArea(true);
+        createMenuUIArea();
         setMenuContent("<h2>Welcome to Robot Gladiators!</h2> " +
             "<div class='wrapper'id='champ-wrapper'> <div class='ChampStats'><span class='emoji'>🥊</span> Current Champion: </div><div class='ChampStats'>" +
             localChamp.robot + " <span class='emoji'>🤖</span></div><div class='ChampStats'> <span class='emoji'>🔔</span> Rounds Fought: </div><div class='ChampStats'>" +
