@@ -122,8 +122,8 @@ const createBattleUIArea = function() {
             .html(`<svg ><circle cx="11" cy="9" r="8" stroke="#0C2D6B" stroke-width="1"  /></svg>`),
             $("<span class='HP-text'>").text("HP")).append($("<div>").append($("<div>").attr("id", out + "-HP-bar")));
         let hpText = $("<h3>").attr("id", out + "-HP-text").text("DQ");
-        let spdText = $("<div>").addClass("battle-card-stat").attr("id", out + "-SPD-text").text("Speed: 5");
-        let atkText = $("<div>").addClass("battle-card-stat").attr("id", out + "-ATK-text").text("Attack: 10");
+        let spdText = $("<div>").addClass("battle-card-stat").attr("id", out + "-SPD-text").text("Speed: ?");
+        let atkText = $("<div>").addClass("battle-card-stat").attr("id", out + "-ATK-text").text("Attack: ?");
         let statBox = i ? $("<div>").append($("<div>").addClass("battle-card-stat stat-pad"), spdText, atkText) : $("<span>").append(spdText, atkText);
 
         /***** */
@@ -184,7 +184,7 @@ const updateRobotCard = (who) => {
         */
         let armP = (who) ? (playerInfo.armourDamage / 100) : (currentEnemy.armourDamage / 100);
         let opAtk = (who) ? currentEnemy.attack : playerInfo.attack;
-        $(".ArmourIcon." + robot).addClass((armP >= 0.55) ? ((100 - armDamage) > (opAtk * 2) ? 'damagedArmour' : 'deadArmour') : '');
+        $(".ArmourIcon." + robot).addClass((armP >= 0.55) ? ((100 - armDamage) < (opAtk * 2) ? 'damagedArmour' : 'deadArmour') : '');
     } else {
         $(".ArmourIcon." + robot).hide();
     }

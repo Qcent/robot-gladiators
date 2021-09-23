@@ -167,25 +167,21 @@ const opponentList = [{
     }
 ];
 const managerMessage = [
-    "'Nice work, kid!...<br>You're really going places.'<br><br>'Whaat? You think I didn't see you pocket all that money from the ring?'<br><br>'Just keep winning fights and the payouts will get bigger.'",
-    "'Whoooey boy!, you really gave them folks a show this week!'<br><br>'You keep this up and you just might get yourself a plaque on the wall.'",
-    "'Great Show out there, Champ!'<br>'Say? Where'd you learn to fight like that anyhow?... <br><br>ah nevermind, you just come back and win next week, then you'll really get paid.'",
-    "Week 4 out the door",
-    "Week 5, Stayin' Alive!",
-    "Week Six, getchore Kicks",
-    "Week Seven, livin in Robot Heaven",
-    "Week Eight, set'em Straight",
-    "Week Nine: End Of The Line!",
-    "Week Ten, well you should have won by now, how many robots could there be?"
-]
+        "'Nice work, kid!...<br>You're really going places.'<br><br>'Whaat? You think I didn't see you pocket all that money from the ring?'<br><br>'Just keep winning fights and the payouts will get bigger.'",
+        "'Whoooey boy!, you really gave them folks a show this week!'<br><br>'You keep this up and you just might get yourself a plaque on the wall.'",
+        "'Great Show out there, Champ!'<br>'Say? Where'd you learn to fight like that anyhow?... <br><br>ah nevermind, you just come back and win next week, then you'll really get paid.'",
+        "Week 4 out the door",
+        "Week 5, Stayin' Alive!",
+        "Week Six, getchore Kicks",
+        "Week Seven, livin in Robot Heaven",
+        "Week Eight, set'em Straight",
+        "Week Nine: End Of The Line!",
+        "Week Ten, well you should have won by now, how many robots could there be?"
+    ]
+    /**** END of GLOBAL VARIABLES */
+    /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+
 var playerInfo = {
-    getRobotName: function() {
-        let usrInput = window.prompt("What is your robot's name?", this.name);
-        if (usrInput) { return usrInput; } else {
-            window.alert("Please enter a Name!");
-            return this.getRobotName();
-        }
-    },
     name: '',
     maxHealth: 80,
     health: 80,
@@ -209,22 +205,8 @@ var playerInfo = {
     armourShopCost: 25,
     armourReShopCost: function() { let x = (this.armourDamage > 0 ? 1 : 0); return Math.max(Math.floor(this.armourDamage * .35), x) },
     upgradeIncreaseCost: 0.70,
-    overNightRecharge: 0.15,
-    /*
-        reset: function() {
-            this.name = this.getRobotName();
-            this.maxHealth = 80;
-            this.health = this.maxHealth;
-            this.healthUpShopCost = 10;
-            this.attackShopCost = 7;
-            this.speedShopCost = 8;
-            this.armourReset();
-            this.attack = 10;
-            this.speed = 6;
-            this.money = 6;
-            this.totalEarnings = 0;
-        },
-        */
+    overNightRecharge: 0.20,
+
     resetForUi: function() {
         this.name = '';
         this.maxHealth = 80;
@@ -425,7 +407,40 @@ const calcPayout = function() {
     //  return beatenOpponents.filter(Boolean).length + Math.max(0, Math.ceil(((playerInfo.health / playerInfo.maxHealth) * (weekOfBattle * 7)))) * (weekOfBattle);
 
 
-    return (beatenOpponents.filter(Boolean).length * (weekOfBattle + 1)) + Math.max(0, Math.ceil(((playerInfo.health / playerInfo.maxHealth) * (weekOfBattle * 2))))
+    return (beatenOpponents.filter(Boolean).length * (weekOfBattle + 1)) + Math.max(0, Math.ceil(((playerInfo.health / playerInfo.maxHealth) * (weekOfBattle * 2)))) * Math.ceil(weekOfBattle / 3);
+
+}
+const calcStartingShopCosts = () => {
+
+    playerInfo.healthUpShopCost = Math.floor((playerInfo.maxHealth / 100) * 20);
+
+    playerInfo.attackShopCost = Math.max(Math.floor((playerInfo.attack / 10) * 8), 4);
+
+    playerInfo.speedShopCost = Math.max(Math.floor((playerInfo.speed / 10) * 7), 4);
+
+    console.log("this ran");
+
+    /*
+            this.healthUpShopCost = 20;
+            this.attackShopCost = 7;
+            this.speedShopCost = 8;*/
+
+};
+/*********************** */
+/*
+        OLD CODE DO NOT CHANGE BELOW UNLESS NEEDED
+/* *************************** */
+
+// function to generate a random numeric value
+var randomNumber = function(min, max) {
+    var value = Math.floor(Math.random() * (max - min + 1)) + min;
+
+    return value;
+};
+var getLocalChamp = function() {
+    // if localStorage values are not null set tehm the localChamp values
+
+    localChamp = JSON.parse(localStorage.getItem('robotGladiatorChamps')) || localChamp;
 
 }
 const pickOpponents = function(num) {
@@ -444,7 +459,7 @@ const pickOpponents = function(num) {
 const randomizeEnemyStats = function(enemy) {
     randomizeBaseStats(enemy);
 
-    let maxBoost = 8 * weekOfBattle; // everyweek increase max boost by 8
+    let maxBoost = 6 * weekOfBattle; // everyweek increase max boost by 8
     let totalBoost = 0;
     let boost = 0;
 
@@ -493,94 +508,6 @@ const randomizeBaseStats = function(enemy) {
 const opponentsRemaining = function() {
     return (opponentList.length - beatenOpponents.filter(Boolean).length);
 };
-const validateBotBuild = function(msg, mod) {
-    let val = parseInt(prompt("You have " + playerInfo.statPoints + " points to spend.\n" + msg));
-
-    if (Number.isInteger(val) && val <= playerInfo.statPoints) {
-        if (mod && val % mod !== 0) {
-            alert("Point value must be multiple of " + mod + ".");
-            return validateBotBuild(msg, mod);
-        }
-
-        playerInfo.statPoints -= val;
-        return Math.floor(val);
-    } else {
-        alert("Invalid Input");
-        return validateBotBuild(msg, mod);
-    }
-};
-const buildABot = function(name) {
-    // set stat points to start
-    // health starts at 10 and cost .5 stat points to increase
-    playerInfo.statPoints = 120;
-    let bot = {
-        name: name,
-        health: 0,
-        attack: 0,
-        speed: 0,
-    };
-    let botFinished = false;
-    while (!botFinished) {
-        let input = window.prompt("Let's Build Your Fighting Robot\n\nYou have: " + playerInfo.statPoints + " Stat Points left.\n" +
-            "1.Health: " + bot.health + "                   2.Speed: " + bot.speed + "                   3.Attack: " + bot.attack + '\n' +
-            " Cost: 1pts                    Cost: 2pts                    Cost: 3pts \n\n" +
-            "Which stat would you like to set?  or 9.All Done");
-
-        switch (input.toUpperCase()) {
-            case "1":
-            case "H":
-            case "HEALTH":
-                playerInfo.statPoints += bot.health;
-                input = validateBotBuild("How many points to Health?");
-                bot.health = input;
-                break;
-
-            case "2":
-            case "S":
-            case "SPEED":
-                playerInfo.statPoints += bot.speed * 2;
-                input = validateBotBuild("How many points to Speed?", 2);
-                bot.speed = input / 2;
-                break;
-
-            case "3":
-            case "A":
-            case "ATTACK":
-                playerInfo.statPoints += bot.attack * 3;
-                input = validateBotBuild("How many points to Attack?", 3);
-                bot.attack = input / 3;
-                break;
-
-            case "Q":
-            case "9":
-            case "QUIT":
-                if (playerInfo.statPoints > 0) { var ok = alert("You still have stat points to spend! Are you sure?"); }
-                if (ok || playerInfo.statPoints === 0) {
-                    botFinished = true;
-                    playerInfo.name = bot.name;
-                    playerInfo.health = bot.health;
-                    playerInfo.maxHealth = bot.health;
-                    playerInfo.speed = bot.speed;
-                    playerInfo.attack = bot.attack;
-                    /* Set the starting Upgrade costs based on stats chosen */
-                    /*
-                                        playerInfo.healthUpShopCost = Math.max(Math.floor(playerInfo.health / 4), 5);
-                                        playerInfo.attackShopCost = Math.max(Math.floor(playerInfo.attack * .8), 8);
-                                        playerInfo.speedShopCost = Math.max(Math.floor(playerInfo.speed * .8), 7);
-                                        */
-                    playerInfo.setUpgradeCosts();
-
-                    saveABot(bot);
-                }
-                break
-            default:
-                // validate or something
-                alert("nothing Chosen");
-                break
-        }
-    }
-
-};
 const saveABot = function(bot) {
     createdBots.push(bot);
     localStorage.setItem("GladiatorBots", JSON.stringify(createdBots))
@@ -605,40 +532,6 @@ const loadABot = function(idx) {
     playerInfo.speed = createdBots[idx].speed;
     playerInfo.attack = createdBots[idx].attack;
 };
-const calcStartingShopCosts = () => {
-
-    playerInfo.healthUpShopCost = Math.floor((playerInfo.maxHealth / 100) * 20);
-
-    playerInfo.attackShopCost = Math.max(Math.floor((playerInfo.attack / 10) * 8), 4);
-
-    playerInfo.speedShopCost = Math.max(Math.floor((playerInfo.speed / 10) * 7), 4);
-
-    console.log("this ran");
-
-    /*
-            this.healthUpShopCost = 20;
-            this.attackShopCost = 7;
-            this.speedShopCost = 8;*/
-
-};
-/*********************** */
-/*
-        OLD CODE DO NOT CHANGE BELOW UNLESS NEEDED
-/* *************************** */
-
-
-// function to generate a random numeric value
-var randomNumber = function(min, max) {
-    var value = Math.floor(Math.random() * (max - min + 1)) + min;
-
-    return value;
-};
-var getLocalChamp = function() {
-    // if localStorage values are not null set tehm the localChamp values
-
-    localChamp = JSON.parse(localStorage.getItem('robotGladiatorChamps')) || localChamp;
-
-}
 var enemyHealthCheck = function(enemy) {
     //check enemys health returns null or the health left
     if (enemy.health <= 0) { //if no health
@@ -695,78 +588,6 @@ var whoDrawsFirst = function(enemy) {
     return diff + (randomNumber(1, 2) * chance);
 };
 
-/******* NEDDS TO BE UPDATED OR LOOKED AT */
-var checkHighScore = function(score) {
-
-    if (!localChamp.points) { localChamp.points = 1000; } /// hack for backwards compatability
-    let points = (playerInfo.money * playerInfo.attack * playerInfo.speed * playerInfo.maxHealth);
-
-    if (parseInt(localChamp.points) < points) {
-        //New High Score
-        let scoreName = window.prompt("You set a NEW HIGH SCORE !!!\n\nPlease Enter Your Name:");
-        if (!scoreName) { checkHighScore(score); } // if no name is entered re run function
-        else {
-            // update localChamp
-            localChamp = {
-                    robot: playerInfo.name,
-                    trainer: scoreName,
-                    score: playerInfo.totalEarnings,
-                    rounds: totalrounds,
-                    points: points,
-                }
-                // set new highscore
-            localStorage.setItem('robotGladiatorChamps', JSON.stringify(localChamp));
-        }
-    } else {
-        setMenuContent("Well you did your best but you still fell short of the Champ... <br>🤖 " + localChamp.robot +
-            " 🤖 <br>is still the greatest fighter with $" + localChamp.score + " in winnings.<br><br>" +
-            "Your Total: $" + playerInfo.totalEarnings);
-
-
-    }
-
-    inputToContinue(() => {
-        displayIntro();
-
-        /*
-        var playAgainConfirm = window.confirm("Would you like to play again?");
-
-        if (playAgainConfirm) {
-            UIGame.startGame();
-        } else {
-            window.alert("Thank you for playing Robot Gladiators!\n Y'all come back now, ya hear!");
-        }
-        */
-    });
-
-
-}
-var endGame = function() {
-    createMenuUIArea();
-    $('#menu-content').css('width', '58rem');
-
-    if (playerInfo.health > 0) {
-
-        setMenuContent("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived " + totalrounds + " rounds<br> and WON!! the game! 🎉🤖🎉 <br><br>" +
-            "You finished the tournament with a grand total winnings of: <br>  💰 $" + playerInfo.totalEarnings + " 💰");
-
-        setMenuText("🥊🤖 🎉🤖🎉  !! You WON !! 🎉🤖🎉 🤖🥊", 'center');
-
-        inputToContinue(checkHighScore);
-
-    } else {
-
-        setMenuContent("You have lost your robot in battle! <br>" +
-            "After " + weekOfBattle + " weeks of battle and " + totalrounds + " rounds <br> " +
-            playerInfo.name + " has gone to the big scrap yard in the sky.");
-
-        setMenuText("🤖 Game Over! 🤖 ", 'center');
-
-        inputToContinue(checkHighScore);
-
-    }
-
-};
 
 /**************** */
 /* NEWEST CODE 
@@ -936,7 +757,7 @@ const UIGame = (() => {
         var confirmSkip = true; //= window.confirm("Are you sure you want to run from the fight?");
 
         //if yes(true), leave fight
-        if (confirmSkip && playerInfo.money >= 10 && currentEnemy.speed < playerInfo.speed * 1.5) {
+        if (confirmSkip && playerInfo.money >= 10 && currentEnemy.speed < playerInfo.speed * 2) {
             //subtract money from player for skipping
             //  playerInfo.money = Math.max(0, playerInfo.money - 10);
             console.log(playerInfo.name + " has chosen to run from this fight! and now has $" + playerInfo.money + " left");
@@ -978,9 +799,11 @@ const UIGame = (() => {
     const isThereMoreToFight = () => {
         // if not at end of enemys and player is still alive but hasn't run away
         if (nmeIdx < enemyInfo.length - 1 && playerInfo.health > 0) {
-            playerInfo.refillHealth(Math.floor(playerInfo.maxHealth * .18));
+            let rechargeVal = Math.floor(playerInfo.maxHealth * (playerInfo.overNightRecharge + (nmeIdx / 80)));
+            //Math.floor(playerInfo.maxHealth * .18)
+            playerInfo.refillHealth(rechargeVal);
             updateRobotCard('plr');
-            createMessageText('You rest between battle and regain ' + Math.floor(playerInfo.maxHealth * (playerInfo.overNightRecharge + (nmeIdx / 80))) + ' health')
+            createMessageText('You rest between battle and regain ' + rechargeVal + ' health')
             inputToContinue(startNewRound);
             return;
         } else
@@ -988,6 +811,11 @@ const UIGame = (() => {
         if (playerInfo.health > 0 && opponentsRemaining()) {
             let payout = calcPayout();
             playerInfo.takeCash(payout);
+
+            /****** testing this here for balancing */
+            let rechargeVal = Math.floor(playerInfo.maxHealth * (playerInfo.overNightRecharge + (nmeIdx / 80)));
+            playerInfo.refillHealth(rechargeVal);
+            /*           */
 
             createMenuUIArea();
             $('#menu-content').css('width', '58%').css('text-align', 'left');
@@ -1016,9 +844,62 @@ const UIGame = (() => {
             inputToContinue(endGame);
         }
     }
+    const endGame = () => {
+        createMenuUIArea();
+        $('#menu-content').css('width', '58rem');
+
+        if (playerInfo.health > 0) {
+            setMenuContent("🎉🤖🎉 Great job!, " + playerInfo.name + " has survived " + totalrounds + " rounds<br> and WON!! the game! 🎉🤖🎉 <br><br>" +
+                "You finished the tournament with a grand total winnings of: <br>  💰 $" + playerInfo.totalEarnings + " 💰");
+
+            setMenuText("🥊🤖 🎉🤖🎉  !! You WON !! 🎉🤖🎉 🤖🥊", 'center');
+
+            inputToContinue(checkHighScore);
+
+        } else {
+            setMenuContent("You have lost your robot in battle! <br>" +
+                "After " + weekOfBattle + " weeks of battle and " + totalrounds + " rounds <br> " +
+                playerInfo.name + " has gone to the big scrap yard in the sky.");
+
+            setMenuText("🤖 Game Over! 🤖 ", 'center');
+
+            inputToContinue(checkHighScore);
+        }
+    }
+    const checkHighScore = (score) => {
+
+        if (!localChamp.points) { localChamp.points = 1000; } /// hack for backwards compatability
+        let points = (playerInfo.money * playerInfo.attack * playerInfo.speed * playerInfo.maxHealth);
+
+        if (parseInt(localChamp.points) < points) {
+            //New High Score
+            let scoreName = window.prompt("You set a NEW HIGH SCORE !!!\n\nPlease Enter Your Name:");
+            if (!scoreName) { checkHighScore(score); } // if no name is entered re run function
+            else {
+                // update localChamp
+                localChamp = {
+                        robot: playerInfo.name,
+                        trainer: scoreName,
+                        score: playerInfo.totalEarnings,
+                        rounds: totalrounds,
+                        points: points,
+                    }
+                    // set new highscore
+                localStorage.setItem('robotGladiatorChamps', JSON.stringify(localChamp));
+            }
+        } else {
+            setMenuContent("Well you did your best but you still fell short of the Champ... <br>🤖 " + localChamp.robot +
+                " 🤖 <br>is still the greatest fighter with $" + localChamp.score + " in winnings.<br><br>" +
+                "Your Total: $" + playerInfo.totalEarnings);
+
+
+        }
+
+        inputToContinue(startGame)
+    }
 
     /********* the different screen are made down here  */
-    const guiShop = function(reload) {
+    const guiShop = (reload) => {
         if (!reload) { //if reloading don't create a new menu
             createMenuUIArea();
             $('#menu-content')
@@ -1123,7 +1004,7 @@ const UIGame = (() => {
         });
 
     };
-    const guiNameABot = function() {
+    const guiNameABot = () => {
 
         createMenuUIArea();
 
@@ -1171,7 +1052,7 @@ const UIGame = (() => {
         });
 
     }
-    const guiBuildABot = function() {
+    const guiBuildABot = () => {
         playerInfo.statPoints = 99;
         createMenuUIArea();
 
