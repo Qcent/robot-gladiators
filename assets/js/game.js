@@ -200,7 +200,7 @@ var playerInfo = {
         return this.maxHealth;
     },
     healthUpgrageValue: 20,
-    attackUpgradeValue: 3,
+    attackUpgradeValue: 2,
     speedIncreeseValue: 2,
     healthUpShopCost: 10,
     healthShopCost: function() { let x = (this.maxHealth > this.health ? 1 : 0); return Math.max(Math.floor((this.maxHealth - this.health) * .35), x) },
@@ -208,27 +208,28 @@ var playerInfo = {
     speedShopCost: 8,
     armourShopCost: 25,
     armourReShopCost: function() { let x = (this.armourDamage > 0 ? 1 : 0); return Math.max(Math.floor(this.armourDamage * .35), x) },
-    upgradeIncreaseCost: 0.4,
+    upgradeIncreaseCost: 0.70,
     overNightRecharge: 0.15,
-
-    reset: function() {
-        this.name = this.getRobotName();
-        this.maxHealth = 80;
-        this.health = this.maxHealth;
-        this.healthUpShopCost = 10;
-        this.attackShopCost = 7;
-        this.speedShopCost = 8;
-        this.armourReset();
-        this.attack = 10;
-        this.speed = 6;
-        this.money = 6;
-        this.totalEarnings = 0;
-    },
+    /*
+        reset: function() {
+            this.name = this.getRobotName();
+            this.maxHealth = 80;
+            this.health = this.maxHealth;
+            this.healthUpShopCost = 10;
+            this.attackShopCost = 7;
+            this.speedShopCost = 8;
+            this.armourReset();
+            this.attack = 10;
+            this.speed = 6;
+            this.money = 6;
+            this.totalEarnings = 0;
+        },
+        */
     resetForUi: function() {
         this.name = '';
         this.maxHealth = 80;
         this.health = this.maxHealth;
-        this.healthUpShopCost = 10;
+        this.healthUpShopCost = 20;
         this.attackShopCost = 7;
         this.speedShopCost = 8;
         this.armourReset();
@@ -603,6 +604,22 @@ const loadABot = function(idx) {
     playerInfo.maxHealth = createdBots[idx].health;
     playerInfo.speed = createdBots[idx].speed;
     playerInfo.attack = createdBots[idx].attack;
+};
+const calcStartingShopCosts = () => {
+
+    playerInfo.healthUpShopCost = Math.floor((playerInfo.maxHealth / 100) * 20);
+
+    playerInfo.attackShopCost = Math.max(Math.floor((playerInfo.attack / 10) * 8), 4);
+
+    playerInfo.speedShopCost = Math.max(Math.floor((playerInfo.speed / 10) * 7), 4);
+
+    console.log("this ran");
+
+    /*
+            this.healthUpShopCost = 20;
+            this.attackShopCost = 7;
+            this.speedShopCost = 8;*/
+
 };
 /*********************** */
 /*
@@ -1040,6 +1057,8 @@ const UIGame = (() => {
         displayIntro();
     }
     const startNewWeek = () => {
+
+        if (!weekOfBattle) { calcStartingShopCosts(); }
         if (playerInfo.health > 0 && totalrounds < opponentList.length && opponentsRemaining()) { // you are alive and havent been in as many fights as there are opponents
             enemyInfo = [];
             weekOfBattle++;
@@ -1149,21 +1168,11 @@ const UIGame = (() => {
                         // return false;
                 }
                 // now the player attacks 
-                plrDam = playerInfo.makeAttack(enemy);
-                updateRobotCard('nme');
-                /*
-                window.alert(enemy.name + " attacks first for " + dam1 + " damage!\n" +
-                    playerInfo.name + " retaliates for " + dam2 + " damage!\n");
-
-                    ********* animation herere **********/
-
-                /* NOT NEEDED 
-                if (!enemyHealthCheck(enemy)) {
-                    //check enemys health after attack and break if dead
-                    nmeIsDead = true;
- 
+                if (!playerIsDead) {
+                    plrDam = playerInfo.makeAttack(enemy);
+                    updateRobotCard('nme');
                 }
-                */
+
             }
 
             /*  new feature */
@@ -1415,6 +1424,7 @@ const UIGame = (() => {
                     saveABot(buildingBot);
 
                     loadABot(findABot(buildingBot.name));
+
                     startNewWeek();
                 }
 
