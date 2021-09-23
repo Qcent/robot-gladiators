@@ -418,12 +418,6 @@ const calcStartingShopCosts = () => {
 
     playerInfo.speedShopCost = Math.max(Math.floor((playerInfo.speed / 10) * 7), 4);
 
-    console.log("this ran");
-
-    /*
-            this.healthUpShopCost = 20;
-            this.attackShopCost = 7;
-            this.speedShopCost = 8;*/
 
 };
 /*********************** */
@@ -757,23 +751,25 @@ const UIGame = (() => {
         var confirmSkip = true; //= window.confirm("Are you sure you want to run from the fight?");
 
         //if yes(true), leave fight
-        if (confirmSkip && playerInfo.money >= 10 && currentEnemy.speed < playerInfo.speed * 2) {
+        if (currentEnemy.speed < playerInfo.speed * 2) {
             //subtract money from player for skipping
             //  playerInfo.money = Math.max(0, playerInfo.money - 10);
             console.log(playerInfo.name + " has chosen to run from this fight! and now has $" + playerInfo.money + " left");
             createMessageText(playerInfo.name + " has chosen to run from this fight!"); //, and now has $" + playerInfo.money + " left");
 
-            inputToContinue(UIGame.isThereMoreToFight);
+            inputToContinue(isThereMoreToFight);
             return true;
-        } else if (confirmSkip && playerInfo.money < 10) {
+        }
+        /* else if (  playerInfo.money < 10) {
             console.log("Not enough money to skip fight");
             createMessageText("You ain't got enough money COWARD!<br>Get back in there! ...");
-            inputToContinue(UIGame.fight);
+            inputToContinue(fight);
             return false;
-        } else if (confirmSkip) {
+        }*/
+        else {
             console.log("Not fast enough to run");
             createMessageText("Its no use! Your opponent is too fast...");
-            inputToContinue(UIGame.fight);
+            inputToContinue(fight);
             return false;
         }
     }
