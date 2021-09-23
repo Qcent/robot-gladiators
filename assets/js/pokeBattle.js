@@ -182,7 +182,7 @@ const updateRobotCard = (who) => {
                     $(".ArmourIcon." + robot).addClass('damagedArmour');
                 }
         */
-        let armP = (who) ? (playerInfo.armourDamage / 100) : (currentEnemy.armDamage / 100);
+        let armP = (who) ? (playerInfo.armourDamage / 100) : (currentEnemy.armourDamage / 100);
         let opAtk = (who) ? currentEnemy.attack : playerInfo.attack;
         $(".ArmourIcon." + robot).addClass((armP >= 0.55) ? ((100 - armDamage) > (opAtk * 2) ? 'damagedArmour' : 'deadArmour') : '');
     } else {

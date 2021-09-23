@@ -361,6 +361,28 @@ var playerInfo = {
     makeAttack: function(enemy) {
         // generate random damage value based on player's attack power
         var damage = Math.ceil(randomNumber(this.attack * 2 / 3, this.attack));
+
+
+        /*   ARMOUR DAMAGE LESSENING CODE  */
+        if (currentEnemy.hasArmour) {
+
+            let newDamage = Math.ceil(damage * (randomNumber(75, 90) / 100));
+            currentEnemy.armourDamage += (damage - newDamage);
+
+            console.log("Enemy armour has protected them from " + (damage - newDamage) + " damage!");
+            damage = newDamage;
+
+            if (currentEnemy.armourDamage > 100) {
+                if (randomNumber(0, 1)) {
+                    console.log("You broke " + currentEnemy.name + "'s armour!");
+
+                    currentEnemy.hasArmour = false;
+                    currentEnemy.armourDamage = 0;
+                }
+            }
+        }
+        /*    ******************************        */
+
         // Subtract the value of `this.attack` from value of `enemy.health` vaiable and use the result to update the `enemy.health`variable.
         enemy.health = Math.max(0, enemy.health - damage);
 
@@ -424,6 +446,15 @@ const randomizeEnemyStats = function(enemy) {
     let maxBoost = 8 * weekOfBattle; // everyweek increase max boost by 8
     let totalBoost = 0;
     let boost = 0;
+
+    /*  ADD ARMOUR TO ENEMY  */
+    if (weekOfBattle > 4) {
+        if (randomNumber(0, 1)) {
+            enemy.hasArmour = true;
+            enemy.armourDamage = randomNumber(30, 80);
+        }
+    }
+    /*  *****  */
 
     /*                                     speed boost is capped at 1/2 of players speed                 */
     //boost = randomNumber(0, (Math.max(maxBoost, playerInfo.speed / 2) - totalBoost));
@@ -1076,6 +1107,7 @@ const UIGame = (() => {
             let plrFirst = whoDrawsFirst(enemy);
             let plrDam = 0;
             let nmeDam = 0;
+            let playerIsDead = false;
 
             if (plrFirst > 0) {
                 // positive numbers mean player attacks first
@@ -1101,8 +1133,9 @@ const UIGame = (() => {
 
                 if (!playerInfo.healthCheck()) {
                     //check player health, break if dead
-                    endGame();
-                    return false;
+                    playerIsDead = true;
+                    //endGame();
+                    //return false;
                 }
             } else { // was a negative number and enemy robot will attack first
                 // enemy robot  attacks first
@@ -1111,8 +1144,9 @@ const UIGame = (() => {
 
                 if (!playerInfo.healthCheck()) {
                     //check player health, break if dead
-                    endGame();
-                    return false;
+                    playerIsDead = true
+                        // endGame();
+                        // return false;
                 }
                 // now the player attacks 
                 plrDam = playerInfo.makeAttack(enemy);
@@ -1145,8 +1179,11 @@ const UIGame = (() => {
 
                     (((plrFirst > 0) ? enemy.name : playerInfo.name) + " retaliates for " + ((plrFirst > 0) ? nmeDam : plrDam) + " damage!")) + armourNotice);
 
-
-            inputToContinue(isEnemyDead);
+            if (playerIsDead) {
+                inputToContinue(endGame);
+            } else {
+                inputToContinue(isEnemyDead);
+            }
 
         } // end of if (FIGHT)    
     }
