@@ -281,7 +281,7 @@ var playerInfo = {
     attackUpgradeValue: 2,
     speedIncreeseValue: 2,
     healthUpShopCost: 10,
-    healthShopCost: function() { let x = (this.maxHealth > this.health ? 1 : 0); return 10 * Math.max(Math.floor((this.maxHealth - this.health) * .35), x) },
+    healthShopCost: function() { let x = (this.maxHealth > this.health ? 1 : 0); return 8 * Math.max(Math.floor((this.maxHealth - this.health) * .35), x) },
     attackShopCost: 7,
     speedShopCost: 8,
     armourShopCost: 25,
@@ -495,11 +495,11 @@ const calcPayout = function() {
 }
 const calcStartingShopCosts = () => {
 
-    playerInfo.healthUpShopCost = 10 * Math.floor((playerInfo.maxHealth / 100) * 20);
+    playerInfo.healthUpShopCost = Math.floor((playerInfo.maxHealth / 100) * 20 * 8.8);
 
-    playerInfo.attackShopCost = 10 * Math.max(Math.floor((playerInfo.attack / 10) * 8), 4);
+    playerInfo.attackShopCost = 10 * Math.max(Math.floor((playerInfo.attack / 10) * 8 * 9.5), 4);
 
-    playerInfo.speedShopCost = 10 * Math.max(Math.floor((playerInfo.speed / 10) * 7), 4);
+    playerInfo.speedShopCost = 10 * Math.max(Math.floor((playerInfo.speed / 10) * 7 * 8), 4);
 
 
 };
