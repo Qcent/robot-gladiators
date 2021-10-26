@@ -441,7 +441,13 @@ body {
 
 #champ-wrapper.wrapper {
     width: 100%;
+    padding: .5rem;
+    background-color: rgb(119, 171, 231);
     justify-content: center;
+}
+
+.wrapper .ChampStatsTitle {
+    width: 100%;
 }
 
 .wrapper .ChampStats {
@@ -453,6 +459,12 @@ body {
 .wrapper .ChampStats:nth-child(even) {
     text-align: left;
     padding-left: 1rem;
+}
+
+#net-champ-wrapper {
+    margin-top: 1rem;
+    padding: .5rem;
+    background-color: rgb(160, 214, 171);
 }
 
 .shop-button,

@@ -12,12 +12,94 @@ var buildingBot = {
     speed: 0,
 };
 var localChamp = {
-    robot: "Andy  D'Botto ",
+    robot: "Andy  D'Botto",
     trainer: 'Mark B',
     score: 40,
     rounds: 4,
     points: 500,
 };
+
+/*   CLOUD SCORE DB */
+var netChamp = {};
+
+const getNetChamp = () => {
+    let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboscores";
+
+    return new Promise((res, rej) => {
+        fetch(apiCall)
+            .then((response) => {
+                if (response.ok) {
+                    response.json()
+                        .then(data => {
+                            const { robot, trainer, score, rounds, points } = data;
+                            netChamp = {
+                                robot: robot,
+                                trainer: trainer,
+                                score: parseInt(score),
+                                rounds: parseInt(rounds),
+                                points: parseInt(points)
+                            };
+
+                            if (parseInt(netChamp.points) > localChamp.points) {
+                                console.log("Net is Best")
+                                    //localChamp = netChamp;
+                            } else {
+                                console.log("Local Hocal")
+                            }
+                            res({
+                                ok: true,
+                                message: 'HighScore Retrieved'
+                            })
+                        })
+                } else {
+                    res({
+                        ok: false,
+                        message: 'Bad Response'
+                    })
+                }
+            })
+    });
+};
+
+const submitLocalChamp = (newScore) => {
+
+    let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboscores";
+    // apiCall = "http://localhost:3001/api/roboscores";
+
+    return new Promise((res, rej) => {
+        fetch(apiCall, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(newScore)
+            })
+            .then((response) => {
+                if (response.ok) {
+                    response.json()
+                        .then(data => {
+                            //return "loaded data from API"
+                            if (data.ok) {
+                                res({
+                                    ok: true,
+                                    message: 'Global High Score Achieved!'
+                                })
+                            } else {
+                                res(data);
+                            }
+                        })
+                } else {
+                    res({
+                        ok: false,
+                        message: 'Bad Response'
+                    })
+                }
+            })
+    });
+};
+
+/*  END OF CLOUD BS ACCESS */
 const opponentList = [{
         name: "Lt. Commander Data",
         attack: 8,
@@ -433,9 +515,7 @@ var randomNumber = function(min, max) {
 };
 var getLocalChamp = function() {
     // if localStorage values are not null set tehm the localChamp values
-
     localChamp = JSON.parse(localStorage.getItem('robotGladiatorChamps')) || localChamp;
-
 }
 const pickOpponents = function(num) {
     if (num > opponentList.length || num > opponentsRemaining()) { num = opponentsRemaining() }
@@ -570,10 +650,10 @@ var enemyMakeAttack = function(enemy) {
 var whoDrawsFirst = function(enemy) {
     //function to determine who attacks first in each round of battle
 
-    //get differentce in opponents speeds
-    let diff = (playerInfo.speed - currentEnemy.speed)
-        // positive number means player is faster
-        // negative means enemy is faster
+    //get differentce in opponents speeds           // a bonus 1 point to the player for balancing
+    let diff = (playerInfo.speed - currentEnemy.speed) + 1;
+    // positive number means player is faster
+    // negative means enemy is faster
 
     //flip a coin; if heads(>.5) chance is 1 if tails(<=.5) chance is -1
     let chance = ((Math.random() > 0.5) ? 1 : (-1));
@@ -592,11 +672,17 @@ const UIGame = (() => {
     let nmeIdx = 0;
 
     const startGame = () => {
-        getLocalChamp();
 
         beatenOpponents = [];
         weekOfBattle = 0;
         totalrounds = 0;
+
+        getLocalChamp();
+        getNetChamp()
+            .then((data) => {
+                // console.log(data);
+                displayIntro();
+            });
 
         /* GAME TESTING TO LIMIT OPPONENTS 
         for (let i = 0; i < opponentList.length - 1; i++) {
@@ -605,7 +691,7 @@ const UIGame = (() => {
         /*  */
 
         //Intro Takes it from Here
-        displayIntro();
+        // displayIntro();
     }
     const startNewWeek = () => {
 
@@ -882,6 +968,12 @@ const UIGame = (() => {
                     }
                     // set new highscore
                 localStorage.setItem('robotGladiatorChamps', JSON.stringify(localChamp));
+
+                /** CHECK IF GLOBAL CHAMP */
+                submitLocalChamp(localChamp)
+                    .then(data => {
+                        console.log(data);
+                    })
             }
         } else {
             setMenuContent("Well you did your best but you still fell short of the Champ... <br>🤖 " + localChamp.robot +
@@ -1144,11 +1236,22 @@ const UIGame = (() => {
     const displayIntro = () => {
         createMenuUIArea();
         setMenuContent("<h2>Welcome to Robot Gladiators!</h2> " +
-            "<div class='wrapper'id='champ-wrapper'> <div class='ChampStats'><span class='emoji'>🥊</span> Current Champion: </div><div class='ChampStats'>" +
-            localChamp.robot + " <span class='emoji'>🤖</span></div><div class='ChampStats'> <span class='emoji'>🔔</span> Rounds Fought: </div><div class='ChampStats'>" +
-            localChamp.rounds + " <span class='emoji'>🔔</span></div><div class='ChampStats'><span class='emoji'>💰</span> Prize Winnings: </div><div class='ChampStats'><span class='emoji'>💵</span>  $" +
-            localChamp.score + " <span class='emoji'>💵</span>  </div><div class='ChampStats'> <span class='emoji'>💪</span> Trainer: </div><div class='ChampStats'>" +
-            localChamp.trainer + " <span class='emoji'>💪</span></div></div>");
+            `<div class='wrapper' id='champ-wrapper'> 
+            <div class='ChampStatsTitle'><span class='emoji'>🥊</span> Local Gym: <span class='emoji'>🏠</span></div>
+            <div class='ChampStats'><span class='emoji'>🥊</span> Current Local Champion: </div><div class='ChampStats'>
+            ${localChamp.robot} <span class='emoji'>🤖</span></div><div class='ChampStats'> <span class='emoji'>🔔</span> Rounds Fought: </div><div class='ChampStats'>
+            ${localChamp.rounds} <span class='emoji'>🔔</span></div><div class='ChampStats'><span class='emoji'>💰</span> Prize Winnings: </div><div class='ChampStats'><span class='emoji'>💵</span>  $
+            ${localChamp.score} <span class='emoji'>💵</span>  </div><div class='ChampStats'> <span class='emoji'>💪</span> Trainer: </div><div class='ChampStats'>
+            ${localChamp.trainer} <span class='emoji'>💪</span></div></div>
+
+            <div class='wrapper' id='net-champ-wrapper'> 
+            <div class='ChampStatsTitle'><span class='emoji'>🥊</span> World Gym: <span class='emoji'>🌎</span></div>
+            <div class='ChampStats'><span class='emoji'>🥊</span> Current World Champion: </div><div class='ChampStats'>
+            ${netChamp.robot} <span class='emoji'>🤖</span></div><div class='ChampStats'> <span class='emoji'>🔔</span> Rounds Fought: </div><div class='ChampStats'>
+            ${netChamp.rounds} <span class='emoji'>🔔</span></div><div class='ChampStats'><span class='emoji'>💰</span> Prize Winnings: </div><div class='ChampStats'><span class='emoji'>💵</span>  $
+            ${netChamp.score} <span class='emoji'>💵</span>  </div><div class='ChampStats'> <span class='emoji'>💪</span> Trainer: </div><div class='ChampStats'>
+            ${netChamp.trainer} <span class='emoji'>💪</span></div>
+            </div>`);
         setMenuText("Will you enter your Bot, and try your luck in the Great Robo Death Match?");
 
         inputToContinue(() => {
