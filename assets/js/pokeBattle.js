@@ -3,7 +3,7 @@ const clearScreen = () => {
     $('#Lower-Vis') ? $('#Lower-Vis').remove() : null;
 }
 const setMenuText = (txt, pos) => {
-    $('#menu-text').text(txt);
+    $('#menu-text').html(txt);
 
     if (pos) {
         $('#menu-text').css('text-align', 'center');

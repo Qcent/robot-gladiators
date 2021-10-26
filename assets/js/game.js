@@ -281,11 +281,11 @@ var playerInfo = {
     attackUpgradeValue: 2,
     speedIncreeseValue: 2,
     healthUpShopCost: 10,
-    healthShopCost: function() { let x = (this.maxHealth > this.health ? 1 : 0); return Math.max(Math.floor((this.maxHealth - this.health) * .35), x) },
+    healthShopCost: function() { let x = (this.maxHealth > this.health ? 1 : 0); return 10 * Math.max(Math.floor((this.maxHealth - this.health) * .35), x) },
     attackShopCost: 7,
     speedShopCost: 8,
     armourShopCost: 25,
-    armourReShopCost: function() { let x = (this.armourDamage > 0 ? 1 : 0); return Math.max(Math.floor(this.armourDamage * .35), x) },
+    armourReShopCost: function() { let x = (this.armourDamage > 0 ? 1 : 0); return 10 * Math.max(Math.floor(this.armourDamage * .35), x) },
     upgradeIncreaseCost: 0.70,
     overNightRecharge: 0.20,
 
@@ -293,9 +293,9 @@ var playerInfo = {
         this.name = '';
         this.maxHealth = 80;
         this.health = this.maxHealth;
-        this.healthUpShopCost = 20;
-        this.attackShopCost = 7;
-        this.speedShopCost = 8;
+        this.healthUpShopCost = 200;
+        this.attackShopCost = 75;
+        this.speedShopCost = 85;
         this.armourReset();
         this.attack = 10;
         this.speed = 6;
@@ -473,12 +473,13 @@ var playerInfo = {
     armourReset: function() {
         this.hasArmour = false;
         this.armourDamage = 0;
-        this.armourShopCost = 50;
+        this.armourShopCost = 600;
     },
     setUpgradeCosts: function() {
-        this.healthUpShopCost = Math.max(Math.floor(this.health / 4), 5);
-        this.attackShopCost = Math.max(Math.floor(this.attack * .8), 8);
-        this.speedShopCost = Math.max(Math.floor(this.speed * .8), 7);
+        console.log("setting upgrade costs")
+        this.healthUpShopCost = 10 * Math.max(Math.floor(this.health / 4), 5);
+        this.attackShopCost = 10 * Math.max(Math.floor(this.attack * .8), 8);
+        this.speedShopCost = 10 * Math.max(Math.floor(this.speed * .8), 7);
     },
 }
 const calcPayout = function() {
@@ -489,16 +490,16 @@ const calcPayout = function() {
     //  return beatenOpponents.filter(Boolean).length + Math.max(0, Math.ceil(((playerInfo.health / playerInfo.maxHealth) * (weekOfBattle * 7)))) * (weekOfBattle);
 
 
-    return (beatenOpponents.filter(Boolean).length * (weekOfBattle + 1)) + Math.max(0, Math.ceil(((playerInfo.health / playerInfo.maxHealth) * (weekOfBattle * 2)))) * Math.ceil(weekOfBattle / 3);
+    return 9 * ((weekOfBattle / 9) + 1) * (beatenOpponents.filter(Boolean).length * (weekOfBattle + 1)) + Math.max(0, Math.ceil(((playerInfo.health / playerInfo.maxHealth) * (weekOfBattle * 2)))) * Math.ceil(weekOfBattle / 3);
 
 }
 const calcStartingShopCosts = () => {
 
-    playerInfo.healthUpShopCost = Math.floor((playerInfo.maxHealth / 100) * 20);
+    playerInfo.healthUpShopCost = 10 * Math.floor((playerInfo.maxHealth / 100) * 20);
 
-    playerInfo.attackShopCost = Math.max(Math.floor((playerInfo.attack / 10) * 8), 4);
+    playerInfo.attackShopCost = 10 * Math.max(Math.floor((playerInfo.attack / 10) * 8), 4);
 
-    playerInfo.speedShopCost = Math.max(Math.floor((playerInfo.speed / 10) * 7), 4);
+    playerInfo.speedShopCost = 10 * Math.max(Math.floor((playerInfo.speed / 10) * 7), 4);
 
 
 };
@@ -584,7 +585,7 @@ const opponentsRemaining = function() {
 };
 const saveABot = function(bot) {
     createdBots.push(bot);
-    localStorage.setItem("GladiatorBots", JSON.stringify(createdBots))
+    localStorage.setItem("GladiatorBots", JSON.stringify(createdBots));
 };
 const findABot = function(name) {
     createdBots = JSON.parse(localStorage.getItem("GladiatorBots")) || [];
@@ -673,16 +674,10 @@ const UIGame = (() => {
 
     const startGame = () => {
 
+        playerInfo.resetForUi();
         beatenOpponents = [];
         weekOfBattle = 0;
         totalrounds = 0;
-
-        getLocalChamp();
-        getNetChamp()
-            .then((data) => {
-                // console.log(data);
-                displayIntro();
-            });
 
         /* GAME TESTING TO LIMIT OPPONENTS 
         for (let i = 0; i < opponentList.length - 1; i++) {
@@ -690,8 +685,12 @@ const UIGame = (() => {
         }
         /*  */
 
-        //Intro Takes it from Here
-        // displayIntro();
+        getLocalChamp();
+        getNetChamp()
+            .then((data) => {
+                // console.log(data);
+                displayIntro();
+            });
     }
     const startNewWeek = () => {
 
@@ -709,8 +708,8 @@ const UIGame = (() => {
             setMenuContent("<h2>WELCOME TO THE JUNGLE!</h2><div>Week: " + weekOfBattle + "</div>");
 
             (weekOfBattle > 1) ?
-            setMenuText("Welcome to the Robo Fighting Leagues. Prepare for Battle"):
-                setMenuText("Welcome to the Robo Fighting Leagues. Each week you'll face off against 3 different opponents. How many weeks can you last?");
+            setMenuText(`Robo Fighting League week ${weekOfBattle}.<br>${playerInfo.name} prepares for battle!`):
+                setMenuText("Welcome to the Robo Fighting Leagues. Each week you'll face off against 3 different opponents.<br>How many weeks can you last?");
 
             inputToContinue(startNewRound);
 
@@ -866,7 +865,7 @@ const UIGame = (() => {
             beatenOpponents[weeksOpponents[nmeIdx]] = true;
 
             //reward player
-            let reward = randomNumber(3 + weekOfBattle, 9 + weekOfBattle);
+            let reward = parseInt(randomNumber(3 + weekOfBattle, 9 + weekOfBattle) * 6 + (weekOfBattle / 2));
             playerInfo.takeCash(reward);
 
             console.log(currentEnemy.name + " has died!  You get $" + reward);
@@ -1252,12 +1251,9 @@ const UIGame = (() => {
             ${netChamp.score} <span class='emoji'>💵</span>  </div><div class='ChampStats'> <span class='emoji'>💪</span> Trainer: </div><div class='ChampStats'>
             ${netChamp.trainer} <span class='emoji'>💪</span></div>
             </div>`);
-        setMenuText("Will you enter your Bot, and try your luck in the Great Robo Death Match?");
+        setMenuText("Will you enter your Bot, and try your luck in the Great Robo Death Match? <br><br> ... Press Any Key to Continue ...", 'center');
 
-        inputToContinue(() => {
-            playerInfo.resetForUi();
-            selectABot();
-        });
+        inputToContinue(selectABot);
     }
     const selectABot = () => {
         createMenuUIArea(false);
