@@ -252,8 +252,8 @@ const managerMessage = [
         "'Nice work, kid!...<br>You're really going places.'<br><br>'Whaat? You think I didn't see you pocket all that money from the ring?'<br><br>'Just keep winning fights and the payouts will get bigger.'",
         "'Whoooey boy!, you really gave them folks a show this week!'<br><br>'You keep this up and you just might get yourself a plaque on the wall.'",
         "'Great Show out there, Champ!'<br>'Say? Where'd you learn to fight like that anyhow?... <br><br>ah nevermind, you just come back and win next week, then you'll really get paid.'",
-        "'You sure been gettin' lucky out there kid.'<br>'Most new comers don't make it much farther then this...'<br>'But you gotta a certian look in your eye, you just might be different.'",
-        "'Ghee Golly!', `Ain't seen a set uh' battles that close since my days back in Nam!`<br>'Sumpin tells me you were born for this sport kiddo!''",
+        "'You sure been gettin' lucky out there kid.'<br><br>'Most new comers don't make it much farther then this...'<br><br>'But you gotta a certian look in your eye, you just might be different.'",
+        "'Ghee Golly!',<br> `Ain't seen a set uh' battles that close since my days back in Nam!`<br><br>'Sumpin tells me you were born for this sport kiddo!''",
         "Week Six, getchore Kicks",
         "Week Seven, livin in Robot Heaven",
         "Week Eight, set'em Straight",
@@ -360,8 +360,13 @@ var playerInfo = {
             this.hasArmour = true;
             this.money -= this.armourShopCost;
             //charge more the next time
-            this.armourShopCost += Math.floor((this.armourShopCost) * (this.upgradeIncreaseCost * 2));
+            //this.armourShopCost += Math.floor((this.armourShopCost) * (this.upgradeIncreaseCost * 2));
+            // only buy this itme once
+            this.armourShopCost = 'WORN';
 
+            UIGame.guiShop('reload');
+        } else if (this.hasArmour) {
+            setMenuText(this.name + " already has armour installed!");
             UIGame.guiShop('reload');
         } else {
             setMenuText("Sorry " + this.name + " is too poor for that. Try something else");
@@ -1023,7 +1028,7 @@ const UIGame = (() => {
         atkCol.append(atkUpgrade, bottomBox2);
         /* ARMOUR */
         let armRestore = $('<div>').addClass('wrapper shop-box').append($('<span>').text('Restore'), $('<div>').addClass('shop-button armour-restore').attr('id', 'repair').attr('tabindex', '0').text('$' + playerInfo.armourReShopCost()));
-        let armUpgrade = $('<div>').addClass('wrapper shop-box').append($('<span>').text('Install'), $('<div>').addClass('shop-button armour-install').attr('id', 'armour').attr('tabindex', '0').text('$' + playerInfo.armourShopCost));
+        let armUpgrade = $('<div>').addClass('wrapper shop-box').append($('<span>').text('Install'), $('<div>').addClass('shop-button armour-install').attr('id', 'armour').attr('tabindex', '0').text((playerInfo.hasArmour ? '' : '$') + playerInfo.armourShopCost));
 
         armCol.append(armRestore, armUpgrade);
 
