@@ -23,7 +23,7 @@ var localChamp = {
 var netChamp = {};
 
 const getNetChamp = () => {
-    let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboscores";
+    let apiCall = "http://72.39.181.12/api/roboscores";
 
     return new Promise((res, rej) => {
         fetch(apiCall)
@@ -98,8 +98,8 @@ const submitLocalChamp = (newScore) => {
             })
     });
 };
-
 /*  END OF CLOUD BS ACCESS */
+
 const opponentList = [{
         name: "Lt. Commander Data",
         attack: 8,
@@ -249,19 +249,19 @@ const opponentList = [{
     }
 ];
 const managerMessage = [
-        "'Nice work, kid!...<br>You're really going places.'<br><br>'Whaat? You think I didn't see you pocket all that money from the ring?'<br><br>'Just keep winning fights and the payouts will get bigger.'",
-        "'Whoooey boy!, you really gave them folks a show this week!'<br><br>'You keep this up and you just might get yourself a plaque on the wall.'",
-        "'Great Show out there, Champ!'<br>'Say? Where'd you learn to fight like that anyhow?... <br><br>ah nevermind, you just come back and win next week, then you'll really get paid.'",
-        "'You sure been gettin' lucky out there kid.'<br><br>'Most new comers don't make it much farther then this...'<br><br>'But you gotta a certian look in your eye, you just might be different.'",
-        "'Ghee Golly!',<br> `Ain't seen a set uh' battles that close since my days back in Nam!`<br><br>'Sumpin tells me you were born for this sport kiddo!''",
-        "Week Six, getchore Kicks",
-        "Week Seven, livin in Robot Heaven",
-        "Week Eight, set'em Straight",
-        "Week Nine: End Of The Line!",
-        "Week Ten, well you should have won by now, how many robots could there be?"
-    ]
-    /**** END of GLOBAL VARIABLES */
-    /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
+    `"Nice work, kid!...<br>You just found yerself a job"<br><br>He hands you a meagre sum.<br><br>"Whaat? You think I didn't see you pocket all that money from the ring?"<br>"Just keep winning fights and the payouts will get bigger."`,
+    `"Easy there Cowboy"<br>"Don't celebrate too hard!"<br>"Y'all still have to musta up the YeeHaw! fer 8 more weeks."<br><br>"Not bad for a rookie...<br>... I guess."`,
+    `"Made it thru yer third week eh!?"<br>"Maybe your not just a 2-Bit bucket of bolts after all!"<br><br>"...Still could be a fluke...<br>If you're still here next week then I might remember your name"`,
+    `"You sure been gettin' lucky out there kid."<br><br>"Most newcomers don't make it much farther than this..."<br><br>"But you gotta a certain look in your eye, you just might be different."`,
+    `"Great Show out there, Champ!"<br>"Say? Where'd you learn to fight like that anyhow?... <br><br>ah nevermind, you just come back and win next week, then you"ll really get paid."`,
+    `"Well I say!..." "You sure gave sum'uh our best bots a run for their money this week"<br><br>"You got real STAR potential... maybe even a champ in the making..."`,
+    `"Well Good Golly!",<br> "Ain't seen a set uh' battles that close since my days back in Nam!"<br><br>"Sumpin tells me you were born for this sport kiddo!"`,
+    `"Whoooey boy!, you really gave them folks a show this week!"<br><br>"You keep this up and you just might get yourself a plaque on the wall."`,
+    `"Well you gon and done it! This you made it kid!"<br>"Welcome to the Championships! You survive the next week and you'll finally win your freedom."<br><br>"Make this paycheck count... The scrap yard don't favour the wealthy if y'all didn't hear."`,
+    `Week Ten, well you should have won by now, how many robots could there be?`
+];
+/**** END of GLOBAL VARIABLES */
+/*^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
 var playerInfo = {
     name: '',
