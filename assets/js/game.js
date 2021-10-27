@@ -252,8 +252,8 @@ const managerMessage = [
         "'Nice work, kid!...<br>You're really going places.'<br><br>'Whaat? You think I didn't see you pocket all that money from the ring?'<br><br>'Just keep winning fights and the payouts will get bigger.'",
         "'Whoooey boy!, you really gave them folks a show this week!'<br><br>'You keep this up and you just might get yourself a plaque on the wall.'",
         "'Great Show out there, Champ!'<br>'Say? Where'd you learn to fight like that anyhow?... <br><br>ah nevermind, you just come back and win next week, then you'll really get paid.'",
-        "Week 4 out the door",
-        "Week 5, Stayin' Alive!",
+        "'You sure been gettin' lucky out there kid.'<br>'Most new comers don't make it much farther then this...'<br>'But you gotta a certian look in your eye, you just might be different.'",
+        "'Ghee Golly!', `Ain't seen a set uh' battles that close since my days back in Nam!`<br>'Sumpin tells me you were born for this sport kiddo!''",
         "Week Six, getchore Kicks",
         "Week Seven, livin in Robot Heaven",
         "Week Eight, set'em Straight",
@@ -286,7 +286,7 @@ var playerInfo = {
     speedShopCost: 8,
     armourShopCost: 25,
     armourReShopCost: function() { let x = (this.armourDamage > 0 ? 1 : 0); return 10 * Math.max(Math.floor(this.armourDamage * .35), x) },
-    upgradeIncreaseCost: 0.70,
+    upgradeIncreaseCost: 0.60,
     overNightRecharge: 0.20,
 
     resetForUi: function() {
@@ -497,10 +497,9 @@ const calcStartingShopCosts = () => {
 
     playerInfo.healthUpShopCost = Math.floor((playerInfo.maxHealth / 100) * 20 * 8.8);
 
-    playerInfo.attackShopCost = 10 * Math.max(Math.floor((playerInfo.attack / 10) * 8 * 9.5), 4);
+    playerInfo.attackShopCost = Math.max(Math.floor((playerInfo.attack / 10) * 8 * 9.5), 4);
 
-    playerInfo.speedShopCost = 10 * Math.max(Math.floor((playerInfo.speed / 10) * 7 * 8), 4);
-
+    playerInfo.speedShopCost = Math.max(Math.floor((playerInfo.speed / 10) * 7 * 8), 4);
 
 };
 /*********************** */
@@ -985,7 +984,7 @@ const UIGame = (() => {
         inputToContinue(startGame)
     }
 
-    /********* the different screen are made down here  */
+    /********* the different screens are made down here  */
     const guiShop = (reload) => {
         if (!reload) { //if reloading don't create a new menu
             createMenuUIArea();
