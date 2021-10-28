@@ -23,9 +23,9 @@ var localChamp = {
 var netChamp = {};
 
 const getNetChamp = () => {
-    let apiCall = `https://72.39.181.12:3001/api/roboscores`;
+    //let apiCall = `http://theflame:3001/api/roboscores`;
 
-    //let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboserve";
+    let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboscores";
 
     return new Promise((res, rej) => {
         fetch(apiCall)
