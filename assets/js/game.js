@@ -25,7 +25,7 @@ var netChamp = {};
 const getNetChamp = () => {
     //let apiCall = `http://theflame:3001/api/roboscores`;
 
-    let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboserve";
+    let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboscores";
 
     return new Promise((res, rej) => {
         fetch(apiCall)
@@ -44,7 +44,6 @@ const getNetChamp = () => {
 
                             if (parseInt(netChamp.points) > localChamp.points) {
                                 console.log("Net is Best")
-                                    //localChamp = netChamp;
                             } else {
                                 console.log("Local Hocal")
                             }
@@ -65,7 +64,7 @@ const getNetChamp = () => {
 
 const submitLocalChamp = (newScore) => {
 
-    let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboserve";
+    let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboscores";
     // apiCall = "http://localhost:3001/api/roboscores";
 
     return new Promise((res, rej) => {
