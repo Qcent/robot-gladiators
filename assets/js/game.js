@@ -23,7 +23,7 @@ var localChamp = {
 var netChamp = {};
 
 const getNetChamp = () => {
-    let apiCall = `api/roboscores`;
+    let apiCall = `../api/roboscores`;
 
     //let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboscores";
 
@@ -65,7 +65,7 @@ const getNetChamp = () => {
 const submitLocalChamp = (newScore) => {
 
     // apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboscores";
-    let apiCall = "api/roboscores";
+    let apiCall = "../api/roboscores";
 
     return new Promise((res, rej) => {
         fetch(apiCall, {
