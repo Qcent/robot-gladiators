@@ -1,6 +1,8 @@
 # Robot Gladiators
 The most advance prompt based robot fighting game you have likely seen. At least twice as complex as the last Robot Gladiators you've encountered or your money back.
 
+![Let the battle begin!](/assets/images/app-screenshot.png)
+
 Create your own robot fighter with customized stats and sign them up in the RoBot Champions Fighting League. Where the toughest fighting bots battle it out in front of a live audience, week after week. Fight for cash and clout in an epic struggle to rise through the ranks to become the leauge champion. And retire as the richest robot trainer in the world!
 
 ## Coding Objectives
