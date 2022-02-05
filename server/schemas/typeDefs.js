@@ -3,7 +3,7 @@ const { gql } = require('apollo-server-express');
 const typeDefs = gql `
   type HiScore {
     _id: ID
-    scores: Number
+    scores: Int
   }
 
   type Query {
@@ -11,8 +11,7 @@ const typeDefs = gql `
   }
 
   type Mutation {
-    addUser(firstName: String!, lastName: String!, email: String!, password: String!): Auth
-    submitScore(score: Number!): HiScore
+    submitScore(score: Int!): HiScore
   }
 `;
 

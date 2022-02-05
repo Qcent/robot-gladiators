@@ -1,5 +1,5 @@
 import React, { createContext, useContext } from "react";
-import { useProductReducer } from './reducers';
+import { useScoreReducer } from './reducers';
 /* ####################################### */
 // ### SEE anctions.js and reducers.js ### //
 // ## FOR HOW TO CHANGE OBJECTS IN STATE # //
@@ -8,7 +8,7 @@ const StoreContext = createContext();
 const { Provider } = StoreContext;
 
 const StoreProvider = ({ value = [], ...props }) => {
-    const [state, dispatch] = useProductReducer({
+    const [state, dispatch] = useScoreReducer({
         /* Set your default states here */
         // products: [],
         // cart: [],
@@ -17,7 +17,7 @@ const StoreProvider = ({ value = [], ...props }) => {
         // currentCategory: ''
     });
     // use this to confirm it works!
-    console.log(state);
+    //console.log(state);
     return <Provider value = {
         [state, dispatch]
     } {...props }

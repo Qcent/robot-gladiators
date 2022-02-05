@@ -1,11 +1,11 @@
 import React from "react";
 
-function Game({ children }) {
+function Game() {
   return (
     <div
       style={{ height: 560, clear: "both", paddingTop: 120, textAlign: "center" }}
     >
-      {children}
+      THIS IS WHERE THE GAME IS PLAYED
     </div>
   );
 }
