@@ -56,16 +56,24 @@ const getNetChamp = () => {
                 if (response.ok) {
                     response.json()
                         .then(data => {
-                            console.log(data);
-                            const { robot, trainer, score, rounds, points } = data.data.getScores;
-                            netChamp = {
-                                robot: robot,
-                                trainer: trainer,
-                                score: parseInt(score),
-                                rounds: parseInt(rounds),
-                                points: parseInt(points)
-                            };
-
+                            if (data.data.getScores.length) {
+                                const { robot, trainer, score, rounds, points } = data.data.getScores[0];
+                                netChamp = {
+                                    robot: robot,
+                                    trainer: trainer,
+                                    score: parseInt(score),
+                                    rounds: parseInt(rounds),
+                                    points: parseInt(points)
+                                };
+                            } else {
+                                netChamp = {
+                                    robot: "No",
+                                    trainer: "Week",
+                                    score: "This",
+                                    rounds: "Champion",
+                                    points: 0
+                                };
+                            }
                             if (parseInt(netChamp.points) > localChamp.points) {
                                 console.log("Net is Best")
                             } else {
