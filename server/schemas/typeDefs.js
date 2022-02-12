@@ -3,7 +3,11 @@ const { gql } = require('apollo-server-express');
 const typeDefs = gql `
   type HiScore {
     _id: ID
-    scores: Int
+    robot: String
+    trainer: String
+    score: Int
+    rounds: Int
+    points: Int
   }
 
   type Query {

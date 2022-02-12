@@ -47,6 +47,8 @@ body {
     align-items: center;
     justify-content: center;
     font-family: 'Press Start 2P', cursive;
+    background-image: url('../images/pat-bg-1.png');
+    background-size: 30%;
 }
 
 #Upper-Vis {

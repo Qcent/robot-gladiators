@@ -3,20 +3,28 @@ const { HiScore } = require('../models');
 const resolvers = {
     Query: {
         getScores: async(parent, args, context) => {
-            if (context.user) {
-                const user = await User.findById(context.user._id);
 
-                return user;
+            return {
+                _id: "abc1234",
+                robot: "Mr. Roboto",
+                trainer: "KillRoy",
+                score: 10069542,
+                rounds: 14,
+                points: 12345
             }
+            return await HiScore.find({});
+
         }
     },
     Mutation: {
         submitScore: async(parent, args, context) => {
-            if (context.user) {
-                return await User.findByIdAndUpdate(context.user._id, args, { new: true });
-            }
+            console.log(args);
+            const newScore = await HiScore.create({ scores: args.score });
 
-            throw new AuthenticationError('Not logged in');
+            //return await HiScore.find();
+
+            return newScore
+
         }
     }
 };

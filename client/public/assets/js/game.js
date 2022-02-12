@@ -23,17 +23,41 @@ var localChamp = {
 var netChamp = {};
 
 const getNetChamp = () => {
-    //let apiCall = `http://theflame:3001/api/roboscores`;
 
-    let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboserve";
+    const QUERY_SCORES = `
+  {
+    getScores {
+      _id
+      robot
+      trainer
+      score
+      rounds
+      points
+    }
+  }
+`;
+
+    let apiCall = "graphql";
+    //let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboserve";
 
     return new Promise((res, rej) => {
-        fetch(apiCall)
+        fetch(apiCall, {
+                method: 'POST',
+                headers: {
+                    Accept: 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    query: QUERY_SCORES,
+                    variables: {}
+                })
+            })
             .then((response) => {
                 if (response.ok) {
                     response.json()
                         .then(data => {
-                            const { robot, trainer, score, rounds, points } = data;
+                            console.log(data);
+                            const { robot, trainer, score, rounds, points } = data.data.getScores;
                             netChamp = {
                                 robot: robot,
                                 trainer: trainer,
@@ -64,8 +88,22 @@ const getNetChamp = () => {
 
 const submitLocalChamp = (newScore) => {
 
-    let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboserve";
-    // apiCall = "http://localhost:3001/api/roboscores";
+    const SUBMIT_SCORE = `
+  mutation submitScore(
+    $score: Int!
+  ) {
+    submitScore(
+      score: $score
+    ) {
+      _id
+      scores
+    }
+  }
+`;
+
+
+    //let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboserve";
+    let apiCall = "http://localhost:3001/graphql";
 
     return new Promise((res, rej) => {
         fetch(apiCall, {
@@ -74,7 +112,13 @@ const submitLocalChamp = (newScore) => {
                     Accept: 'application/json',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify(newScore)
+                body: JSON.stringify({
+                    query: SUBMIT_SCORE,
+                    variables: {
+                        score: newScore
+                    }
+
+                })
             })
             .then((response) => {
                 if (response.ok) {
