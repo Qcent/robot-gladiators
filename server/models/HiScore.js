@@ -26,6 +26,6 @@ const scoreSchema = new Schema({
     },
 });
 
-const HiScore = mongoose.model('HiScore', scoreSchema);
+const HiScore = mongoose.model('HiScore', scoreSchema, "HiScore");
 
 module.exports = HiScore;

@@ -11,11 +11,19 @@ const typeDefs = gql `
   }
 
   type Query {
-    getScores: HiScore
+    getScores: [HiScore]
   }
 
   type Mutation {
-    submitScore(score: Int!): HiScore
+    submitScore(
+      robot: String!,
+      trainer: String!,
+      score: Int!,
+      rounds: Int!,
+      points: Int!
+    ) : HiScore
+
+
   }
 `;
 

@@ -90,13 +90,25 @@ const submitLocalChamp = (newScore) => {
 
     const SUBMIT_SCORE = `
   mutation submitScore(
-    $score: Int!
+    $robot: String!,
+    $trainer: String!,
+    $score: Int!,
+    $rounds: Int!,
+    $points: Int!
   ) {
     submitScore(
+      robot: $robot
+      trainer: $trainer
       score: $score
+      rounds: $rounds
+      points: $points
     ) {
       _id
-      scores
+      robot
+      trainer
+      score
+      rounds
+      points
     }
   }
 `;
@@ -115,7 +127,7 @@ const submitLocalChamp = (newScore) => {
                 body: JSON.stringify({
                     query: SUBMIT_SCORE,
                     variables: {
-                        score: newScore
+                        ...newScore
                     }
 
                 })
