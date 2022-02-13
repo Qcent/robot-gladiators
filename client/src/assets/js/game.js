@@ -264,6 +264,7 @@ const getNetChamp = () => {
                     response.json()
                         .then(data => {
                             if (data.data.getScores.length) {
+                                console.log(data.data.getScores);
                                 const { robot, trainer, score, rounds, points } = data.data.getScores[0];
                                 netChamp = {
                                     robot: robot,
@@ -330,7 +331,7 @@ const submitLocalChamp = (newScore) => {
 
 
     //let apiCall = "https://calm-gorge-19876.herokuapp.com/api/roboserve";
-    let apiCall = "http://localhost:3001/graphql";
+    let apiCall = "graphql";
 
     return new Promise((res, rej) => {
         fetch(apiCall, {
