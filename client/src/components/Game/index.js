@@ -1,10 +1,13 @@
 import React from "react";
-//import "../../../public/assets/css/pokeBattle.css";
+import '../../assets/css/pokeBattle.css';
+
+import UIGame from "../../assets/js/game"
 
 function Game() {
+
   return (
     <>  
-
+      {UIGame.startGame()}
     </>
   );
 }

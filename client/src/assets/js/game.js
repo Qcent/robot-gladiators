@@ -1,17 +1,224 @@
-var weekOfBattle = 0;
-var totalrounds = 0;
-var currentEnemy = {};
-var beatenOpponents = [];
-var weeksOpponents = [];
-var enemyInfo = [];
-var createdBots = [];
-var buildingBot = {
+import $ from 'jquery';
+
+const clearScreen = () => {
+    if ($('#Upper-Vis')) $('#Upper-Vis').remove();
+    if ($('#Lower-Vis')) $('#Lower-Vis').remove();
+}
+const setMenuText = (txt, pos) => {
+    $('#menu-text').html(txt);
+
+    if (pos) {
+        $('#menu-text').css('text-align', 'center');
+    }
+}
+const setMenuContent = (txt) => {
+    $('#menu-content section').html(txt);
+}
+const createBattleText = (txt) => {
+    if ($('#Lower-Vis')) $('#Lower-Vis').remove();
+
+    let lowerEl = $("<div>").attr("id", "Lower-Vis");
+
+    let loLeft = $("<div>").attr("id", "lower-left");
+    let loRight = $("<div>").attr("id", "lower-right");
+
+    /* LEFT */
+    let textContainer = $("<div>").attr("id", "battle-choice-text-box");
+    let textArea = $("<div>").attr("id", "battle-choice-text").html((txt ? (txt + "<br>") : '') + "What will <span id='playerNameHolder'>" + playerInfo.name + "</span> do?");
+
+    loLeft.append(textContainer.append(textArea));
+    /* RIGHT */
+    textContainer = $("<div>").attr("id", "battle-choice-opt-box");
+    textArea = $("<div>").attr("id", "battle-choice-opt").append(
+        $("<button>").attr("plr-choice", "FIGHT").text("FIGHT").prepend($("<span>").addClass('choiceIcon')),
+        $("<button>").attr("plr-choice", "RUN").text("RUN").prepend($("<span>").addClass('choiceIcon')),
+        $("<button>").attr("plr-choice", "INFO").text("INFO").prepend($("<span>").addClass('choiceIcon'))
+    );
+
+    loRight.append(textContainer.append(textArea));
+    /*** */
+    $("body").append(lowerEl.append(loLeft, loRight));
+
+    /******** Set up button click listener */
+    $("#battle-choice-opt-box").on('click', 'button', function(event) {
+        let playerInput = $(event.target).attr("plr-choice");
+        if (playerInput === "RUN") { UIGame.runAway(); }
+        if (playerInput === "FIGHT") { UIGame.fight(); }
+        if (playerInput === "INFO") { UIGame.showInfo(); }
+    });
+    /*********** arrow key and enter key handling */
+    /* $(document).on('keypress', function(e) {
+        // if (e.which == 13) { //enter
+            console.log($("#battle-choice-opt-box").activeElement)
+        //$("#battle-choice-opt-box").activeElement.click() // enter already triggers the highlighted element
+     }
+     */
+
+    /*     OTHER KEYS NOT WORKING ON MAC SO UNTESTABLE FOR NOW    
+    if (e.which == 37 || e.which == 38) { //left || up
+        alert('left');
+    }
+    if (e.which == 39 || e.which == 40) { //right || down
+        alert('right');
+    } else {
+        alert(e.which);
+    }
+
+    });*/
+}
+const createMessageText = (txt, bool) => {
+    if ($('#Lower-Vis')) $('#Lower-Vis').remove();
+
+    let lowerEl = $("<div>").attr("id", "Lower-Vis");
+
+    let lowerBox = $("<div>").attr("id", "lower-container");
+
+    let textContainer = $("<div>").attr("id", "menu-text-box");
+    let textArea = $("<div>").attr("id", "menu-text").html(txt);
+
+    lowerBox.append(textContainer.append(textArea), bool ? $('<span>').attr('id', 'menu-ok-check') : null);
+    /*** */
+    $("body").append(lowerEl.append(lowerBox));
+}
+const createMenuUIArea = (bool) => {
+    clearScreen();
+    let upperEl = $("<div>").attr("id", "Upper-Vis").addClass("menu-ui");
+
+
+    let upperBox = $("<div>").attr("id", "upper-container");
+    /***/
+    upperBox.html(" <div class = 'menu-bg'></div><div class='menu-bg menu-bg2'></div> <div class='menu-bg menu-bg3'></div><div id='menu-content'><section></section></div>");
+    /***/
+
+    upperEl.append(upperBox);
+    $("body").append(upperEl);
+
+    /*********************** */
+    /******LOWER SCREEN */ // el ,  txt , checkbox
+    createMessageText(null, bool)
+
+    /**** */
+
+};
+const createBattleUIArea = function() {
+    clearScreen();
+
+    let upperEl = $("<div>").attr("id", "Upper-Vis");
+
+    let upLeft = $("<div>").attr("id", "upper-left");
+    let upRight = $("<div>").attr("id", "upper-right");
+    /**/
+    let nmeCard = $("<div>").attr("id", "enemy-card");
+    let nmeSpriteBox = $("<div>").attr("id", "enemy-box");
+    let plrCard = $("<div>").attr("id", "player-card");
+    let plrSpriteBox = $("<div>").attr("id", "player-box");
+    /**/
+
+    for (let i = 0; i <= 1; i++) { // does enemy then player
+        let out = i ? 'player' : 'enemy';
+        let cardContainer = $("<div>").addClass("battle-card");;
+        let cardFrame = $("<div>").addClass("battle-card-frame");
+        let cardFace = $("<div>").addClass("battle-card-face");
+        let cardName = $("<h2>").attr("id", out + "-card-name").html("&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;?");
+        let cardHP = $("<div>").addClass("battle-HP-bar").append($("<span class='ArmourIcon'>").addClass(out)
+            .html(`<svg ><circle cx="11" cy="9" r="8" stroke="#0C2D6B" stroke-width="1"  /></svg>`),
+            $("<span class='HP-text'>").text("HP")).append($("<div>").append($("<div>").attr("id", out + "-HP-bar")));
+        let hpText = $("<h3>").attr("id", out + "-HP-text").text("DQ");
+        let spdText = $("<div>").addClass("battle-card-stat").attr("id", out + "-SPD-text").text("Speed: ?");
+        let atkText = $("<div>").addClass("battle-card-stat").attr("id", out + "-ATK-text").text("Attack: ?");
+        let statBox = i ? $("<div>").append($("<div>").addClass("battle-card-stat stat-pad"), spdText, atkText) : $("<span>").append(spdText, atkText);
+
+        /***** */
+        cardFace.append(cardName, cardHP, (i ? hpText : [statBox, hpText]));
+        cardContainer.append(cardFace, (i ? cardFrame.append(statBox) : cardFrame));
+
+        i ? plrCard.append(cardContainer) : nmeCard.append(cardContainer);
+    }
+    /***/
+    upLeft.append(nmeCard, plrSpriteBox);
+    upRight.append(nmeSpriteBox, plrCard);
+    /***/
+    upperEl.append(upLeft, upRight);
+
+    $("body").append(upperEl);
+    /*********************** */
+    /******LOWER SCREEN */
+    createBattleText(null);
+    /**** */
+
+};
+const updateRobotCard = (who) => {
+    who = (who === "plr") ? 1 : 0;
+    let robot = (who) ? 'player' : 'enemy';
+    /*  cardName = */
+    $("#" + robot + "-card-name").text((who) ? playerInfo.name : currentEnemy.name);
+    /*  cardHP = */
+    $("#" + robot + "-HP-bar").css("width", ((who) ? (playerInfo.health / playerInfo.maxHealth) : (currentEnemy.health / currentEnemy.maxHealth)) * 100 + "%");
+    /*  hpText = */
+    $("#" + robot + "-HP-text").text(((who) ? (playerInfo.health + "/" + playerInfo.maxHealth) : (currentEnemy.health + "/" + currentEnemy.maxHealth)));
+    /*  spdText = */
+    $("#" + robot + "-SPD-text").text("Speed: " + ((who) ? playerInfo.speed : currentEnemy.speed));
+    /*  atkText = */
+    $("#" + robot + "-ATK-text").text("Attack: " + ((who) ? playerInfo.attack : currentEnemy.attack));
+
+    /*** HP Bar Colors */
+    let hp = (who) ? playerInfo.health : currentEnemy.health;
+    if (hp <= 0) {
+        $("#" + robot + "-HP-bar").addClass('battle-danger').css('opacity', '0');
+    } else {
+        let hpp = (who) ? (playerInfo.health / playerInfo.maxHealth) : (currentEnemy.health / currentEnemy.maxHealth);
+        let opAtk = (who) ? currentEnemy.attack : playerInfo.attack;
+        $("#" + robot + "-HP-bar").addClass((hpp <= 0.55) ? (hp > (opAtk * 2) ? 'battle-weakened' : 'battle-danger') : '');
+    }
+
+    /**** ARMOUR SHOWING AND COLOR */
+    if ((who) ? playerInfo.hasArmour : currentEnemy.hasArmour) {
+        $(".ArmourIcon." + robot).show();
+
+        let armDamage = (who) ? playerInfo.armourDamage : currentEnemy.armourDamage;
+        /*
+                if (armDamage >= 75) {
+                    $(".ArmourIcon." + robot).addClass('deadArmour');
+                }
+                if (armDamage >= 55) {
+                    $(".ArmourIcon." + robot).addClass('damagedArmour');
+                }
+        */
+        let armP = (who) ? (playerInfo.armourDamage / 100) : (currentEnemy.armourDamage / 100);
+        let opAtk = (who) ? currentEnemy.attack : playerInfo.attack;
+        $(".ArmourIcon." + robot).addClass((armP >= 0.55) ? ((100 - armDamage) > (opAtk * 1.3) ? 'damagedArmour' : 'deadArmour') : '');
+    } else {
+        $(".ArmourIcon." + robot).hide();
+    }
+};
+const inputToContinue = (callBack) => {
+    setTimeout(() => {
+        $('body').keypress(function() {
+            $('body').trigger('click');
+            $('body').off('keypress');
+        });
+        $('body').on('click', function() {
+            $('body').off('click'); // remove listener
+
+            callBack(); //go to next part of game
+        });
+    }, 450);
+};
+
+let weekOfBattle = 0;
+let totalrounds = 0;
+let currentEnemy = {};
+let beatenOpponents = [];
+let weeksOpponents = [];
+let enemyInfo = [];
+let createdBots = [];
+let buildingBot = {
     name: '',
     health: 1,
     attack: 0,
     speed: 0,
 };
-var localChamp = {
+let localChamp = {
     robot: "Andy  D'Botto",
     trainer: 'Mark B',
     score: 40,
@@ -20,7 +227,7 @@ var localChamp = {
 };
 
 /*   CLOUD SCORE DB */
-var netChamp = {};
+let netChamp = {};
 
 const getNetChamp = () => {
 
@@ -328,7 +535,7 @@ const managerMessage = [
 /**** END of GLOBAL VARIABLES */
 /*^^^^^^^^^^^^^^^^^^^^^^^^^^^^*/
 
-var playerInfo = {
+const playerInfo = {
     name: '',
     maxHealth: 80,
     health: 80,
@@ -495,7 +702,7 @@ var playerInfo = {
     },
     makeAttack: function(enemy) {
         // generate random damage value based on player's attack power
-        var damage = Math.ceil(randomNumber(this.attack * 2 / 3, this.attack));
+        let damage = Math.ceil(randomNumber(this.attack * 2 / 3, this.attack));
 
 
         /*   ARMOUR DAMAGE LESSENING CODE  */
@@ -578,12 +785,12 @@ const calcStartingShopCosts = () => {
 /* *************************** */
 
 // function to generate a random numeric value
-var randomNumber = function(min, max) {
-    var value = Math.floor(Math.random() * (max - min + 1)) + min;
+const randomNumber = function(min, max) {
+    let value = Math.floor(Math.random() * (max - min + 1)) + min;
 
     return value;
 };
-var getLocalChamp = function() {
+const getLocalChamp = function() {
     // if localStorage values are not null set tehm the localChamp values
     localChamp = JSON.parse(localStorage.getItem('robotGladiatorChamps')) || localChamp;
 }
@@ -676,7 +883,7 @@ const loadABot = function(idx) {
     playerInfo.speed = createdBots[idx].speed;
     playerInfo.attack = createdBots[idx].attack;
 };
-var enemyHealthCheck = function(enemy) {
+const enemyHealthCheck = function(enemy) {
     //check enemys health returns null or the health left
     if (enemy.health <= 0) { //if no health
         return null;
@@ -685,9 +892,9 @@ var enemyHealthCheck = function(enemy) {
     }
     return enemy.health;
 };
-var enemyMakeAttack = function(enemy) {
+const enemyMakeAttack = function(enemy) {
     // generate random damage value based on enemy's attack power
-    damage = Math.floor(Math.max(1, randomNumber(enemy.attack * 2 / 3, enemy.attack)));
+    let damage = Math.floor(Math.max(1, randomNumber(enemy.attack * 2 / 3, enemy.attack)));
 
     /*   ARMOUR DAMAGE LESSENING CODE  */
     if (playerInfo.hasArmour) {
@@ -717,7 +924,7 @@ var enemyMakeAttack = function(enemy) {
     console.log(enemy.name + " has attacked " + playerInfo.name + " for " + damage + ".");
     return damage;
 }
-var whoDrawsFirst = function(enemy) {
+const whoDrawsFirst = function(enemy) {
     //function to determine who attacks first in each round of battle
 
     //get differentce in opponents speeds           // a bonus 1 point to the player for balancing
@@ -889,7 +1096,7 @@ const UIGame = (() => {
             /// update the screen with message   // lots of ternary statements here so one line can handle all cases
             createMessageText(((plrFirst > 0) ? playerInfo.name : enemy.name) + " attacks first for " + ((plrFirst > 0) ? plrDam : nmeDam) + " damage!<br>" +
 
-                (((plrFirst > 0) ? nmeDam : plrDam) == 0 ? (((plrFirst > 0) ? enemy.name : playerInfo.name) + " has collapsed in a heap!") :
+                (((plrFirst > 0) ? nmeDam : plrDam) === 0 ? (((plrFirst > 0) ? enemy.name : playerInfo.name) + " has collapsed in a heap!") :
 
                     (((plrFirst > 0) ? enemy.name : playerInfo.name) + " retaliates for " + ((plrFirst > 0) ? nmeDam : plrDam) + " damage!")) + armourNotice);
 
@@ -902,7 +1109,7 @@ const UIGame = (() => {
         } // end of if (FIGHT)    
     }
     const runAway = () => {
-        var confirmSkip = true; //= window.confirm("Are you sure you want to run from the fight?");
+        // let confirmSkip = true; //= window.confirm("Are you sure you want to run from the fight?");
 
         //if yes(true), leave fight
         if (currentEnemy.speed < playerInfo.speed * 2) {
@@ -1177,7 +1384,7 @@ const UIGame = (() => {
 
         $('#build-bot-name').focus();
         $('#build-bot-name').on('keypress', function(e) {
-            if (e.which == 13) {
+            if (e.which === 13) {
                 $('.fancy-button').click();
             }
             // $('#build-bot-name').off();
@@ -1292,7 +1499,7 @@ const UIGame = (() => {
 
         $('#buildBotOK').on('click', () => {
             if (playerInfo.statPoints > 0) {
-                if (confirm('You still have points remaining!')) {
+                if (window.confirm('You still have points remaining!')) {
                     guiNameABot();
                 };
             } else {
@@ -1370,13 +1577,13 @@ const UIGame = (() => {
         setMenuText("Choose a Bot to Terminate!");
 
         $("#built-bot-list").on('click', 'span', function(event) {
-            if (confirm("Are you sure you want to delete this bot? " + $(event.target).text())) {
+            if (window.confirm("Are you sure you want to delete this bot? " + $(event.target).text())) {
                 createdBots.splice(findABot($(event.target).text()), 1);
 
                 //console.log(findABot($(event.target).text()))
                 //console.log(createdBots.splice(findABot($(event.target).text()), 1));
                 /* splice is not working here for some reason so im creating a new array and saving that to local storage */
-                var newArray = createdBots.filter(function(entry) { return entry.name !== $(event.target).text(); });
+                let newArray = createdBots.filter(function(entry) { return entry.name !== $(event.target).text(); });
 
                 //console.log(newArray)
 
@@ -1411,4 +1618,4 @@ const UIGame = (() => {
     }
 })();
 
-UIGame.startGame();
+export default UIGame;
